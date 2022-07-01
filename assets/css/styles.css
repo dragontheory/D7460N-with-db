@@ -50,27 +50,27 @@ app-panel:last-of-type {
 
 /* NAV */
 app-panel:nth-of-type(2) {
-	overflow: auto;
-	width: max-content;
+  overflow: auto;
+  width: max-content;
 }
 
 /* SEARCH RESULTS */
 app-panel:nth-of-type(3) {
-	resize: horizontal;
-	overflow: auto;
-	min-width: 20rem;
+  resize: horizontal;
+  overflow: auto;
+  min-width: 20rem;
   max-width: 60vw;
 }
 
 p, h2 {
-	margin: 0;
-	padding: 1rem
+  margin: 0;
+  padding: 1rem
 }
 
 h2 {
-	font-family: 'agency_fb', sans-serif;
+  font-family: 'agency_fb', sans-serif;
   letter-spacing: .05rem;
-	font-weight: normal;
+  font-weight: normal;
 }
 
 small {padding: 0 1rem;}
@@ -85,23 +85,23 @@ app-panel:last-of-type {justify-items: end;}
 panel-list {
   display: grid;
   overflow: auto;
-	gap: 2px;
+  gap: 2px;
 }
 
 list-item {
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: auto;
-	border-radius: .1rem;
-	justify-content: stretch;
-	background-color: rgba(255,255,255,0.03);
-	transition: background-color 250ms, color 250ms;
-	cursor: pointer;
+  border-radius: .1rem;
+  justify-content: stretch;
+  background-color: rgba(255,255,255,0.03);
+  transition: background-color 250ms, color 250ms;
+  cursor: pointer;
 }
 
 list-item:hover {
-	background-color: rgba(117,193,255,0.2);
-	color: rgba(255,255,255,1.0);
+  background-color: rgba(117,193,255,0.2);
+  color: rgba(255,255,255,1.0);
 }
 
 list-cell {
@@ -111,13 +111,11 @@ list-cell {
   padding: .5rem;
 }
 
-list-cell:first-of-type {
-	width: auto;
-}
+list-cell:first-of-type {width: auto;}
 
 app-panel:nth-of-type(2) list-cell:last-of-type {
-	color: rgba(255, 255, 255, 0.3);
-	font-size: .75rem;
-	font-family: 'agency_fb', sans-serif;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: .75rem;
+  font-family: 'agency_fb', sans-serif;
   letter-spacing: .1rem;
 }

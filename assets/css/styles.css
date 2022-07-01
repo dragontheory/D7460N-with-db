@@ -1,0 +1,123 @@
+/* https://stackoverflow.com/questions/46044589/dynamically-resize-columns-in-css-grid-layout-with-mouse */
+
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300&display=swap');
+@import url('https://fonts.cdnfonts.com/css/agencyfb-2');
+*:before, *:after, *, ::after, ::before {box-sizing: border-box;}
+body, html {
+	background: linear-gradient(#182c38, #101925);
+  background-size: cover;
+  overflow: hidden;
+}
+body {
+  font-family: 'Oxanium', sans-serif;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.5);
+  text-shadow: -1px 1px 0 rgba(0,0,0,0.5);
+  padding: 0;
+  margin: 0;
+}
+
+app-container {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-template-rows: auto 1fr auto;
+  gap: 1rem;
+  padding: 1rem;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ALL PANELS */
+app-panel {
+  display: grid;
+  grid-auto-rows: auto;
+  border-radius: .3rem;
+  overflow: hidden;
+	border: solid 1px rgba(255,255,255,0.1);
+	align-content: start;
+	justify-content: start;
+}
+
+/* HEADER/FOOTER */
+app-panel:first-of-type,
+app-panel:last-of-type {
+  grid-column: 1 / -1;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr 1fr auto;
+  background-color: rgba(255,255,255,0.03);
+	padding: 1rem;
+}
+
+/* NAV */
+app-panel:nth-of-type(2) {
+	overflow: auto;
+	width: max-content;
+}
+
+/* SEARCH RESULTS */
+app-panel:nth-of-type(3) {
+	resize: horizontal;
+	overflow: auto;
+	min-width: 20rem;
+  max-width: 60vw;
+}
+
+p, h2 {
+	margin: 0;
+	padding: 1rem
+}
+
+h2 {
+	font-family: 'agency_fb', sans-serif;
+  letter-spacing: .05rem;
+	font-weight: normal;
+}
+
+small {padding: 0 1rem;}
+
+/* input[type="checkbox"] {
+	accent-color: limegreen;
+} */
+
+/* FOOTER */
+app-panel:last-of-type {justify-items: end;}
+
+panel-list {
+  display: grid;
+  overflow: auto;
+	gap: 2px;
+}
+
+list-item {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto;
+	border-radius: .1rem;
+	justify-content: stretch;
+	background-color: rgba(255,255,255,0.03);
+	transition: background-color 250ms, color 250ms;
+	cursor: pointer;
+}
+
+list-item:hover {
+	background-color: rgba(117,193,255,0.2);
+	color: rgba(255,255,255,1.0);
+}
+
+list-cell {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: .5rem;
+}
+
+list-cell:first-of-type {
+	width: auto;
+}
+
+app-panel:nth-of-type(2) list-cell:last-of-type {
+	color: rgba(255, 255, 255, 0.3);
+	font-size: .75rem;
+	font-family: 'agency_fb', sans-serif;
+  letter-spacing: .1rem;
+}

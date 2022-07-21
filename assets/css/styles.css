@@ -22,7 +22,7 @@ html:before {
   top: 0;
   left: 0;
   right: 0;
-  height: 100%;
+  height: 100vh;
   z-index: -5;
   background: linear-gradient(180deg,rgba(50,70,80,.9) 0,#0d101b 100%);
 }
@@ -45,26 +45,25 @@ html:after {
   content: "";
   position: fixed;
   top: 0;
-  height: 100%;
   left: 0;
   right: 0;
   z-index: -10;
+  height: 100vh;
   background-color: #273136;
   background-image: linear-gradient(180deg,rgba(50,70,80,.9) 0,#0d101b 100%);
   background-image: url(/assets/images/cover.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: initial;
-  height: 100vh;
   transition: background .2s linear;
   background-size: cover;
 }
 
-
+/* PANEL WRAPPER */
 app-container {
   display: grid;
   /* grid-template-columns: repeat(var(--columns), minmax(100px, 1fr)); */
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: repeat(2, auto);
   grid-template-rows: auto 1fr auto;
   gap: 1rem;
   padding: 1rem;
@@ -89,7 +88,7 @@ app-panel:last-of-type {
   grid-column: 1 / -1;
   grid-auto-flow: column;
   grid-auto-columns: 1fr 1fr auto;
-  background-color: rgba(255,255,255,0.03);
+  /* background-color: rgba(255,255,255,0.03); */
   padding: 1rem;
 }
 
@@ -102,10 +101,27 @@ app-panel:nth-of-type(2) {
 }
 
 /* SEARCH RESULTS */
-app-panel:nth-of-type(3) {
+app-panel:nth-of-type(3) panel-corner-bottom-right {display: initial;}
+
+/* HIDE BY DEFAULT */
+app-panel:nth-of-type(4),
+app-panel:nth-of-type(5) {
+  display: none;
+}
+
+/* ASIDE */
+.aside app-panel:nth-of-type(3) {
   resize: horizontal;
   min-width: 20rem;
   max-width: 60vw;
+}
+.aside app-panel:nth-of-type(3) panel-corner-bottom-right {display: none;}
+.aside app-panel:nth-of-type(4),
+.aside app-panel:nth-of-type(5) {
+  display: grid;
+}
+.aside app-container{
+  grid-template-columns: repeat(4, auto);
 }
 
 p, h2 {
@@ -172,26 +188,23 @@ app-panel:nth-of-type(2) list-cell:last-of-type {
 
 
 /* PANEL BORDER LINES */
-app-panel:not(:first-of-type):not(:last-of-type) {
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) {
   --border-color: #FFFFFF;
+  background-clip: border-box;
   position: relative;
   border-radius: 0;
   border: none;
 }
 
-app-panel:not(:first-of-type):not(:last-of-type) {
-  position: relative;
-  background-clip: border-box;
-}
-
-app-panel:after,
-app-panel:before {
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)):after,
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)):before {
   content: "";
   position: absolute;
   opacity: .2;
+  z-index: -1;
 }
 
-app-panel:before {
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)):before {
   left: 15px;
   right: 15px;
   top: 0;
@@ -200,7 +213,7 @@ app-panel:before {
   border-bottom: 1px solid var(--border-color);
 }
 
-app-panel:after {
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)):after {
   top: 15px;
   bottom: 15px;
   left: 0;

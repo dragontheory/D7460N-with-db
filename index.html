@@ -18,6 +18,10 @@
          toggle-class: .open;
         }
       }
+      app-panel:nth-of-type(3) list-item:click {
+        body {toggle-class: .aside;}
+        app-panel:nth-of-type(3) {remove-attribute: style;}
+      }
     </style>
   </head>
 
@@ -58,12 +62,6 @@
             <list-cell>Nav Item</list-cell>
             <list-cell>[ 984 ]</list-cell>
           </list-item>
-          <panel-arrow>
-            <panel-corner-top-left></panel-corner-top-left>
-            <panel-corner-top-right></panel-corner-top-right>
-            <panel-corner-bottom-left></panel-corner-bottom-left>
-            <panel-corner-bottom-right></panel-corner-bottom-right>
-          </panel-arrow>
         </panel-list>
       </app-panel>
 
@@ -147,7 +145,7 @@
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>
-          <!-- <panel-corner-bottom-right></panel-corner-bottom-right> -->
+          <panel-corner-bottom-right></panel-corner-bottom-right>
         </panel-arrow>
       </app-panel>
       <app-panel>

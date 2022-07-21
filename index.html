@@ -13,14 +13,108 @@
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
     <link type="text/css" rel="stylesheet" href="assets/css/scrollbars.css" />
     <style type="text/acss">
-      list-label:nth-of-type(1):click {
-        app-panel panel-list:nth-of-type(1) {
-         toggle-class: .open;
-        }
-      }
+      /* toggle aside panels and remove resizer style */
       app-panel:nth-of-type(3) list-item:click {
         body {toggle-class: .aside;}
         app-panel:nth-of-type(3) {remove-attribute: style;}
+      }
+
+      /* pagination */
+      body:init {
+        list-main {trigger: setup after 100ms;}
+        trigger: countRows;
+      }
+
+      window:resize {
+        list-main {trigger: setup;}
+      }
+
+      list-main:setup {
+        var: totalVisible 0,
+             totalNonVisible 0,
+             liCo 0,
+             startingLiCo 0;
+        list-main list-item {var: liCo++;}
+        list-main {trigger: countRows;}
+      }
+
+      list-main:countRows {
+        @for completely-visible(list-item[data-list="n"]) {var: totalVisible++;}
+        @else {var: totalNonVisible++;}
+        #totalVisible {
+          @if {totalVisible} < 10 {render: 0{totalVisible};}
+          @else {render: {totalVisible};}
+        }
+        #totalNonVisible {
+          @if {totalNonVisible} < 10 {render: 0{totalNonVisible};}
+          @else {render: {totalNonVisible};}
+        }
+      }
+
+      /* list item click action */
+      list-main list-item:click {
+        list-main list-item {remove-class: .active;}
+        add-class: .active;
+        func: sendRowToAngular;
+        list-aside list-cell {
+          fade-out: 25ms 0.5 grid await;
+          fade-in: 25ms 1.0 grid;
+        }
+      }
+
+      close-panel:click {func: sendRowToAngular;}
+
+      /* show/hide aside based on data being present */
+      body:if-exists(list-aside list-item):observe {add-class: .aside;}
+      body:not-if-exists(list-aside list-item):observe {
+        remove-class: .aside;
+        list-main list-item {remove-class: .active;}
+        app-panel:nth-of-type(3) {remove-attribute: style;}
+      }
+
+      [data-list="datasets"] list-item:click {
+        take-class: .active scope([data-list="datasets"]);
+        mimic-into: #datasetSearchTerm;
+        func: filterByDataset;
+        @if not-if-completely-visible([data-list="apps"] list-item.active) {
+          [data-list="apps"] list-item.active {
+            scroll-into-view: true;
+          }
+        }
+      }
+
+      [data-list="apps"] list-item:click {
+        take-class: .active scope([data-list="apps"]);
+        mimic-into: #appSearchTerm;
+        func: filterByApplication;
+      }
+
+      reset-filter:click {
+        [data-list="datasets"] list-item {remove-class: .active scope([data-list="datasets"]);}
+        [data-list="apps"] list-item {remove-class: .active scope([data-list="apps"]);}
+        func: clearFilters;
+        [data-lists="apps"] {remove-property: height;}
+      }
+
+      [data-list="apps"] list-item:click {
+        [data-list="datasets"] list-item {remove-class: .active scope([data-list="datasets"]);}
+      }
+      [data-list="apps"]:not-if-empty:observe {
+        var: currentHeight window.getComputedSyle(document.querySelector('[data-list="apps"]'), null).getPropertyValue("height");
+        [data-list="apps"] {
+          height: {currentHeight};
+        }
+      }
+
+      body:if-exists(list-main list-item):observe {
+        add-class: .main;
+        remove-class: .intro;
+      }
+
+      body:not-if-exists(list-main list-item):observe {
+        add-class: intro;
+        remove-class: .main;
+        remove-class: .aside;
       }
     </style>
   </head>

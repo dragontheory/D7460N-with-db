@@ -51,12 +51,13 @@ html:after {
   height: 100vh;
   background-color: #273136;
   background-image: linear-gradient(180deg,rgba(50,70,80,.9) 0,#0d101b 100%);
-  background-image: url(/assets/images/cover.jpg);
+  background-image: url(/assets/images/logo.svg);
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: initial;
   transition: background .2s linear;
-  background-size: cover;
+  /* background-size: cover; */
+  background-size: 75% 75%;
 }
 
 /* PANEL WRAPPER */
@@ -85,15 +86,16 @@ app-panel {
 /* HEADER/FOOTER */
 app-panel:first-of-type,
 app-panel:last-of-type {
+  display: grid;
   grid-column: 1 / -1;
   grid-auto-flow: column;
-  grid-auto-columns: 1fr 1fr auto;
+  grid-auto-columns: 1fr 1fr 1fr;
   /* background-color: rgba(255,255,255,0.03); */
   padding: 1rem;
 }
 
-/* FOOTER */
-app-panel:last-of-type {justify-items: end;}
+app-class {justify-self: center;}
+app-user, app-version {justify-self: end;}
 
 /* NAV */
 app-panel:nth-of-type(2) {
@@ -165,7 +167,8 @@ list-item {
   cursor: pointer;
 }
 
-list-item:hover {
+list-item:hover,
+list-item.active {
   background-color: rgba(117,193,255,0.2);
   color: rgba(255,255,255,1.0);
 }

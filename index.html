@@ -13,6 +13,122 @@
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
     <link type="text/css" rel="stylesheet" href="assets/css/scrollbars.css" />
     <style type="text/acss">
+      body:init {
+          var: totalVisible 0,
+          totalNonVisible 0,
+          liCo 0,
+          startingLiCo 0;
+          #myList list-item {var: liCo++;} /* loop the list-item tags that are on the page already and get the starting total */
+          #myList {trigger: countRows;} /* call a custom event (which I create here so that we can use it again later and avoid duplicate code) */
+
+          #myList {
+          ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
+          // ajax: "https://dragontheory.com/json/D7460N.json" get json await;
+          console-log: "getting here";
+          trigger: setup;
+          var: startingLiCo {liCo};
+          @each item in {JSON} {
+            var: liCo++;
+            render-before-end:
+            "<list-item data-co=\"{liCo}\" data-id=\"{item.id}\">
+              <list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
+              <list-cell>{item.id}</list-cell>
+              <list-cell>{item.name}</list-cell>
+              <list-cell>{item.username}</list-cell>
+              <list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell>
+              <list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell>
+            </list-item>";
+          }
+          trigger: countRows;
+        }
+        }
+
+        /* This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked */
+        #myList:countRows {
+          @for n from {startingLiCo} + 1 to {liCo} {
+            @if completely-visible(list-item[data-co="{n}"]) {
+              var: totalVisible++;
+            } @else {
+              var: totalNonVisible++;
+            }
+          }
+          #visibleCount {
+            @if {totalVisible} < 10 {
+              render: 0{totalVisible};
+            } @else {
+              render: {totalVisible};
+            }
+          }
+          #nonVisibleCount {
+            @if {totalNonVisible} < 10 {
+              render: 0{totalNonVisible};
+            } @else {
+              render: {totalNonVisible};
+            }
+          }
+        }
+
+
+
+
+
+
+        #myList list-item:not-if-var(currentUserID "{@data-id}"):click {
+          var: currentUserID "{@data-id}";
+          ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json await;
+
+          var: item {JSON};
+
+          /* Add .active class to clicked row. Remove .active class form all other rows withing #myList. */
+          take-class: .active scope(#myList);
+
+          /* Add HTML child list-item to <table-details> ol */
+          app-panel:nth-of-type(4) panel-list {
+            render: "<list-item><list-cell>ID</list-cell><list-cell>{item.id}</list-cell></list-item>
+                    <list-item><list-cell>name</list-cell><list-cell>{item.name}</list-cell></list-item>
+                    <list-item><list-cell>username</list-cell><list-cell>{item.username}</list-cell></list-item>
+                    <list-item><list-cell>website</list-cell><list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell></list-item>
+                    <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>";
+          }
+        }
+        #myList list-item:not-if-empty-trimmed(table-details ol):if-var(currentUserID "{@data-id}"):click {
+          table-details ol {
+            render: "";
+            var: currentUserID "";
+          }
+        }
+
+
+
+
+
+        /* #showNames:click {
+          ajax: "https://jsonplaceholder.typicode.com/users" get json await;
+          #myList {
+            var: startingLiCo {liCo};
+            @each item in {JSON} {
+              var: liCo++;
+              render-before-end:
+              "<list-item data-co=\"{liCo}\">
+                <table-cell-divider> | </table-cell-divider>
+                <table-cell>ID {item.id}</table-cell>
+                <table-cell-divider> | </table-cell-divider>
+                <table-cell>{item.name}</table-cell>
+                <table-cell-divider> | </table-cell-divider>
+                <table-cell>{item.username}</table-cell>
+                <table-cell-divider> | </table-cell-divider>
+                <table-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></table-cell>
+                <table-cell-divider> | </table-cell-divider>
+                <table-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></table-cell>
+              </list-item>";
+            }
+          }
+          #myList {trigger: countRows;}
+        } */
+
+
+
+
       /* toggle aside panels and remove resizer style */
       app-panel:nth-of-type(3) list-item:click {
         body {toggle-class: .aside;}
@@ -20,25 +136,25 @@
       }
 
       /* pagination */
-      body:init {
+      /* body:init {
         list-main {trigger: setup after 100ms;}
         trigger: countRows;
-      }
+      } */
 
-      window:resize {
+      /* window:resize {
         list-main {trigger: setup;}
-      }
+      } */
 
-      list-main:setup {
+      /* list-main:setup {
         var: totalVisible 0,
              totalNonVisible 0,
              liCo 0,
              startingLiCo 0;
         list-main list-item {var: liCo++;}
         list-main {trigger: countRows;}
-      }
+      } */
 
-      list-main:countRows {
+      /* list-main:countRows {
         @for completely-visible(list-item[data-list="n"]) {var: totalVisible++;}
         @else {var: totalNonVisible++;}
         #totalVisible {
@@ -49,10 +165,10 @@
           @if {totalNonVisible} < 10 {render: 0{totalNonVisible};}
           @else {render: {totalNonVisible};}
         }
-      }
+      } */
 
       /* list item click action */
-      list-main list-item:click {
+      /* list-main list-item:click {
         list-main list-item {remove-class: .active;}
         add-class: .active;
         func: sendRowToAngular;
@@ -60,19 +176,19 @@
           fade-out: 25ms 0.5 grid await;
           fade-in: 25ms 1.0 grid;
         }
-      }
+      } */
 
-      close-panel:click {func: sendRowToAngular;}
+      /* close-panel:click {func: sendRowToAngular;} */
 
       /* show/hide aside based on data being present */
-      body:if-exists(list-aside list-item):observe {add-class: .aside;}
-      body:not-if-exists(list-aside list-item):observe {
+      /* body:if-exists(app-panel:nth-of-type(4) list-item):observe {add-class: .aside;}
+      body:not-if-exists(app-panel:nth-of-type(4) list-item):observe {
         remove-class: .aside;
-        list-main list-item {remove-class: .active;}
+        app-panel:nth-of-type(3) list-item {remove-class: .active;}
         app-panel:nth-of-type(3) {remove-attribute: style;}
-      }
+      } */
 
-      [data-list="datasets"] list-item:click {
+      /* [data-list="datasets"] list-item:click {
         take-class: .active scope([data-list="datasets"]);
         mimic-into: #datasetSearchTerm;
         func: filterByDataset;
@@ -81,48 +197,52 @@
             scroll-into-view: true;
           }
         }
-      }
+      } */
 
-      [data-list="apps"] list-item:click {
+      /* [data-list="apps"] list-item:click {
         take-class: .active scope([data-list="apps"]);
         mimic-into: #appSearchTerm;
         func: filterByApplication;
-      }
+      } */
 
-      reset-filter:click {
+      /* reset-filter:click {
         [data-list="datasets"] list-item {remove-class: .active scope([data-list="datasets"]);}
         [data-list="apps"] list-item {remove-class: .active scope([data-list="apps"]);}
         func: clearFilters;
         [data-lists="apps"] {remove-property: height;}
-      }
+      } */
 
-      [data-list="apps"] list-item:click {
+      /* [data-list="apps"] list-item:click {
         [data-list="datasets"] list-item {remove-class: .active scope([data-list="datasets"]);}
-      }
-      [data-list="apps"]:not-if-empty:observe {
+      } */
+      /* [data-list="apps"]:not-if-empty:observe {
         var: currentHeight window.getComputedSyle(document.querySelector('[data-list="apps"]'), null).getPropertyValue("height");
         [data-list="apps"] {
           height: {currentHeight};
         }
-      }
+      } */
 
-      body:if-exists(list-main list-item):observe {
+      /* body:if-exists(list-main list-item):observe {
         add-class: .main;
         remove-class: .intro;
-      }
+      } */
 
-      body:not-if-exists(list-main list-item):observe {
+      /* body:not-if-exists(list-main list-item):observe {
         add-class: intro;
         remove-class: .main;
         remove-class: .aside;
-      }
+      } */
     </style>
   </head>
 
   <body style="opacity: 0.0; transition: opacity 1s ease-in-out;">
     <script>0</script>
     <app-container>
-      <app-panel>D7460N</app-panel>
+      <app-panel>
+        <app-logo>D7460N</app-logo>
+        <app-class>middle</app-class>
+        <app-user>First LastName</app-user>
+      </app-panel>
       <app-panel>
         <h2>NAV</h2>
         <panel-list>
@@ -156,6 +276,11 @@
             <list-cell>Nav Item</list-cell>
             <list-cell>[ 984 ]</list-cell>
           </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
         </panel-list>
       </app-panel>
 
@@ -165,72 +290,16 @@
       </header> -->
 
       <app-panel>
-        <h2>SEARCH RESULTS</h2>
+        <h2>SEARCH RESULTS <span id="visibleCount"></span>/<span id="nonVisibleCount"></span></h2>
         <list-item>
-          <list-cell><input type="checkbox" /></list-cell>
-          <list-cell>results</list-cell>
-          <list-cell>item</list-cell>
-          <list-cell>list</list-cell>
-          <list-cell>item</list-cell>
-          <list-cell>list</list-cell>
-          <list-cell>item</list-cell>
+          <list-cell><input type="checkbox" id="tableHeader01" name="table-header" value="1"></list-cell>
+          <list-cell>#</list-cell>
+          <list-cell>Name</list-cell>
+          <list-cell>Username</list-cell>
+          <list-cell>Website</list-cell>
+          <list-cell>Email</list-cell>
         </list-item>
-        <panel-list>
-          <list-item>
-            <list-cell><input type="checkbox" /></list-cell>
-            <list-cell>results</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-          </list-item>
-          <list-item>
-            <list-cell><input type="checkbox" /></list-cell>
-            <list-cell>results</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-          </list-item>
-          <list-item>
-            <list-cell><input type="checkbox" /></list-cell>
-            <list-cell>results</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-          </list-item>
-          <list-item>
-            <list-cell><input type="checkbox" /></list-cell>
-            <list-cell>results</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-          </list-item>
-          <list-item>
-            <list-cell><input type="checkbox" /></list-cell>
-            <list-cell>results</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-          </list-item>
-          <list-item>
-            <list-cell><input type="checkbox" /></list-cell>
-            <list-cell>results</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-            <list-cell>list</list-cell>
-            <list-cell>item</list-cell>
-          </list-item>
-        </panel-list>
+        <panel-list id="myList"></panel-list>
         <br />
         <app-panel-scroll>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
@@ -244,7 +313,7 @@
       </app-panel>
       <app-panel>
         <h2>ASIDE</h2>
-        <small>Header Subtitle</small>
+        <panel-list></panel-list>
         <app-panel-scroll>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
         </app-panel-scroll>
@@ -268,7 +337,11 @@
           <panel-corner-bottom-right></panel-corner-bottom-right>
         </panel-arrow>
       </app-panel>
-      <app-panel>v0.001</app-panel>
+      <app-panel>
+        <app-author>D7460N</app-author>
+        <app-class>center</app-class>
+        <app-version>v0.001</app-version>
+      </app-panel>
     </app-container>
 
     <script type="text/javascript" charset="utf-8" src="assets/js/activecss-dev-2-11-0.min.js"></script>

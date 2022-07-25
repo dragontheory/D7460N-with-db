@@ -13,8 +13,8 @@
       :root {
         --fill-color: #000; /* 222035 */
         --fill-opacity: 1.0;
-        --stroke-color: #000; /* 222035 */
-        --stroke-opacity: 1.0;
+        /* --stroke-color: #000; */ /* 222035 */
+        /* --stroke-opacity: 1.0; */
         color-scheme: dark light;
       }
       @media (prefers-color-scheme: dark) {:root {--fill-color: #DDD;}}

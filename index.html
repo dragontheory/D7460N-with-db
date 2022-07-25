@@ -18,10 +18,10 @@
           totalNonVisible 0,
           liCo 0,
           startingLiCo 0;
-          #myList list-item {var: liCo++;} /* loop the list-item tags that are on the page already and get the starting total */
-          #myList {trigger: countRows;} /* call a custom event (which I create here so that we can use it again later and avoid duplicate code) */
+          app-panel:nth-of-type(3) panel-list list-item {var: liCo++;} /* loop the list-item tags that are on the page already and get the starting total */
+          app-panel:nth-of-type(3) panel-list {trigger: countRows;} /* call a custom event (which I create here so that we can use it again later and avoid duplicate code) */
 
-          #myList {
+          app-panel:nth-of-type(3) panel-list {
           ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
           // ajax: "https://dragontheory.com/json/D7460N.json" get json await;
           console-log: "getting here";
@@ -43,8 +43,10 @@
         }
         }
 
-        /* This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked */
-        #myList:countRows {
+        /* This is the custom event -
+        it gets used twice -
+        once when the page is drawn and again when the button is clicked */
+        app-panel:nth-of-type(3) panel-list:countRows {
           @for n from {startingLiCo} + 1 to {liCo} {
             @if completely-visible(list-item[data-co="{n}"]) {
               var: totalVisible++;
@@ -73,14 +75,14 @@
 
 
 
-        #myList list-item:not-if-var(currentUserID "{@data-id}"):click {
+        app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):click {
           var: currentUserID "{@data-id}";
           ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json await;
 
           var: item {JSON};
 
-          /* Add .active class to clicked row. Remove .active class form all other rows withing #myList. */
-          take-class: .active scope(#myList);
+          /* Add .active class to clicked row. Remove .active class form all other rows withing app-panel:nth-of-type(3) panel-list. */
+          take-class: .active scope(app-panel:nth-of-type(3) panel-list);
 
           /* Add HTML child list-item to <table-details> ol */
           app-panel:nth-of-type(4) panel-list {
@@ -91,8 +93,8 @@
                     <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>";
           }
         }
-        #myList list-item:not-if-empty-trimmed(table-details ol):if-var(currentUserID "{@data-id}"):click {
-          table-details ol {
+        app-panel:nth-of-type(3) panel-list list-item:not-if-empty-trimmed(table-details ol):if-var(currentUserID "{@data-id}"):click {
+          app-panel:nth-of-type(4) panel-list {
             render: "";
             var: currentUserID "";
           }
@@ -104,7 +106,7 @@
 
         /* #showNames:click {
           ajax: "https://jsonplaceholder.typicode.com/users" get json await;
-          #myList {
+          app-panel:nth-of-type(3) panel-list {
             var: startingLiCo {liCo};
             @each item in {JSON} {
               var: liCo++;
@@ -123,7 +125,7 @@
               </list-item>";
             }
           }
-          #myList {trigger: countRows;}
+          app-panel:nth-of-type(3) panel-list {trigger: countRows;}
         } */
 
 

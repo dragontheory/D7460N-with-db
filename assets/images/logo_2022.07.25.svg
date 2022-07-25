@@ -13,15 +13,9 @@
       :root {
         --fill-color: #000; /* 222035 */
         --fill-opacity: 1.0;
-        /* --stroke-color: #000; */ /* 222035 */
-        /* --stroke-opacity: 1.0; */
         color-scheme: dark light;
       }
       @media (prefers-color-scheme: dark) {:root {--fill-color: #DDD;}}
-      /* @media (min-width: 480px) {:root {--fill-color: #222035;}}
-      @media (min-width: 480px) {:root {--fill-opacity: 1.0;}}
-      @media (max-width: 480px) {:root {--fill-opacity: 1.0;}}
-      @media (max-width: 480px) {:root {--stroke-opacity: 1.0;}} */
     </style>
   </defs>
 </svg>

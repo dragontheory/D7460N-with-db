@@ -22,24 +22,24 @@
           app-panel:nth-of-type(3) panel-list {trigger: countRows;} /* call a custom event (which I create here so that we can use it again later and avoid duplicate code) */
 
           app-panel:nth-of-type(3) panel-list {
-          ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
-          // ajax: "https://dragontheory.com/json/D7460N.json" get json await;
-          console-log: "getting here";
-          trigger: setup;
-          var: startingLiCo {liCo};
-          @each item in {JSON} {
-            var: liCo++;
-            render-before-end:
-            "<list-item data-co=\"{liCo}\" data-id=\"{item.id}\">
-              <list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
-              <list-cell>{item.id}</list-cell>
-              <list-cell>{item.name}</list-cell>
-              <list-cell>{item.username}</list-cell>
-              <list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell>
-              <list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell>
-            </list-item>";
-          }
-          trigger: countRows;
+            ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
+            // ajax: "https://dragontheory.com/json/D7460N.json" get json await;
+            console-log: "getting here";
+            trigger: setup;
+            var: startingLiCo {liCo};
+            @each item in {JSON} {
+              var: liCo++;
+              render-before-end:
+              "<list-item data-co=\"{liCo}\" data-id=\"{item.id}\">
+                <list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
+                <list-cell>{item.id}</list-cell>
+                <list-cell>{item.name}</list-cell>
+                <list-cell>{item.username}</list-cell>
+                <list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell>
+                <list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell>
+              </list-item>";
+            }
+            trigger: countRows;
           }
         }
 
@@ -69,10 +69,6 @@
             }
           }
         }
-
-
-
-
 
 
         app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):click {
@@ -128,8 +124,12 @@
           app-panel:nth-of-type(3) panel-list {trigger: countRows;}
         } */
 
-
-
+      /* app-panel:not(:first-of-type):not(:last-of-type):not-if-exists(self list-cell):observe {
+        self {set-attribute: style "opacity: 0.0; pointer-events: none; width: 0;";}
+      }
+      app-panel:not(:first-of-type):not(:last-of-type):if-exists(self list-cell):observe {
+        self {set-attribute: style "opacity: 1.0; pointer-events: auto; width: auto;";}
+      } */
 
       /* toggle aside panels and remove resizer style */
       app-panel:nth-of-type(3) list-item:click {

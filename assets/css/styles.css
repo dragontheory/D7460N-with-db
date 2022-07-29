@@ -167,7 +167,7 @@ app-panel:nth-of-type(2) panel-list list-item {grid-template-columns: 2rem 1fr a
 
 app-panel:nth-of-type(3) > list-item,
 app-panel:nth-of-type(3) panel-list list-item {
-  grid-auto-columns: grid-auto-columns: minmax(3rem, 3rem) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr);
+  grid-auto-columns: minmax(3rem, 3rem) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr);
 }
 
 app-panel:nth-of-type(3) panel-list list-item list-cell:nth-of-type(2) {width: auto;}

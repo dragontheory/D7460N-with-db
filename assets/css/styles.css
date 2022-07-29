@@ -118,7 +118,7 @@ app-panel:nth-of-type(5) {
 }
 .aside app-container{
   /* grid-template-columns: repeat(4, auto); */
-  grid-template-columns: max-content min-content auto auto;
+  grid-template-columns: max-content max-content auto auto;
 }
 
 p, h2 {

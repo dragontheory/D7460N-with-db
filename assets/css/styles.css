@@ -184,7 +184,7 @@ app-panel:nth-of-type(3) panel-list list-item {
 
 app-panel:nth-of-type(3) panel-list list-item list-cell:nth-of-type(2) {width: auto;}
 
-app-panel:nth-of-type(4) panel-list list-item {grid-template-columns: minmax(6rem, 6rem) 1fr}
+app-panel:nth-of-type(4) panel-list list-item {grid-template-columns: minmax(6rem, 6rem) 1fr;}
 
 list-cell {
   text-overflow: ellipsis;

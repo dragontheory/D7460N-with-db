@@ -13,83 +13,88 @@
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
     <link type="text/css" rel="stylesheet" href="assets/css/scrollbars.css" />
     <style type="text/acss">
+      /* Call data on body init */
       body:init {
-          var: totalVisible 0,
-          totalNonVisible 0,
-          liCo 0,
-          startingLiCo 0;
-          app-panel:nth-of-type(3) panel-list list-item {var: liCo++;}
-          app-panel:nth-of-type(3) panel-list {trigger: countRows;}
-          app-panel:nth-of-type(3) panel-list {
-            ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
-            /* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
-            console-log: "getting here";
-            trigger: setup;
-            var: startingLiCo {liCo};
-            @each item in {JSON} {
-              var: liCo++;
-              render-before-end:
-              "<list-item data-co=\"{liCo}\" data-id=\"{item.id}\">
-                <list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
-                <list-cell>{item.id}</list-cell>
-                <list-cell>{item.name}</list-cell>
-                <list-cell>{item.username}</list-cell>
-                <list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell>
-                <list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell>
-              </list-item>";
-            }
-            trigger: countRows;
+        var: totalVisible 0,
+        totalNonVisible 0,
+        liCo 0,
+        startingLiCo 0;
+        app-panel:nth-of-type(3) panel-list list-item {var: liCo++;}
+        app-panel:nth-of-type(3) panel-list {trigger: countRows;}
+        app-panel:nth-of-type(3) panel-list {
+          ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
+          /* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
+          console-log: "getting here";
+          trigger: setup;
+          var: startingLiCo {liCo};
+          @each item in {JSON} {
+            var: liCo++;
+            render-before-end:
+            "<list-item data-co=\"{liCo}\" data-id=\"{item.id}\">
+              <list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
+              <list-cell>{item.id}</list-cell>
+              <list-cell>{item.name}</list-cell>
+              <list-cell>{item.username}</list-cell>
+              <list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell>
+              <list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell>
+            </list-item>";
           }
+          trigger: countRows;
         }
+      }
 
-        /* This is the custom event -
-        it gets used twice -
-        once when the page is drawn and again when the button is clicked */
-        app-panel:nth-of-type(3) panel-list:countRows {
-          @for n from {startingLiCo} + 1 to {liCo} {
-            @if completely-visible(list-item[data-co="{n}"]) {
-              var: totalVisible++;
-            } @else {
-              var: totalNonVisible++;
-            }
-          }
-          #visibleCount {
-            @if {totalVisible} < 10 {
-              render: 0{totalVisible};
-            } @else {
-              render: {totalVisible};
-            }
-          }
-          #nonVisibleCount {
-            @if {totalNonVisible} < 10 {
-              render: 0{totalNonVisible};
-            } @else {
-              render: {totalNonVisible};
-            }
+      /* This is the custom event -
+      it gets used twice -
+      once when the page is drawn and again when the button is clicked */
+      app-panel:nth-of-type(3) panel-list:countRows {
+        @for n from {startingLiCo} + 1 to {liCo} {
+          @if completely-visible(list-item[data-co="{n}"]) {
+            var: totalVisible++;
+          } @else {
+            var: totalNonVisible++;
           }
         }
+        #visibleCount {
+          @if {totalVisible} < 10 {
+            render: 0{totalVisible};
+          } @else {
+            render: {totalVisible};
+          }
+        }
+        #nonVisibleCount {
+          @if {totalNonVisible} < 10 {
+            render: 0{totalNonVisible};
+          } @else {
+            render: {totalNonVisible};
+          }
+        }
+      }
 
-        app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):click {
-          var: currentUserID "{@data-id}";
-          ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json await;
-          var: item {JSON};
-          take-class: .active scope(app-panel:nth-of-type(3) panel-list);
-          app-panel:nth-of-type(4) panel-list {
-            render: "<list-item><list-cell>ID</list-cell><list-cell>{item.id}</list-cell></list-item>
-                    <list-item><list-cell>name</list-cell><list-cell>{item.name}</list-cell></list-item>
-                    <list-item><list-cell>username</list-cell><list-cell>{item.username}</list-cell></list-item>
-                    <list-item><list-cell>website</list-cell><list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell></list-item>
-                    <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>";
-          }
+      /* Call data to app-panel:nth-of-type(4) */
+      app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):click {
+        var: currentUserID "{@data-id}";
+        ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json await;
+        var: item {JSON};
+        take-class: .active scope(app-panel:nth-of-type(3) panel-list);
+        app-panel:nth-of-type(4) panel-list {
+          render: "<list-item><list-cell>ID</list-cell><list-cell>{item.id}</list-cell></list-item>
+                  <list-item><list-cell>name</list-cell><list-cell>{item.name}</list-cell></list-item>
+                  <list-item><list-cell>username</list-cell><list-cell>{item.username}</list-cell></list-item>
+                  <list-item><list-cell>website</list-cell><list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell></list-item>
+                  <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>";
         }
+      }
 
-        app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
-          body {add-class: aside;}
-        }
-        app-panel:nth-of-type(4) panel-list:if-empty:observe {
-          body {remove-class: aside;}
-          app-panel:nth-of-type(3) {remove-attribute: style;}
-        }
+      /* Show panel when there are children of panel-list */
+      app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
+        body {add-class: aside;}
+      }
+
+      /* Hide panel when there are NO children of panel-list */
+      app-panel:nth-of-type(4) panel-list:if-empty:observe {
+        body {remove-class: aside;}
+        app-panel:nth-of-type(3) {remove-attribute: style;}
+      }
     </style>
   </head>
 

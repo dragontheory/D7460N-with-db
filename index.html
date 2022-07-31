@@ -85,41 +85,50 @@
       }
 
       /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(2) panel-list list-item:not-if-empty:observe {
+      app-panel:nth-of-type(2) panel-list:not-if-empty:observe {
         body {add-class: nav;}
+        console-log: "Show NAV";
       }
 
       /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(2) panel-list list-item:if-empty:observe {
+      app-panel:nth-of-type(2) panel-list:if-empty:observe {
         body {remove-class: nav;}
+        console-log: "Hide NAV";
       }
 
       /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(3) panel-list list-item:not-if-empty:observe {
+      app-panel:nth-of-type(3) panel-list:not-if-empty:observe {
         body {add-class: main;}
+        console-log: "Show MAIN";
       }
 
       /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(3) panel-list list-item:if-empty:observe {
+      app-panel:nth-of-type(3) panel-list:if-empty:observe {
         body {remove-class: main;}
         app-panel:nth-of-type(3) {remove-attribute: style;}
+        console-log: "Hide MAIN";
       }
 
       /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(4) panel-list list-item:not-if-empty:observe {
+      app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
         body {add-class: aside;}
-        app-panel:nth-of-type(3) panel-list list-item {
+        console-log: "Show ASIDE";
+        app-panel:nth-of-type(3) panel-list {
           take-class: .active scope(app-panel:nth-of-type(3) panel-list);
+          console-log: "Take MAIN .active";
         }
       }
 
       /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(4) panel-list list-item:if-empty:observe {
+      app-panel:nth-of-type(4) panel-list:if-empty:observe {
         body {remove-class: aside;}
-        app-panel:nth-of-type(3) panel-list list-item {
+        console-log: "Hide ASIDE";
+        app-panel:nth-of-type(3) panel-list {
           remove-class: .active scope(app-panel:nth-of-type(3) panel-list);
+          console-log: "Remove MAIN .active";
         }
         app-panel:nth-of-type(3) {remove-attribute: style;}
+        console-log: "Remove MAIN size attribute";
       }
     </style>
   </head>

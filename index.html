@@ -75,7 +75,6 @@
         var: currentUserID "{@data-id}";
         ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json await;
         var: item {JSON};
-        take-class: .active scope(app-panel:nth-of-type(3) panel-list);
         app-panel:nth-of-type(4) panel-list {
           render: "<list-item><list-cell>ID</list-cell><list-cell>{item.id}</list-cell></list-item>
                   <list-item><list-cell>name</list-cell><list-cell>{item.name}</list-cell></list-item>
@@ -85,14 +84,41 @@
         }
       }
 
-      /* Show panel when there are children of panel-list */
-      app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
-        body {add-class: aside;}
+      /* Show panels when there are children of panel-list */
+      app-panel:nth-of-type(2) panel-list list-item:not-if-empty:observe {
+        body {add-class: nav;}
       }
 
       /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(4) panel-list:if-empty:observe {
+      app-panel:nth-of-type(2) panel-list list-item:if-empty:observe {
+        body {remove-class: nav;}
+      }
+
+      /* Show panels when there are children of panel-list */
+      app-panel:nth-of-type(3) panel-list list-item:not-if-empty:observe {
+        body {add-class: main;}
+      }
+
+      /* Hide panel when there are NO children of panel-list */
+      app-panel:nth-of-type(3) panel-list list-item:if-empty:observe {
+        body {remove-class: main;}
+        app-panel:nth-of-type(3) {remove-attribute: style;}
+      }
+
+      /* Show panels when there are children of panel-list */
+      app-panel:nth-of-type(4) panel-list list-item:not-if-empty:observe {
+        body {add-class: aside;}
+        app-panel:nth-of-type(3) panel-list list-item {
+          take-class: .active scope(app-panel:nth-of-type(3) panel-list);
+        }
+      }
+
+      /* Hide panel when there are NO children of panel-list */
+      app-panel:nth-of-type(4) panel-list list-item:if-empty:observe {
         body {remove-class: aside;}
+        app-panel:nth-of-type(3) panel-list list-item {
+          remove-class: .active scope(app-panel:nth-of-type(3) panel-list);
+        }
         app-panel:nth-of-type(3) {remove-attribute: style;}
       }
     </style>

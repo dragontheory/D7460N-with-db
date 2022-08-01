@@ -73,7 +73,7 @@
       /* Call data to app-panel:nth-of-type(4) */
       app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):click {
         var: currentUserID "{@data-id}";
-        ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json await;
+        ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json cache await;
         var: item {JSON};
         app-panel:nth-of-type(4) panel-list {
           render: "<list-item><list-cell>ID</list-cell><list-cell>{item.id}</list-cell></list-item>
@@ -119,33 +119,35 @@
       app-panel:nth-of-type(4) panel-list #userID:draw { {
         app-panel:nth-of-type(3) panel-list list-item[data-id="{currentUserID}"] {
 	      take-class: .active scope(app-panel:nth-of-type(3) panel-list);
-        console-log: "Take .active";
+        console-log: "Take MAIN .active";
         }
       }
 
-      app-panel:nth-of-type(4) panel-list:if-empty:observe{
+      /* app-panel:nth-of-type(4) panel-list:if-empty:observe{
       app-panel:nth-of-type(3) panel-list list-item.active {
         remove-class: .active;
         console-log: "Remove LIST-ITEM .active";
-      }
-  }
+        }
+      } */
 
       /* Hide panel when there are NO children of panel-list */
       app-panel:nth-of-type(4) panel-list:if-empty:observe {
+        var: currentUserID null;
         body {remove-class: aside;}
         console-log: "Hide ASIDE";
-        app-panel:nth-of-type(3) panel-list {
+        app-panel:nth-of-type(3) panel-list list-item.active {
           remove-class: .active scope(app-panel:nth-of-type(3) panel-list);
-          console-log: "Remove MAIN .active";
+          console-log: "Remove MAIN LIST-ITEM .active";
         }
         app-panel:nth-of-type(3) {remove-attribute: style;}
         console-log: "Remove MAIN size attribute";
       }
 
-      close-panel:click {
-        remove:  app-panel:nth-of-type(4) panel-list;
+      close-panel:click,
+      app-panel:nth-of-type(3) panel-list list-item:if-var(currentUserID "{@data-id}"):click {
+        empty: app-panel:nth-of-type(4) panel-list;
+        console-log: "Empty panel-list to close panel";
       }
-
 
 
     </style>

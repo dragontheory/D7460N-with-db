@@ -113,8 +113,8 @@
       app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
         body {add-class: aside;}
         console-log: "Show ASIDE";
-        app-panel:nth-of-type(3) panel-list {
-          take-class: .active scope(app-panel:nth-of-type(3) panel-list);
+        app-panel:nth-of-type(3) panel-list list-item[data-id="{currentUserID}"] {
+          take-class: .active;
           console-log: "Take MAIN .active";
         }
       }

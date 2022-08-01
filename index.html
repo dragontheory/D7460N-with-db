@@ -80,7 +80,8 @@
                   <list-item><list-cell>name</list-cell><list-cell>{item.name}</list-cell></list-item>
                   <list-item><list-cell>username</list-cell><list-cell>{item.username}</list-cell></list-item>
                   <list-item><list-cell>website</list-cell><list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell></list-item>
-                  <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>";
+                  <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>
+                  <input id=\"userID\" type=\"hidden\" value=\"{item.id}\">";
         }
       }
 
@@ -113,11 +114,21 @@
       app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
         body {add-class: aside;}
         console-log: "Show ASIDE";
+      }
+
+      app-panel:nth-of-type(4) panel-list #userID:draw { {
         app-panel:nth-of-type(3) panel-list list-item[data-id="{currentUserID}"] {
-          take-class: .active;
-          console-log: "Take MAIN .active";
+	      take-class: .active scope(app-panel:nth-of-type(3) panel-list);
+        console-log: "Take .active";
         }
       }
+
+      app-panel:nth-of-type(4) panel-list:if-empty:observe{
+      app-panel:nth-of-type(3) panel-list list-item.active {
+        remove-class: .active;
+        console-log: "Remove LIST-ITEM .active";
+      }
+  }
 
       /* Hide panel when there are NO children of panel-list */
       app-panel:nth-of-type(4) panel-list:if-empty:observe {
@@ -130,6 +141,13 @@
         app-panel:nth-of-type(3) {remove-attribute: style;}
         console-log: "Remove MAIN size attribute";
       }
+
+      close-panel:click {
+        remove:  app-panel:nth-of-type(4) panel-list;
+      }
+
+
+
     </style>
   </head>
 
@@ -211,6 +229,7 @@
       </app-panel>
       <app-panel>
         <h2>ASIDE</h2>
+        <close-panel>[ X ]</close-panel>
         <panel-list></panel-list>
         <app-panel-scroll>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>

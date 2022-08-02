@@ -113,9 +113,9 @@ app-panel:nth-of-type(5) {
 
 panel-header {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr auto;
   grid-template-rows: 1fr;
-  justify-items: start;
+  align-items: center;
 }
 
 panel-title {
@@ -126,11 +126,16 @@ panel-title {
 close-panel {
   font-family: sans-serif;
   font-size: 0.75rem;
-  justify-self: end;
-  align-self: center;
   cursor: pointer;
   padding: 0.5rem;
   transition: color 250ms;
+}
+
+panel-meta {
+  font-family: 'agency_fb', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: .05rem;
+  padding: 0.5rem;
 }
 
 close-panel:hover {

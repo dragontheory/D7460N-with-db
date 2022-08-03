@@ -398,14 +398,13 @@ panel-corner-top-right:after {
 
 *::-webkit-scrollbar-button {display: none;}
 
-*::-webkit-scrollbar-track {background-color: rgba(117,193,255,0.0);}
+*::-webkit-scrollbar-track {
+  background-color: rgba(117,193,255,0.0);
+}
 
 *::-webkit-scrollbar-track-piece {background-color: rgba(117,193,255,0.0);}
 
-body {
-  overflow: overlay;
-  transition: all 250ms;
-}
+@supports (overflow: overlay) {body {overflow: overlay;}}
 
 * {--scrollbar-color: rgba(117,193,255,0.0);}
 
@@ -425,7 +424,7 @@ body {
 }
 
 /* FIREFOX */
-/* Target elements. :root{} does not work */
+/* Target elements, not :root{} */
 /* https://codeconvey.com/custom-scrollbar-css-for-all-browsers/ */
 panel-list,
 app-panel-scroll {
@@ -435,3 +434,11 @@ app-panel-scroll {
 }
 panel-list:hover {scrollbar-color: rgba(117,193,255,1.0) rgba(117,193,255,0.0);}
 app-panel-scroll:hover {scrollbar-color: rgba(117,193,255,1.0) rgba(117,193,255,0.0);}
+
+/*
+Not working yet
+
+scrollbar:hover thumb {cursor: ns-resize;}
+cursor: ns-resize;
+transition: background-color 250ms;
+*/

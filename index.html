@@ -11,7 +11,6 @@
     <title>D7460N</title>
     <link type="image/svg+xml" rel="icon" href="assets/images/logo.svg" />
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
-    <link type="text/css" rel="stylesheet" href="assets/css/scrollbars.css" />
     <style type="text/acss">
       /* Call data on body init */
       body:init {
@@ -71,7 +70,7 @@
       }
 
       /* Call data to app-panel:nth-of-type(4) */
-      app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):click {
+      app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-lico}"):click {
         var: currentUserID "{@data-id}";
         ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json cache await;
         var: item {JSON};
@@ -163,7 +162,7 @@
       </app-panel>
       <app-panel>
         <panel-header>
-          <panel-title>NAV</panel-title>
+          <panel-title>SECTION 01</panel-title>
           <panel-meta>[ 843 ]</panel-meta>
         </panel-header>
         <panel-list>
@@ -204,6 +203,52 @@
           </list-item>
         </panel-list>
         <p>&#160;</p>
+        <panel-header>
+          <panel-title>SECTION 02</panel-title>
+          <panel-meta>[ 843 ]</panel-meta>
+        </panel-header>
+        <panel-list>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 1235 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 12 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 35 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 5 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 25 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+        </panel-list>
+        <p>&#160;</p>
+        <panel-header>
+          <panel-title>SECTION 03</panel-title>
+          <panel-meta>[ 843 ]</panel-meta>
+        </panel-header>
         <panel-list>
           <list-item>
             <list-cell><input type="checkbox" /></list-cell>

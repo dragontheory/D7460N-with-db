@@ -1,8 +1,9 @@
-/* document.querySelector("app-panel:nth-of-type(3)").resizable({handles: "e, w"}); */
+// document.querySelector("app-panel:nth-of-type(3)").resizable({handles: "e, w"});
 
 // --------------------------------------------------------------------------------- //
 
 // https://medium.com/@fbnlsr/how-to-get-rid-of-the-flash-of-unstyled-content-d6b79bf5d75f
+
 // Helper function
 let domReady = (cb) => {
   document.readyState === 'interactive' || document.readyState === 'complete'
@@ -16,3 +17,17 @@ domReady(() => {
 });
 
 // --------------------------------------------------------------------------------- //
+// https://dev.to/jonosellier/easy-overlay-scrollbars-variable-width-1mbh
+
+// Scrollbars
+var barTimeout;
+
+document.body.onscroll = () => {
+	if(barTimeout){
+  	clearTimeout(barTimeout);
+  }
+  barTimeout = setTimeout(() => {
+  	document.body.classList.remove('scrolling');
+  }, 500);
+  document.body.classList.add('scrolling');
+}

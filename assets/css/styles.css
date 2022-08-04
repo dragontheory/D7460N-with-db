@@ -387,7 +387,9 @@ panel-corner-top-right:after {
 }
 
 
-/* Scrollbars */
+/*-----------------------------
+  Scrollbars
+-----------------------------*/
 
 *::-webkit-scrollbar {
   display: block;
@@ -404,7 +406,7 @@ panel-corner-top-right:after {
 
 * {--scrollbar-color: rgba(48,190,255,0.0);}
 
-*:hover, *:focus, *:focus-within {--scrollbar-color: rgba(48,190,255,1.0) !important;}
+*:hover, *:focus, *:focus-within {--scrollbar-color: rgba(48,190,255,0.3) !important;}
 
 *::-webkit-scrollbar-thumb {
   background-color: rgba(48,190,255,0.0);
@@ -428,8 +430,8 @@ app-panel-scroll {
   scrollbar-width: thin; /* Track width */
   transition: scrollbar-color 250ms;
 }
-panel-list:hover {scrollbar-color: rgba(48,190,255,1.0) rgba(48,190,255,0.0);}
-app-panel-scroll:hover {scrollbar-color: rgba(48,190,255,1.0) rgba(48,190,255,0.0);}
+panel-list:hover {scrollbar-color: rgba(48,190,255,0.3) rgba(48,190,255,0.0);}
+app-panel-scroll:hover {scrollbar-color: rgba(48,190,255,0.3) rgba(48,190,255,0.0);}
 
 /*
 Not working yet

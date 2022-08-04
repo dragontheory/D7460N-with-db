@@ -434,7 +434,7 @@ panel-list:hover {scrollbar-color: rgba(48,190,255,0.3) rgba(48,190,255,0.0);}
 app-panel-scroll:hover {scrollbar-color: rgba(48,190,255,0.3) rgba(48,190,255,0.0);}
 
 /*
-Not working yet
+Progressive enhancements (not working yet)
 
 scrollbar:hover thumb {cursor: ns-resize;}
 cursor: ns-resize;

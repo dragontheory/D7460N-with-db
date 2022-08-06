@@ -159,6 +159,16 @@ panel-title {
   padding: 0.5rem;
 }
 
+app-count {
+  font-family: 'agency_fb', sans-serif;
+  font-size: 1rem;
+  display: inline-block;
+  -webkit-transform: scaleY(0.75);
+  transform: scaleY(0.75);
+  letter-spacing: .07rem;
+  padding: 0.5rem;
+}
+
 panel-meta {
   font-family: 'agency_fb', sans-serif;
   font-size: 0.8rem;

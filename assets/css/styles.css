@@ -194,7 +194,7 @@ app-panel:nth-of-type(3)  panel-header {
 }
 
 app-panel:nth-of-type(3)  panel-header list-item {
-  grid-template-columns: repeat(auto-fiT, minmax(3rem, auto));
+  grid-template-columns: repeat(auto-fit, minmax(2.25rem, auto));
   grid-template-rows: 1fr;
   box-shadow: 0 1px 0 0 rgb(255,255,255,0.0);
   background-color: rgba(48,190,255,0.0);
@@ -202,9 +202,16 @@ app-panel:nth-of-type(3)  panel-header list-item {
 }
 
 app-panel:nth-of-type(3)  panel-header list-item list-cell {
+  font-family: 'agency_fb', sans-serif;
+  font-size: 1rem;
+  display: inline-block;
+  -webkit-transform: scaleY(0.75);
+  transform: scaleY(0.75);
+  letter-spacing: .07rem;
   box-shadow: 2px 0 0 -1px rgb(255,255,255,0.2);
   transition: color 250ms, background-color 250ms;
   text-align: center;
+  padding: 0.25rem;
 }
 
 app-panel:nth-of-type(3)  panel-header list-item list-cell:hover {

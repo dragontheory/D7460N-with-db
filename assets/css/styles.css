@@ -149,7 +149,7 @@ panel-header {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr;
-  align-items: center;
+  align-items: start;
 }
 
 panel-title {
@@ -157,6 +157,7 @@ panel-title {
   font-size: 1.25rem;
   letter-spacing: .07rem;
   padding: 0.5rem;
+  align
 }
 
 panel-meta {

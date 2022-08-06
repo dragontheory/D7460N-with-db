@@ -94,8 +94,6 @@ app-panel:last-of-type {
   padding: 1rem;
 }
 
-app-class {justify-self: center;}
-
 app-class,
 app-user,
 app-author,
@@ -125,7 +123,9 @@ app-class {
   justify-self: center;
 }
 
-/* NAV */
+/*-----------------------------
+    NAV
+-----------------------------*/
 app-panel:nth-of-type(2) {
   width: max-content;
 }
@@ -134,7 +134,9 @@ app-panel:nth-of-type(2) list-item{
   box-shadow: none;
 }
 
-/* SEARCH RESULTS */
+/*-----------------------------
+  SEARCH RESULTS
+-----------------------------*/
 app-panel:nth-of-type(3) panel-corner-bottom-right {display: initial;}
 
 /* HIDE BY DEFAULT */
@@ -174,7 +176,40 @@ close-panel {
 
 close-panel:hover {color: rgba(48,190,255,1.0);}
 
-/* ASIDE */
+/*-----------------------------
+  PAGINATION
+-----------------------------*/
+app-panel:nth-of-type(3)  panel-header {
+  grid-template-columns: 1fr 1fr;
+}
+
+app-panel:nth-of-type(3)  panel-header list-item {
+  grid-template-columns: repeat(auto-fiT, minmax(3rem, auto));
+  grid-template-rows: 1fr;
+  box-shadow: 0 1px 0 0 rgb(255,255,255,0.0);
+  background-color: rgba(48,190,255,0.0);
+  justify-content: end;
+}
+
+app-panel:nth-of-type(3)  panel-header list-item list-cell {
+  box-shadow: 2px 0 0 -1px rgb(255,255,255,0.2);
+  transition: color 250ms, background-color 250ms;
+  text-align: center;
+}
+
+app-panel:nth-of-type(3)  panel-header list-item list-cell:hover {
+  box-shadow: 2px 0 0px -1px rgb(255,255,255,0.2);
+  background-color: rgba(48,190,255,0.2);
+  color: rgba(255,255,255,1.0);
+}
+
+/* app-panel:nth-of-type(3)  panel-header list-item list-cell:last-child {
+  box-shadow: 1px 0 5px -5px rgba(255,255,255,0.0)
+} */
+
+/*-----------------------------
+    ASIDE
+-----------------------------*/
 .aside app-panel:nth-of-type(3) {
   resize: horizontal;
   min-width: 20rem;
@@ -251,7 +286,7 @@ app-panel:nth-of-type(2) panel-list list-item {
 
 app-panel:nth-of-type(3) > list-item,
 app-panel:nth-of-type(3) panel-list list-item {
-  grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 8rem) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr) minmax(7rem, 1fr);
+  grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 5rem) minmax(5rem, 1fr) minmax(5rem, 1fr) minmax(5rem, 1fr) minmax(5rem, 1fr);
 }
 
 app-panel:nth-of-type(3) panel-list list-item list-cell:nth-of-type(2) {width: auto;}
@@ -275,7 +310,9 @@ app-panel:nth-of-type(2) list-cell:last-of-type {
 }
 
 
-/* PANEL BORDER LINES */
+/*-----------------------------
+  PANEL BORDER LINES
+-----------------------------*/
 app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) {
   --border-color: #FFFFFF;
   background-clip: border-box;
@@ -310,14 +347,25 @@ app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)):after {
   border-right: 1px solid var(--border-color);
 }
 
-/* PANEL CORNER */
-/* panel-corner {
+/*-----------------------------
+  PANEL CORNERS
+-----------------------------*/
+panel-corners {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-} */
+}
+
+panel-corner-bottom-left,
+panel-corner-bottom-right,
+panel-corner-top-left,
+panel-corner-top-right {
+  width: 1rem;
+  height: 1rem;
+  position: absolute;
+}
 
 panel-corner-bottom-left,
 panel-corner-top-left {left: 0;}
@@ -330,15 +378,6 @@ panel-corner-top-right {top: 0;}
 
 panel-corner-bottom-left,
 panel-corner-bottom-right {bottom: 0;}
-
-panel-corner-bottom-left,
-panel-corner-bottom-right,
-panel-corner-top-left,
-panel-corner-top-right {
-  width: 1rem;
-  height: 1rem;
-  position: absolute;
-}
 
 panel-corner-bottom-left:after,
 panel-corner-bottom-left:before,

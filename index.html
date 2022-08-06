@@ -23,6 +23,10 @@
         app-panel:nth-of-type(3) panel-list {
           ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
           /* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
+          /* Pre-fetch JSON on mouseover to make the user think it's really quick. 
+          app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):mouseover {
+            ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
+          }*/
           console-log: "getting here";
           trigger: setup;
           var: startingLiCo {liCo};
@@ -159,7 +163,7 @@
     <app-container>
       <app-panel>
         <app-logo>D7460N</app-logo>
-        <app-class>middle</app-class>
+        <app-class></app-class>
         <app-user>First LastName</app-user>
       </app-panel>
       <app-panel>
@@ -297,10 +301,18 @@
 
       <app-panel>
         <panel-header>
-          <panel-title>SEARCH RESULTS</panel-title>
-          <app-pagination>
-            <span id="visibleCount"></span>/<span id="nonVisibleCount"></span>
-          </app-pagination>
+          <panel-title>SEARCH RESULTS
+            <app-count>
+              <span id="visibleCount"></span>/<span id="nonVisibleCount"></span>
+            </app-count>
+          </panel-title>
+          <list-item>
+            <list-cell><a href="#">01</a></list-cell>
+            <list-cell><a href="#">02</a></list-cell>
+            <list-cell><a href="#">03</a></list-cell>
+            <list-cell><a href="#">04</a></list-cell>
+            <list-cell><a href="#">05</a></list-cell>
+          </list-item>
         </panel-header>
         <list-item>
           <list-cell><input type="checkbox"></list-cell>
@@ -351,7 +363,7 @@
       </app-panel>
       <app-panel>
         <app-author>D7460N</app-author>
-        <app-class>center</app-class>
+        <app-class></app-class>
         <app-version>v0.001</app-version>
       </app-panel>
     </app-container>

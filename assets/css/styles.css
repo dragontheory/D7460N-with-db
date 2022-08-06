@@ -254,7 +254,7 @@ h2 {
 }
 
 a {
-  color: rgba(48,190,255,1.0);
+  color: rgba(48,190,255,0.6);
   text-decoration: none;
   transition: box-shadow 250ms, color 250ms;
 }

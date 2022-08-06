@@ -12,149 +12,227 @@
     <link type="image/svg+xml" rel="icon" href="assets/images/logo.svg" />
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
     <style type="text/acss">
-      /* Call data on body init */
-      body:init {
-        var: totalVisible 0,
-        totalNonVisible 0,
-        liCo 0,
-        startingLiCo 0;
-        app-panel:nth-of-type(3) panel-list list-item {var: liCo++;}
-        app-panel:nth-of-type(3) panel-list {trigger: countRows;}
-        app-panel:nth-of-type(3) panel-list {
-          ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
-          /* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
-          /* Pre-fetch JSON on mouseover to make the user think it's really quick. 
-          app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):mouseover {
-            ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
-          }*/
-          console-log: "getting here";
-          trigger: setup;
-          var: startingLiCo {liCo};
-          @each item in {JSON} {
-            var: liCo++;
-            render-before-end:
-            "<list-item data-co=\"{liCo}\" data-id=\"{item.id}\">
-              <list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
-              <list-cell>{item.id}</list-cell>
-              <list-cell>{item.name}</list-cell>
-              <list-cell>{item.username}</list-cell>
-              <list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell>
-              <list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell>
-            </list-item>";
-          }
-          trigger: countRows;
-        }
-      }
 
-      /* This is the custom event -
-      it gets used twice -
-      once when the page is drawn and again when the button is clicked */
-      app-panel:nth-of-type(3) panel-list:countRows {
-        @for n from {startingLiCo} + 1 to {liCo} {
-          @if completely-visible(list-item[data-co="{n}"]) {
-            var: totalVisible++;
-          } @else {
-            var: totalNonVisible++;
-          }
-        }
-        #visibleCount {
-          @if {totalVisible} < 10 {
-            render: 0{totalVisible};
-          } @else {
-            render: {totalVisible};
-          }
-        }
-        #nonVisibleCount {
-          @if {totalNonVisible} < 10 {
-            render: 0{totalNonVisible};
-          } @else {
-            render: {totalNonVisible};
-          }
-        }
-      }
+		/***
+		 * Call data on body init.
+		**/
+		body:init {
+			$totalVisible: 0;
+			$totalNonVisible: 0;
+			$liCo: 0;
+			$startingLiCo: 0;
+			app-panel:nth-of-type(3) panel-list list-item {
+				$liCo++;
+			}
+			app-panel:nth-of-type(3) panel-list {
+				trigger: countRows;
+			}
+			app-panel:nth-of-type(3) panel-list {
+				ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
+				/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
+				/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
+				app-panel:nth-of-type(3) panel-list list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
+				ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
+				}*/
+				console-log: "getting here";
+				trigger: setup;
+				$startingLiCo: $liCo;
+				@each $item in {JSON} {
+					$liCo++;
+					/* Pipe a plain ACSS HTML component. Pipe here would mean import component details, fill in the variables, and output to the page. */
+					render-before-end: "{|rowContent}";
+				}
 
-      /* Call data to app-panel:nth-of-type(4) */
-      app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-liCo}"):click {
-        var: currentUserID "{@data-id}";
-        ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json cache await;
-        var: item {JSON};
-        app-panel:nth-of-type(4) panel-list {
-          render: "<list-item><list-cell>ID</list-cell><list-cell>{item.id}</list-cell></list-item>
-                  <list-item><list-cell>name</list-cell><list-cell>{item.name}</list-cell></list-item>
-                  <list-item><list-cell>username</list-cell><list-cell>{item.username}</list-cell></list-item>
-                  <list-item><list-cell>website</list-cell><list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell></list-item>
-                  <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>
-                  <input id=\"userID\" type=\"hidden\" value=\"{item.id}\">";
-        }
-        run: {=
-          const dragonEvent = new Event('rowclicked', { bubbles: true });
-          o.obj.dispatchEvent(dragonEvent);
-        =};
-      }
+				trigger: countRows;
+			}
+		}
 
-      /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(2) panel-list:not-if-empty:observe {
-        body {add-class: nav;}
-        console-log: "Show NAV";
-      }
 
-      /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(2) panel-list:if-empty:observe {
-        body {remove-class: nav;}
-        console-log: "Hide NAV";
-      }
+		/***
+		 *	Plain ACSS HTML component. Using a component for the HTML means that you don't have to escape the double quotes, so it's cleaner.
+ 		 *	Note - rel="noopener" for untrusted link prevents a JS attack from the opening website.
+ 		**/
+		@component rowContent {
+			html {
+				<list-item data-co="{$liCo}" data-id="{$item.id}">
+				<list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
+				<list-cell>{$item.id}</list-cell>
+				<list-cell>{$item.name}</list-cell>
+				<list-cell>{$item.username}</list-cell>
+				<list-cell><a href="https://{$item.website}" target="_new" rel="noopener">{$item.website}</a></list-cell>
+				<list-cell><a href="mailto:{$item.email}" target="_new" rel="noopener">{$item.email}</a></list-cell>
+				</list-item>
+			}
+		}
 
-      /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(3) panel-list:not-if-empty:observe {
-        body {add-class: main;}
-        console-log: "Show MAIN";
-      }
 
-      /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(3) panel-list:if-empty:observe {
-        body {remove-class: main;}
-        app-panel:nth-of-type(3) {remove-attribute: style;}
-        console-log: "Hide MAIN";
-      }
+		/***
+		 * This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
+		**/
+		app-panel:nth-of-type(3) panel-list:countRows {
+			@for $n from $startingLiCo + 1 to $liCo {
+				@if completely-visible(list-item[data-co="{$n}"]) {
+					$totalVisible++;
+				} @else {
+					$totalNonVisible++;
+				}
+			}
+			#visibleCount {
+				@if $totalVisible < 10 {
+					render: "0{$totalVisible}";
+				} @else {
+					render: "{$totalVisible}";
+				}
+			}
+			#nonVisibleCount {
+				@if $totalNonVisible < 10 {
+					render: "0{$totalNonVisible}";
+				} @else {
+					render: "{$totalNonVisible}";
+				}
+			}
+		}
 
-      /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
-        body {add-class: aside;}
-        console-log: "Show ASIDE";
-      }
 
-      app-panel:nth-of-type(4) panel-list #userID:draw { {
-        app-panel:nth-of-type(3) panel-list list-item[data-id="{currentUserID}"] {
-	      take-class: .active scope(app-panel:nth-of-type(3) panel-list);
-        console-log: "Take MAIN .active";
-        }
-      }
+		/***
+		 * Call data to app-panel:nth-of-type(4).
+		**/
+		app-panel:nth-of-type(3) panel-list list-item:not-if-var($currentUserID "{@data-id}"):click {
+			$currentUserID: "{@data-id}";
+			ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json cache await;
+			$item: {JSON};
+			app-panel:nth-of-type(4) panel-list {
+				/* Pipe a plain ACSS HTML component. Pipe here would mean import component details, fill in the variables, and output to the page. */
+				render: "{|asideContent}";
+			}
+			run: {=
+				const dragonEvent = new Event('rowclicked', { bubbles: true });
+				o.obj.dispatchEvent(dragonEvent);
+			=};
+		}
 
-      /* app-panel:nth-of-type(4) panel-list:if-empty:observe{
-      app-panel:nth-of-type(3) panel-list list-item.active {
-        remove-class: .active;
-        console-log: "Remove LIST-ITEM .active";
-        }
-      } */
 
-      /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(4) panel-list:if-empty:observe {
-        var: currentUserID null;
-        body {remove-class: aside;}
-        console-log: "Hide ASIDE";
-        app-panel:nth-of-type(3) panel-list list-item.active {
-          remove-class: .active scope(app-panel:nth-of-type(3) panel-list);
-          console-log: "Remove MAIN LIST-ITEM .active";
-        }
-        app-panel:nth-of-type(3) {remove-attribute: style;}
-        console-log: "Remove MAIN size attribute";
-      }
+		/***
+		 *	Plain ACSS HTML component. Using a component for the HTML means that you don't have to escape the double quotes, so it's cleaner.
+ 		 *	Note - rel="noopener" for untrusted link prevents a JS attack from the opening website.
+ 		**/
+		@component asideContent {
+			html {
+				<list-item><list-cell>ID</list-cell><list-cell>{$item.id}</list-cell></list-item>
+				<list-item><list-cell>name</list-cell><list-cell>{$item.name}</list-cell></list-item>
+				<list-item><list-cell>username</list-cell><list-cell>{$item.username}</list-cell></list-item>
+				<list-item><list-cell>website</list-cell><list-cell><a href="https://{$item.website}" target="_new" rel="noopener">{$item.website}</a></list-cell></list-item>
+				<list-item><list-cell>email</list-cell><list-cell><a href="mailto:{$item.email}" target="_new" rel="noopener">{$item.email}</a></list-cell></list-item>
+				<input id="userID" type="hidden" value="{$item.id}">
+			}
+		}
 
-      close-panel:click,
-      app-panel:nth-of-type(3) panel-list list-item:if-var(currentUserID "{@data-liCo}"):click {
-        empty: app-panel:nth-of-type(4) panel-list;
-        console-log: "Empty panel-list to close panel";
-      }
+
+		/***
+		 * Show panels when there are children of panel-list.
+		**/
+		app-panel:nth-of-type(2) panel-list:not-if-empty:observe {
+			body {
+				add-class: .nav;
+			}
+			console-log: "Show NAV";
+		}
+
+
+		/***
+		 * Show panels when there are children of panel-list.
+		**/
+		app-panel:nth-of-type(2) panel-list:not-if-empty:observe {
+			body {
+				add-class: .nav;
+			}
+			console-log: "Show NAV";
+		}
+
+
+		/***
+		 * Show panels when there are children of panel-list.
+		**/
+		app-panel:nth-of-type(3) panel-list:not-if-empty:observe {
+			body {
+				add-class: main;
+			}
+			console-log: "Show MAIN";
+		}
+
+
+		/***
+		 * Hide panel when there are NO children of panel-list.
+		**/
+		app-panel:nth-of-type(3) panel-list:if-empty:observe {
+			body {
+				remove-class: main;
+			}
+			app-panel:nth-of-type(3) {
+				remove-attribute: style;
+			}
+			console-log: "Hide MAIN";
+		}
+
+
+		/***
+		 * Show panels when there are children of panel-list.
+		**/
+		app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
+			body {
+				add-class: aside;
+			}
+			console-log: "Show ASIDE";
+		}
+
+
+		/***
+		 *
+		*/
+		app-panel:nth-of-type(4) panel-list #userID:draw { {
+			app-panel:nth-of-type(3) panel-list list-item[data-id="{$currentUserID}"] {
+				take-class: .active scope(app-panel:nth-of-type(3) panel-list);
+				console-log: "Take MAIN .active";
+			}
+		}
+
+
+		/* app-panel:nth-of-type(4) panel-list:if-empty:observe{
+			app-panel:nth-of-type(3) panel-list list-item.active {
+				remove-class: .active;
+				console-log: "Remove LIST-ITEM .active";
+			}
+		} */
+
+
+		/***
+		 * Hide panel when there are NO children of panel-list.
+		**/
+		app-panel:nth-of-type(4) panel-list:if-empty:observe {
+			$currentUserID: null;
+			body {
+				remove-class: aside;
+			}
+			console-log: "Hide ASIDE";
+			app-panel:nth-of-type(3) panel-list list-item.active {
+				remove-class: .active scope(app-panel:nth-of-type(3) panel-list);
+				console-log: "Remove MAIN LIST-ITEM .active";
+			}
+			app-panel:nth-of-type(3) {
+				remove-attribute: style;
+			}
+			console-log: "Remove MAIN size attribute";
+		}
+
+
+		/***
+		 * Close the panel when the close button or the same row is clicked. Empty the aside panel.
+		**/
+		close-panel:click,
+		app-panel:nth-of-type(3) panel-list list-item:if-var($currentUserID "{@data-id}"):click {
+			empty: app-panel:nth-of-type(4) panel-list;
+			console-log: "Empty panel-list to close panel";
+		}
     </style>
   </head>
 
@@ -368,7 +446,7 @@
       </app-panel>
     </app-container>
 
-    <script type="text/javascript" charset="utf-8" src="assets/js/activecss-dev-2-11-0.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="assets/js/activecss-core-dev-2-11-0.js"></script>
     <script type="text/javascript" charset="utf-8" src="assets/js/scripts.js"></script>
     <noscript><style>body {opacity: 1.0;}</style></noscript>
   </body>

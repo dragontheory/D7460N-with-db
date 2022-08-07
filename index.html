@@ -334,13 +334,77 @@
       </app-panel>
       <app-panel>
         <panel-header>
-          <panel-title>ASIDE</panel-title>
+          <panel-title>PROFILE : :</panel-title>
           <close-panel title="Close panel">[ x ]</close-panel>
         </panel-header>
-        <panel-list></panel-list>
-        <app-panel-scroll>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-        </app-panel-scroll>
+        <profile-avatar>
+          <img src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200" alt="avatar" />
+        </profile-avatar>
+        <panel-list>
+          <list-item>
+            <list-cell>ID</list-cell>
+            <list-cell>
+              <input type="text" id="id" name="id" value="1" required />
+            </list-cell>
+          </list-item>
+          <list-item>
+            <list-cell>Name</list-cell>
+            <list-cell>
+              <input type="text" id="id" name="name" value="A-Bomb" required />
+            </list-cell>
+          </list-item>
+          <list-item>
+            <list-cell>Slug</list-cell>
+            <list-cell>
+              <input type="text" id="id" name="slug" value="1-a-bomb" required />
+            </list-cell>
+          </list-item>
+          </panel-list>
+          <panel-header>
+            <panel-title>POWER STATS : :</panel-title>
+            <panel-meta>[ 843 ]</panel-meta>
+          </panel-header>
+          <panel-list>
+            <list-item>
+              <list-cell>Intelligence</list-cell>
+              <list-cell>
+                <input type="text" id="intelligence" name="intelligence" value="38" required />
+              </list-cell>
+            </list-item>
+            <list-item>
+              <list-cell>Strength</list-cell>
+              <list-cell>
+                <input type="text" id="strength" name="strength" value="100" required />
+              </list-cell>
+            </list-item>
+            <list-item>
+              <list-cell>Speed</list-cell>
+              <list-cell>
+                <input type="text" id="speed" name="speed" value="17" required />
+              </list-cell>
+            </list-item>
+            <list-item>
+              <list-cell>Durability</list-cell>
+              <list-cell>
+                <input type="text" id="durability" name="durability" value="80" required />
+              </list-cell>
+            </list-item>
+            <list-item>
+              <list-cell>Power</list-cell>
+              <list-cell>
+                <input type="text" id="power" name="power" value="24" required />
+              </list-cell>
+            </list-item>
+            <list-item>
+              <list-cell>Combat</list-cell>
+              <list-cell>
+                <input type="text" id="combat" name="combat" value="64" required />
+              </list-cell>
+            </list-item>
+          </panel-list>
+          <input id="userID" type="hidden" value="8313856133">
+        </panel-list>
+
         <panel-corner-top-left></panel-corner-top-left>
         <panel-corner-top-right></panel-corner-top-right>
         <panel-corner-bottom-left></panel-corner-bottom-left>
@@ -348,10 +412,9 @@
       </app-panel>
       <app-panel>
         <panel-header>
-          <panel-title>ASIDE 2</panel-title>
+          <panel-title>META : :</panel-title>
           <close-panel title="Close panel">[ x ]</close-panel>
         </panel-header>
-        <small>Header Subtitle</small>
         <panel-list></panel-list>
         <app-panel-scroll>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>

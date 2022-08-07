@@ -28,6 +28,7 @@
 			trigger: countRows;
 		}
 		app-panel:nth-of-type(3) panel-list {
+/*			ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;*/
 			ajax: "https://activecss.org/get-supes.php" get json await;
 			/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
 			/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
@@ -54,16 +55,23 @@
  	**/
 
 	/* ID, alias, real name, current status, current org/affiliation, current location, power rating/rank? */
+/*
+				<list-cell>{$item.id}</list-cell>
+				<list-cell>{$item.name}</list-cell>
+				<list-cell>{$item.username}</list-cell>
+				<list-cell><a href="https://{$item.website}" target="_new" rel="noopener">{$item.website}</a></list-cell>
+				<list-cell><a href="mailto:{$item.email}" target="_new" rel="noopener">{$item.email}</a></list-cell>
+*/
 	@component rowContent {
 		html {
 			<list-item data-co="{$liCo}" data-id="{$item.id}">
-			<list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
-			<list-cell>{$item.id}</list-cell>
-			<list-cell>{$item.name}</list-cell>
-			<list-cell>{$item.biography.fullName}</list-cell>
-			<list-cell>{$item.biography.alignment}</list-cell>
-			<list-cell>{$item.connections.groupAffiliation}</list-cell>
-			<list-cell>{$item.powerstats.power}</list-cell>
+				<list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
+				<list-cell>{$item.id}</list-cell>
+				<list-cell>{$item.name}</list-cell>
+				<list-cell>{$item.biography.fullName}</list-cell>
+				<list-cell>{$item.biography.alignment}</list-cell>
+				<list-cell>{$item.connections.groupAffiliation}</list-cell>
+				<list-cell>{$item.powerstats.power}</list-cell>
 			</list-item>
 		}
 	}
@@ -102,8 +110,9 @@
 	**/
 	app-panel:nth-of-type(3) panel-list list-item:not-if-var($currentUserID "{@data-id}"):click {
 		$currentUserID: "{@data-id}";
-		ajax: "https://activecss.org/get-supes.php?id={@data-id}" get json cache await;
-		$item: {JSON}.0.data;
+/*		ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json cache await;*/
+		ajax: "https://activecss.org/get-supe.php?id={@data-id}" get json cache await;
+		$item: {JSON}.data[0];
 		app-panel:nth-of-type(4) panel-list {
 			/* Pipe a plain ACSS HTML component. Pipe here would mean import component details, fill in the variables, and output to the page. */
 			render: "{|asideContent}";
@@ -119,13 +128,22 @@
 	 *	Plain ACSS HTML component. Using a component for the HTML means that you don't have to escape the double quotes, so it's cleaner.
 	 *	Note - rel="noopener" for untrusted link prevents a JS attack from the opening website.
 	**/
-	@component asideContent {
-		html {
+/*
 			<list-item><list-cell>ID</list-cell><list-cell>{$item.id}</list-cell></list-item>
 			<list-item><list-cell>name</list-cell><list-cell>{$item.name}</list-cell></list-item>
 			<list-item><list-cell>username</list-cell><list-cell>{$item.username}</list-cell></list-item>
 			<list-item><list-cell>website</list-cell><list-cell><a href="https://{$item.website}" target="_new" rel="noopener">{$item.website}</a></list-cell></list-item>
 			<list-item><list-cell>email</list-cell><list-cell><a href="mailto:{$item.email}" target="_new" rel="noopener">{$item.email}</a></list-cell></list-item>
+*/
+	@component asideContent {
+		html {
+			<list-item><list-cell>ID</list-cell><list-cell>{$item.id}</list-cell></list-item>
+			<list-item><list-cell>alias</list-cell><list-cell>{$item.name}</list-cell></list-item>
+			<list-item><list-cell>name</list-cell><list-cell>{$item.biography.fullName}</list-cell></list-item>
+			<list-item><list-cell>alignment</list-cell><list-cell>{$item.biography.alignment}</list-cell></list-item>
+			<list-item><list-cell>affiliation</list-cell><list-cell>{$item.connections.groupAffiliation}</list-cell></list-item>
+			<list-item><list-cell>power</list-cell><list-cell>{$item.powerstats.power}</list-cell></list-item>
+
 			<input id="userID" type="hidden" value="{$item.id}">
 		}
 	}
@@ -398,6 +416,10 @@
         <list-item>
           <list-cell><input type="checkbox"></list-cell>
           <list-cell>ID</list-cell>
+<!--          <list-cell>Name</list-cell>
+          <list-cell>Username</list-cell>
+          <list-cell>Website</list-cell>
+          <list-cell>Email</list-cell>-->
           <list-cell>Alias</list-cell>
           <list-cell>Full name</list-cell>
           <list-cell>Alignment</list-cell>

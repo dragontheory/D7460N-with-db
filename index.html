@@ -14,13 +14,73 @@
     <style type="text/acss">
 
 	/***
-	 * Call data on body init.
+	 * Developer defined variables for setting up data schema.
 	**/
-	body:init {
+	body:preInit {
+		/* Define API */
+		$rowPopulationURL: "https://activecss.org/get-supes.php";
+		$asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
+		$apiSchema: {
+			id: { displayTitle: "ID", apiLocation: "id" },
+			slug: { displayTitle: "", apiLocation: "slug" },
+			alias: { displayTitle: "Alias", apiLocation: "name" },
+			name: { displayTitle: "Real name", apiLocation: "biography.fullName" },
+			alignment: { displayTitle: "Status", apiLocation: "biography.alignment" },
+			affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation" },
+			power: { displayTitle: "Power", apiLocation: "powerstats.power" },
+			intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence" },
+			strength: { displayTitle: "Strength", apiLocation: "powerstats.strength" },
+			speed: { displayTitle: "Speed", apiLocation: "powerstats.speed" },
+			durability: { displayTitle: "Durability", apiLocation: "powerstats.durability" },
+			combat: { displayTitle: "Combat", apiLocation: "powerstats.combat" },
+			gender: { displayTitle: "Gender", apiLocation: "appearance.gender" },
+			race: { displayTitle: "Race", apiLocation: "appearance.race" },
+			heightInches: { displayTitle: "Height", apiLocation: "appearance.height[0]" },
+			heightCm: { displayTitle: "Height", apiLocation: "appearance.height[1]" },
+			weightPounds: { displayTitle: "Weight", apiLocation: "appearance.weight[0]" },
+			weightKilos: { displayTitle: "Weight", apiLocation: "appearance.weight[1]" },
+			eyeColor: { displayTitle: "Eye color", apiLocation: "appearance.eyeColor" },
+			hairColor: { displayTitle: "Hair color", apiLocation: "appearance.hairColor" },
+			alterEgos: { displayTitle: "Alter egos", apiLocation: "biography.alterEgos" },
+			placeOfBirth: { displayTitle: "Place of birth", apiLocation: "biography.placeOfBirth" },
+			firstAppearance: { displayTitle: "First appearance", apiLocation: "biography.firstAppearance" },
+			publisher: { displayTitle: "Publisher", apiLocation: "biography.publisher" },
+			occupation: { displayTitle: "Occupation", apiLocation: "work.occupation" },
+			base: { displayTitle: "Base", apiLocation: "work.base" },
+			relatives: { displayTitle: "Relatives", apiLocation: "connections.relatives" },
+			image_xs: { displayTitle: "Extra small image", apiLocation: "images.xs" },
+			image_sm: { displayTitle: "Small image", apiLocation: "images.sm" },
+			image_md: { displayTitle: "Medium image", apiLocation: "images.md" },
+			image_lg: { displayTitle: "Large image", apiLocation: "images.lg" },
+		};
+
+		/* Define which fields to display in each row. */
+		$rowFields: [ 'id', 'alias', 'name', 'alignment', 'affiliations', 'power' ];
+
+		/* Define which fields to display in the aside. */
+		$asideFields: [ 'id', 'alias', 'name', 'alignment', 'affiliations', 'power', 'intelligence', 'strength', 'speed', 'durability', 'combat',
+			'gender', 'race', 'heightInches', 'heightCm', 'weightPounds', 'weightKilos', 'eyeColor', 'hairColor', 'alterEgos', 'placeOfBirth',
+			'firstAppearance', 'publisher', 'occupation', 'base', 'relatives', 'image_xs', 'image_sm', 'image_md', 'image_lg'
+		];
+	}
+
+
+	/***
+	 * Functionality variables for the app prior to initialization.
+	**/
+	body:preInit {
 		$totalVisible: 0;
 		$totalNonVisible: 0;
 		$liCo: 0;
 		$startingLiCo: 0;
+	}
+
+
+	/***
+	 * Call data on body init.
+	**/
+
+	body:init {
 		app-panel:nth-of-type(3) panel-list list-item {
 			$liCo++;
 		}
@@ -28,8 +88,7 @@
 			trigger: countRows;
 		}
 		app-panel:nth-of-type(3) panel-list {
-/*			ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;*/
-			ajax: "https://activecss.org/get-supes.php" get json await;
+			ajax: "{$rowPopulationURL}" get json await;
 			/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
 			/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
 			app-panel:nth-of-type(3) panel-list list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
@@ -40,8 +99,12 @@
 			$startingLiCo: $liCo;
 			@each $item in {JSON}.data {
 				$liCo++;
-				/* Pipe a plain ACSS HTML component. Pipe here would mean import component details, fill in the variables, and output to the page. */
-				render-before-end: "{|rowContent}";
+				$rowHTML: "<list-item data-co='{$liCo}' data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+				@each $fieldKey in $rowFields {
+					$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
+				}
+				$rowHTML: $rowHTML + "</list-item>";
+				render-before-end: "{$rowHTML}";
 			}
 
 			trigger: countRows;
@@ -49,31 +112,12 @@
 	}
 
 
-	/***
-	 *	Plain ACSS HTML component. Using a component for the HTML means that you don't have to escape the double quotes, so it's cleaner.
- 	 *	Note - rel="noopener" for untrusted link prevents a JS attack from the opening website.
- 	**/
-
-	/* ID, alias, real name, current status, current org/affiliation, current location, power rating/rank? */
-/*
-				<list-cell>{$item.id}</list-cell>
-				<list-cell>{$item.name}</list-cell>
-				<list-cell>{$item.username}</list-cell>
-				<list-cell><a href="https://{$item.website}" target="_new" rel="noopener">{$item.website}</a></list-cell>
-				<list-cell><a href="mailto:{$item.email}" target="_new" rel="noopener">{$item.email}</a></list-cell>
-*/
-	@component rowContent {
-		html {
-			<list-item data-co="{$liCo}" data-id="{$item.id}">
-				<list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
-				<list-cell>{$item.id}</list-cell>
-				<list-cell>{$item.name}</list-cell>
-				<list-cell>{$item.biography.fullName}</list-cell>
-				<list-cell>{$item.biography.alignment}</list-cell>
-				<list-cell>{$item.connections.groupAffiliation}</list-cell>
-				<list-cell>{$item.powerstats.power}</list-cell>
-			</list-item>
+	list-headings:draw {
+		$headingsHTML: "<list-cell><input type='checkbox'></list-cell>";
+		@each $fieldKey in $rowFields {
+			$headingsHTML: $headingsHTML + "<list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>";
 		}
+		render-replace: "{$headingsHTML}";
 	}
 
 
@@ -110,42 +154,21 @@
 	**/
 	app-panel:nth-of-type(3) panel-list list-item:not-if-var($currentUserID "{@data-id}"):click {
 		$currentUserID: "{@data-id}";
-/*		ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json cache await;*/
-		ajax: "https://activecss.org/get-supe.php?id={@data-id}" get json cache await;
+		ajax: "{$asidePopulationURL}" get json cache await;
 		$item: {JSON}.data[0];
 		app-panel:nth-of-type(4) panel-list {
-			/* Pipe a plain ACSS HTML component. Pipe here would mean import component details, fill in the variables, and output to the page. */
-			render: "{|asideContent}";
+			$asideHTML: "";
+			@each $fieldKey in $asideFields {
+				$asideHTML: $asideHTML + 
+				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+				"<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell></list-item>";
+			}
+			render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
 		}
 		run: {=
 			const dragonEvent = new Event('rowclicked', { bubbles: true });
 			o.obj.dispatchEvent(dragonEvent);
 		=};
-	}
-
-
-	/***
-	 *	Plain ACSS HTML component. Using a component for the HTML means that you don't have to escape the double quotes, so it's cleaner.
-	 *	Note - rel="noopener" for untrusted link prevents a JS attack from the opening website.
-	**/
-/*
-			<list-item><list-cell>ID</list-cell><list-cell>{$item.id}</list-cell></list-item>
-			<list-item><list-cell>name</list-cell><list-cell>{$item.name}</list-cell></list-item>
-			<list-item><list-cell>username</list-cell><list-cell>{$item.username}</list-cell></list-item>
-			<list-item><list-cell>website</list-cell><list-cell><a href="https://{$item.website}" target="_new" rel="noopener">{$item.website}</a></list-cell></list-item>
-			<list-item><list-cell>email</list-cell><list-cell><a href="mailto:{$item.email}" target="_new" rel="noopener">{$item.email}</a></list-cell></list-item>
-*/
-	@component asideContent {
-		html {
-			<list-item><list-cell>ID</list-cell><list-cell>{$item.id}</list-cell></list-item>
-			<list-item><list-cell>alias</list-cell><list-cell>{$item.name}</list-cell></list-item>
-			<list-item><list-cell>name</list-cell><list-cell>{$item.biography.fullName}</list-cell></list-item>
-			<list-item><list-cell>alignment</list-cell><list-cell>{$item.biography.alignment}</list-cell></list-item>
-			<list-item><list-cell>affiliation</list-cell><list-cell>{$item.connections.groupAffiliation}</list-cell></list-item>
-			<list-item><list-cell>power</list-cell><list-cell>{$item.powerstats.power}</list-cell></list-item>
-
-			<input id="userID" type="hidden" value="{$item.id}">
-		}
 	}
 
 
@@ -414,17 +437,7 @@
           </list-item>
         </panel-header>
         <list-item>
-          <list-cell><input type="checkbox"></list-cell>
-          <list-cell>ID</list-cell>
-<!--          <list-cell>Name</list-cell>
-          <list-cell>Username</list-cell>
-          <list-cell>Website</list-cell>
-          <list-cell>Email</list-cell>-->
-          <list-cell>Alias</list-cell>
-          <list-cell>Full name</list-cell>
-          <list-cell>Alignment</list-cell>
-          <list-cell>Group affiliation</list-cell>
-          <list-cell>Power</list-cell>
+          <list-headings></list-headings>
         </list-item>
         <panel-list></panel-list>
         <br />

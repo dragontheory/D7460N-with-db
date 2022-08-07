@@ -560,7 +560,7 @@ _a.CreateCommand = o => {
 
 	flyCommands[funcName] = '{=' + funcStart + funcContent.substr(2);
 
-	_a[funcName] = new Function('o', 'scopedProxy', 'privVarScopes', 'flyCommands', '_run', 'escapeHTML', 'unEscapeHTML', newFunc);		// jshint ignore:line
+	_a[funcName] = new Function('o', 'scopedProxy', 'privVarScopes', 'flyCommands', '_run', 'escapeHTML', 'unEscapeHTML', 'getVar', newFunc);		// jshint ignore:line
 };
 
 _a.CreateConditional = o => {
@@ -597,7 +597,7 @@ _a.CreateConditional = o => {
 
 	flyConds[funcName] = '{=' + funcStart + funcContent.substr(2);
 
-	_c[funcName] = new Function('o', 'scopedProxy', 'privVarScopes', 'flyConds', '_run', 'escapeHTML', 'unEscapeHTML', newFunc);		// jshint ignore:line
+	_c[funcName] = new Function('o', 'scopedProxy', 'privVarScopes', 'flyConds', '_run', 'escapeHTML', 'unEscapeHTML', 'getVar', newFunc);		// jshint ignore:line
 };
 
 _a.CreateElement = o => {
@@ -696,7 +696,7 @@ _a.CreateElement = o => {
 	createTagJS +=
 		'};' +
 		'customElements.define(\'' + tag + '\', ActiveCSS.customHTMLElements.' + customTagClass + ');';
-	Function('_handleEvents, _componentDetails, _handleObserveEvents, escapeHTML, unEscapeHTML', '"use strict";' + createTagJS)(_handleEvents, _componentDetails, _handleObserveEvents, escapeHTML, unEscapeHTML);	// jshint ignore:line
+	Function('_handleEvents, _componentDetails, _handleObserveEvents, escapeHTML, unEscapeHTML, getVar', '"use strict";' + createTagJS)(_handleEvents, _componentDetails, _handleObserveEvents, escapeHTML, unEscapeHTML, getVar);	// jshint ignore:line
 };
 
 _a.DocumentTitle = o => {
@@ -2694,15 +2694,31 @@ const _handleFunc = function(o, delayActiveID=null, runButElNotThere=false) {
 
 	if (['Var', 'VarDelete', 'Func', 'ConsoleLog'].indexOf(o.func) !== -1 || o.isDollarVar) {
 		// Special handling for var commands, as each value after the variable name is a JavaScript expression, but not within {= =}, to make it quicker to type.
-		o.actValSing = o.actValSing.replace(/__ACSS_int_com/g, ',');
+		o.actValSing = _unEscNoVars(o.actValSing.replace(/__ACSS_int_com/g, ','));
 
 	} else if (['Run', 'Eval'].indexOf(o.func) !== -1) {
 		// Leave command intact. No variable subsitution other than the use of vars.
-		o.actVal = o.actValSing;
+		o.actVal = _unEscNoVars(o.actValSing);
 	} else {
 		let strObj = _handleVars([ 'rand', ((!['CreateCommand', 'CreateConditional'].includes(o.func)) ? 'expr' : null), 'attrs', 'strings', 'scoped' ],
 			{
 				str: o.actValSing,
+				func: o.func,
+				o,
+				obj: o.obj,
+				secSelObj: o.secSelObj,
+				varScope: o.varScope
+			}
+		);
+		o.actVal = _resolveVars(strObj.str, strObj.ref, o.func);
+
+		if (!o.func.startsWith('Render')) o.actVal = _unEscNoVars(o.actVal);
+
+		// Handle any additional attributes now requested from a prior variable assignment. This data is in the HTML already, so there is no security risk,
+		// although it could get weird if user content contains an attribute reference. So to sort that out, it is escaped prior to this in _replaceAttrs.
+		strObj = _handleVars([ 'attrs' ],
+			{
+				str: o.actVal,
 				func: o.func,
 				o,
 				obj: o.obj,
@@ -4512,7 +4528,7 @@ const _run = (str, varScope, o) => {
 	});
 
 	try {
-		return Function('scopedProxy, o, _safeTags, _unSafeTags, _escNoVars, escapeHTML, unEscapeHTML', funky)(scopedProxy, o, _safeTags, _unSafeTags, _escNoVars, escapeHTML, unEscapeHTML);		// jshint ignore:line
+		return Function('scopedProxy, o, _safeTags, _unSafeTags, _escNoVars, escapeHTML, unEscapeHTML, getVar', funky)(scopedProxy, o, _safeTags, _unSafeTags, _escNoVars, escapeHTML, unEscapeHTML, getVar);		// jshint ignore:line
 	} catch (err) {
 		_err('Function syntax error (' + err + '): ' + funky, o);
 	}
@@ -5409,7 +5425,7 @@ const _runIf = (parsedStatement, originalStatement, ifObj) => {
 	
 	let res;
 	try {
-		res = Function('scopedProxy, ifObj, _runAtIfConds, escapeHTML, unEscapeHTML', '"use strict";return (' + readyStatement + ');')(scopedProxy, ifObj, _runAtIfConds, escapeHTML, unEscapeHTML);		// jshint ignore:line
+		res = Function('scopedProxy, ifObj, _runAtIfConds, escapeHTML, unEscapeHTML, getVar', '"use strict";return (' + readyStatement + ');')(scopedProxy, ifObj, _runAtIfConds, escapeHTML, unEscapeHTML, getVar);		// jshint ignore:line
 	} catch (err) {
 		console.log('Active CSS error: Error in evaluating @if statement, "' + originalStatement + '", check syntax.');
 		console.log('Internal expression evaluated: ' + readyStatement, 'error:', err);
@@ -8208,6 +8224,7 @@ const _replaceAttrs = (obj, sel, secSelObj=null, o=null, func='', varScope=null,
 	// For this to be totally safe, we escape the contents of the attribute before inserting.
 	if (!sel) return '';
 	if (sel.indexOf('{@') !== -1) {
+		sel = sel.replace(/__acssVAssigned\%\%/g, '');
 		sel = sel.replace(/\{\@(\@?[^\t\n\f \/>"'=(?!\{)]+)\}/gi, function(_, wot) {
 			let getProperty = false;
 			if (wot.startsWith('@')) {
@@ -8267,7 +8284,13 @@ const _replaceAttrs = (obj, sel, secSelObj=null, o=null, func='', varScope=null,
 					}
 				}
 			}
-			return '';	// More useful to return an empty string. '{@' + wot + '>';
+			if (func == 'Var') {
+				// Assume it isn't ready to be evaluated. Useful for presetting on variable assignment. Encrypt a bit, but only to stop someone accidentally typing
+				// it in user content - there is no security risk with this, because any attribute referenced is on the page already.
+				return '{@__acssVAssigned%%' + wot + '}';
+			} else {
+				return '';	// More useful to return an empty string. '{@' + wot + '>';
+			}
 		});
 	}
 	function checkAttrProp(el, wot, getProperty, func, varReplacementRef) {
@@ -8388,10 +8411,10 @@ const _replaceJSExpression = (sel, realVal=false, quoteIfString=false, varScope=
 		}
 
 		try {
-			res = Function('scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML', '"use strict";return (' + wot + ');')(scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML);		// jshint ignore:line
+			res = Function('scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar', '"use strict";return (' + wot + ');')(scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar);		// jshint ignore:line
 		} catch (err) {
 			try {
-				res = Function('scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML', '"use strict";return ("' + wot.replace(/"/gm, '\\"') + '");')(scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML);		// jshint ignore:line
+				res = Function('scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar', '"use strict";return ("' + wot.replace(/"/gm, '\\"') + '");')(scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar);		// jshint ignore:line
 			} catch (err) {
 				// Try as a string.
 				console.log('JavaScript expression error (' + err + '): ' + sel + '. Is this a string variable that needs double-quotes?');
@@ -12313,6 +12336,8 @@ const escapeHTML = str => _safeTags(str);
 const escQuotes = str => {
 	return str.replace(/"/gm, "&quot;");
 };
+
+const getVar = (baseVar, str) => _get(baseVar, str);
 
 const unEscapeHTML = str => _unSafeTags(str);
 

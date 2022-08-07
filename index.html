@@ -21,47 +21,47 @@
 		$rowPopulationURL: "https://activecss.org/get-supes.php";
 		$asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
 		$apiSchema: {
-			id: { displayTitle: "ID", apiLocation: "id" },
-			slug: { displayTitle: "", apiLocation: "slug" },
-			alias: { displayTitle: "Alias", apiLocation: "name" },
-			name: { displayTitle: "Real name", apiLocation: "biography.fullName" },
-			alignment: { displayTitle: "Status", apiLocation: "biography.alignment" },
-			affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation" },
-			power: { displayTitle: "Power", apiLocation: "powerstats.power" },
-			intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence" },
-			strength: { displayTitle: "Strength", apiLocation: "powerstats.strength" },
-			speed: { displayTitle: "Speed", apiLocation: "powerstats.speed" },
-			durability: { displayTitle: "Durability", apiLocation: "powerstats.durability" },
-			combat: { displayTitle: "Combat", apiLocation: "powerstats.combat" },
-			gender: { displayTitle: "Gender", apiLocation: "appearance.gender" },
-			race: { displayTitle: "Race", apiLocation: "appearance.race" },
-			heightInches: { displayTitle: "Height", apiLocation: "appearance.height[0]" },
-			heightCm: { displayTitle: "Height", apiLocation: "appearance.height[1]" },
-			weightPounds: { displayTitle: "Weight", apiLocation: "appearance.weight[0]" },
-			weightKilos: { displayTitle: "Weight", apiLocation: "appearance.weight[1]" },
-			eyeColor: { displayTitle: "Eye color", apiLocation: "appearance.eyeColor" },
-			hairColor: { displayTitle: "Hair color", apiLocation: "appearance.hairColor" },
-			alterEgos: { displayTitle: "Alter egos", apiLocation: "biography.alterEgos" },
-			placeOfBirth: { displayTitle: "Place of birth", apiLocation: "biography.placeOfBirth" },
-			firstAppearance: { displayTitle: "First appearance", apiLocation: "biography.firstAppearance" },
-			publisher: { displayTitle: "Publisher", apiLocation: "biography.publisher" },
-			occupation: { displayTitle: "Occupation", apiLocation: "work.occupation" },
-			base: { displayTitle: "Base", apiLocation: "work.base" },
-			relatives: { displayTitle: "Relatives", apiLocation: "connections.relatives" },
-			image_xs: { displayTitle: "Extra small image", apiLocation: "images.xs" },
-			image_sm: { displayTitle: "Small image", apiLocation: "images.sm" },
-			image_md: { displayTitle: "Medium image", apiLocation: "images.md" },
-			image_lg: { displayTitle: "Large image", apiLocation: "images.lg" },
+			id: { displayTitle: "ID", apiLocation: "id", fieldType: "text" },
+			slug: { displayTitle: "Slug", apiLocation: "slug", fieldType: "text" },
+			alias: { displayTitle: "Name", apiLocation: "name", fieldType: "text" },
+			name: { displayTitle: "Real name", apiLocation: "biography.fullName", fieldType: "text" },
+			alignment: { displayTitle: "Status", apiLocation: "biography.alignment", fieldType: "text" },
+			affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation", fieldType: "text" },
+			power: { displayTitle: "Power", apiLocation: "powerstats.power", fieldType: "text" },
+			intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence", fieldType: "text" },
+			strength: { displayTitle: "Strength", apiLocation: "powerstats.strength", fieldType: "text" },
+			speed: { displayTitle: "Speed", apiLocation: "powerstats.speed", fieldType: "text" },
+			durability: { displayTitle: "Durability", apiLocation: "powerstats.durability", fieldType: "text" },
+			combat: { displayTitle: "Combat", apiLocation: "powerstats.combat", fieldType: "text" },
+			gender: { displayTitle: "Gender", apiLocation: "appearance.gender", fieldType: "text" },
+			race: { displayTitle: "Race", apiLocation: "appearance.race", fieldType: "text" },
+			heightInches: { displayTitle: "Height", apiLocation: "appearance.height[0]", fieldType: "text" },
+			heightCm: { displayTitle: "Height", apiLocation: "appearance.height[1]", fieldType: "text" },
+			weightPounds: { displayTitle: "Weight", apiLocation: "appearance.weight[0]", fieldType: "text" },
+			weightKilos: { displayTitle: "Weight", apiLocation: "appearance.weight[1]", fieldType: "text" },
+			eyeColor: { displayTitle: "Eye color", apiLocation: "appearance.eyeColor", fieldType: "text" },
+			hairColor: { displayTitle: "Hair color", apiLocation: "appearance.hairColor", fieldType: "text" },
+			alterEgos: { displayTitle: "Alter egos", apiLocation: "biography.alterEgos", fieldType: "text" },
+			placeOfBirth: { displayTitle: "Place of birth", apiLocation: "biography.placeOfBirth", fieldType: "text" },
+			firstAppearance: { displayTitle: "First appearance", apiLocation: "biography.firstAppearance", fieldType: "text" },
+			publisher: { displayTitle: "Publisher", apiLocation: "biography.publisher", fieldType: "text" },
+			occupation: { displayTitle: "Occupation", apiLocation: "work.occupation", fieldType: "text" },
+			base: { displayTitle: "Base", apiLocation: "work.base", fieldType: "text" },
+			relatives: { displayTitle: "Relatives", apiLocation: "connections.relatives", fieldType: "text" },
+			image_xs: { displayTitle: "Extra small image", apiLocation: "images.xs", fieldType: "text" },
+			image_sm: { displayTitle: "Small image", apiLocation: "images.sm", fieldType: "text" },
+			image_md: { displayTitle: "Medium image", apiLocation: "images.md", fieldType: "text" },
+			image_lg: { displayTitle: "Large image", apiLocation: "images.lg", fieldType: "text" },
 		};
 
 		/* Define which fields to display in each row. */
 		$rowFields: [ 'id', 'alias', 'name', 'alignment', 'affiliations', 'power' ];
 
-		/* Define which fields to display in the aside. */
-		$asideFields: [ 'id', 'alias', 'name', 'alignment', 'affiliations', 'power', 'intelligence', 'strength', 'speed', 'durability', 'combat',
-			'gender', 'race', 'heightInches', 'heightCm', 'weightPounds', 'weightKilos', 'eyeColor', 'hairColor', 'alterEgos', 'placeOfBirth',
-			'firstAppearance', 'publisher', 'occupation', 'base', 'relatives', 'image_xs', 'image_sm', 'image_md', 'image_lg'
-		];
+		/* Define which fields to display in the top profile panel. */
+		$profileFields: [ 'id', 'alias', 'slug'];
+
+		/* Define which fields to display in the bottom profile panel. */
+		$detailFields: [ 'intelligence', 'strength', 'speed', 'durability', 'power' ];
 	}
 
 
@@ -159,12 +159,25 @@
 		$currentUserID: "{@data-id}";
 		ajax: "{$asidePopulationURL}" get json cache await;
 		$item: {JSON}.data[0];
-		app-panel:nth-of-type(4) panel-list {
+		profile-avatar {
+			$avatarHTML: "<img src='" + getVar($item, $apiSchema['image_sm'].apiLocation) + "' alt='avatar' />";
+			render: "{$avatarHTML}";
+		}
+		app-panel:nth-of-type(4) panel-list:first-of-type {
 			$asideHTML: "";
-			@each $fieldKey in $asideFields {
+			@each $fieldKey in $profileFields {
 				$asideHTML: $asideHTML + 
 				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
-				"<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell></list-item>";
+				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+			}
+			render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
+		}
+		app-panel:nth-of-type(4) panel-list:nth-of-type(2) {
+			$asideHTML: "";
+			@each $fieldKey in $detailFields {
+				$asideHTML: $asideHTML + 
+				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
 			}
 			render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
 		}
@@ -178,7 +191,7 @@
 	/***
 	 * Show panels when there are children of panel-list.
 	**/
-	app-panel:nth-of-type(2) panel-list:not-if-empty:observe {
+	app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
 		body {
 			add-class: .nav;
 		}
@@ -189,7 +202,7 @@
 	/***
 	 * Show panels when there are children of panel-list.
 	**/
-	app-panel:nth-of-type(2) panel-list:not-if-empty:observe {
+	app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
 		body {
 			add-class: .nav;
 		}
@@ -200,7 +213,7 @@
 	/***
 	 * Show panels when there are children of panel-list.
 	**/
-	app-panel:nth-of-type(3) panel-list:not-if-empty:observe {
+	app-panel:nth-of-type(3) panel-list:not-if-empty-trimmed:observe {
 		body {
 			add-class: main;
 		}
@@ -211,7 +224,7 @@
 	/***
 	 * Hide panel when there are NO children of panel-list.
 	**/
-	app-panel:nth-of-type(3) panel-list:if-empty:observe {
+	app-panel:nth-of-type(3) panel-list:if-empty-trimmed:observe {
 		body {
 			remove-class: main;
 		}
@@ -225,7 +238,7 @@
 	/***
 	 * Show panels when there are children of panel-list.
 	**/
-	app-panel:nth-of-type(4) panel-list:not-if-empty:observe {
+	app-panel:nth-of-type(4) panel-list:first-of-type:not-if-empty-trimmed:observe {
 		body {
 			add-class: aside;
 		}
@@ -236,7 +249,7 @@
 	/***
 	 *
 	*/
-	app-panel:nth-of-type(4) panel-list #userID:draw { {
+	#userID:draw { {
 		app-panel:nth-of-type(3) panel-list list-item[data-id="{$currentUserID}"] {
 			take-class: .active scope(app-panel:nth-of-type(3) panel-list);
 			console-log: "Take MAIN .active";
@@ -244,7 +257,7 @@
 	}
 
 
-	/* app-panel:nth-of-type(4) panel-list:if-empty:observe{
+	/* app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe{
 		app-panel:nth-of-type(3) panel-list list-item.active {
 			remove-class: .active;
 			console-log: "Remove LIST-ITEM .active";
@@ -255,7 +268,7 @@
 	/***
 	 * Hide panel when there are NO children of panel-list.
 	**/
-	app-panel:nth-of-type(4) panel-list:if-empty:observe {
+	app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe {
 		$currentUserID: null;
 		body {
 			remove-class: aside;
@@ -442,6 +455,236 @@
         <list-item>
           <list-headings></list-headings>
         </list-item>
+<!--        <list-item>
+          <list-cell><input type="checkbox"></list-cell>
+          <list-cell>ID</list-cell>
+          <list-cell>Name</list-cell>
+          <list-cell>Username</list-cell>
+          <list-cell>Website</list-cell>
+          <list-cell>Email</list-cell>
+        </list-item>-->
+        <panel-list></panel-list>
+        <br />
+        <app-panel-scroll>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </p>
+        </app-panel-scroll>
+        <panel-corner-top-left></panel-corner-top-left>
+        <panel-corner-top-right></panel-corner-top-right>
+        <panel-corner-bottom-left></panel-corner-bottom-left>
+        <panel-corner-bottom-right></panel-corner-bottom-right>
+      </app-panel>
+      <app-panel>
+        <panel-header>
+          <panel-title>PROFILE : :</panel-title>
+          <close-panel title="Close panel">[ x ]</close-panel>
+        </panel-header>
+        <profile-avatar></profile-avatar>
+        <panel-list>
+        </panel-list>
+        <panel-header>
+          <panel-title>POWER STATS : :</panel-title>
+          <panel-meta>[ 843 ]</panel-meta>
+        </panel-header>
+        <panel-list>
+        </panel-list>
+          <input id="userID" type="hidden" value="8313856133">
+
+        <panel-corner-top-left></panel-corner-top-left>
+        <panel-corner-top-right></panel-corner-top-right>
+        <panel-corner-bottom-left></panel-corner-bottom-left>
+        <panel-corner-bottom-right></panel-corner-bottom-right>
+      </app-panel>
+      <app-panel>
+        <panel-header>
+          <panel-title>META : :</panel-title>
+          <close-panel title="Close panel">[ x ]</close-panel>
+        </panel-header>
+        <panel-list></panel-list>
+        <app-panel-scroll>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        </app-panel-scroll>
+        <panel-corner-top-left></panel-corner-top-left>
+        <panel-corner-top-right></panel-corner-top-right>
+        <panel-corner-bottom-left></panel-corner-bottom-left>
+        <panel-corner-bottom-right></panel-corner-bottom-right>
+      </app-panel>
+      <app-panel>
+        <app-author>D7460N</app-author>
+        <app-class></app-class>
+        <app-version>v0.001</app-version>
+      </app-panel>
+    </app-container>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+    <app-container>
+      <app-panel>
+        <app-logo>D7460N</app-logo>
+        <app-class></app-class>
+        <app-user>First LastName</app-user>
+      </app-panel>
+      <app-panel>
+        <panel-header>
+          <panel-title>SECTION 01</panel-title>
+          <panel-meta>[ 843 ]</panel-meta>
+        </panel-header>
+        <panel-list>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 1235 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 12 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 35 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 5 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 25 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+        </panel-list>
+        <p>&#160;</p>
+        <panel-header>
+          <panel-title>SECTION 02</panel-title>
+          <panel-meta>[ 843 ]</panel-meta>
+        </panel-header>
+        <panel-list>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 1235 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 12 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 35 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 5 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 25 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+        </panel-list>
+        <p>&#160;</p>
+        <panel-header>
+          <panel-title>SECTION 03</panel-title>
+          <panel-meta>[ 843 ]</panel-meta>
+        </panel-header>
+        <panel-list>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 1235 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 12 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 35 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 5 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 25 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+          <list-item>
+            <list-cell><input type="checkbox" /></list-cell>
+            <list-cell>Nav Item</list-cell>
+            <list-cell>[ 984 ]</list-cell>
+          </list-item>
+        </panel-list>
+      </app-panel>
+
+      <app-panel>
+        <panel-header>
+          <panel-title>SEARCH RESULTS
+            <app-count>
+              [&#160;<span id="visibleCount"></span>/<span id="nonVisibleCount"></span>&#160;]
+            </app-count>
+          </panel-title>
+          <list-item>
+            <list-cell><a href="#">01</a></list-cell>
+            <list-cell><a href="#">02</a></list-cell>
+            <list-cell><a href="#">03</a></list-cell>
+            <list-cell><a href="#">04</a></list-cell>
+            <list-cell><a href="#">05</a></list-cell>
+          </list-item>
+        </panel-header>
+        <list-item>
+          <list-headings></list-headings>
+        </list-item>
         <panel-list></panel-list>
         <br />
         <app-panel-scroll>
@@ -487,6 +730,7 @@
         <app-version>v0.001</app-version>
       </app-panel>
     </app-container>
+-->
 
     <script type="text/javascript" charset="utf-8" src="assets/js/activecss-core-dev-2-11-0.js"></script>
     <script type="text/javascript" charset="utf-8" src="assets/js/scripts.js"></script>

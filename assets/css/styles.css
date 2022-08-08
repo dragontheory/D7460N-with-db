@@ -141,16 +141,45 @@ app-panel:nth-of-type(3) panel-corner-bottom-right {display: initial;}
 
 /* HIDE BY DEFAULT */
 app-panel:nth-of-type(4),
-app-panel:nth-of-type(5) {
-  display: none;
-}
+app-panel:nth-of-type(5) {display: none;}
 
+label,
 panel-header {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr;
   align-items: start;
+  cursor: pointer;
 }
+
+app-panel > input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+}
+app-panel > input[type="checkbox"] + label + panel-list {
+  max-height: 0;
+}
+
+app-panel > input[type="checkbox"]:checked + label + panel-list {max-height: 100%;}
+
+/*label::after {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 3em;
+  height: 3em;
+  line-height: 3;
+  text-align: center;
+  -webkit-transition: all .35s;
+  -o-transition: all .35s;
+  transition: all .35s;
+}
+ app-panel > input[type=checkbox] + label::after {content: "\2795";}
+app-panel > input[type=radio] + label::after {content: "\25BC";}
+app-panel > input[type=checkbox]:checked + label::after {transform: rotate(315deg);}
+app-panel > input[type=radio]:checked + label::after {transform: rotate(315deg);} */
 
 panel-title {
   font-family: 'agency_fb', sans-serif;

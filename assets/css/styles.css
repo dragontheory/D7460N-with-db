@@ -150,6 +150,13 @@ panel-header {
   grid-template-rows: 1fr;
   align-items: start;
   cursor: pointer;
+  transition: background-color 250ms, color 250ms;
+}
+
+label:hover,
+label.active {
+  background-color: rgba(48,190,255,0.2);
+  color: rgba(255,255,255,1.0);
 }
 
 app-panel > input[type="checkbox"] {

@@ -76,11 +76,32 @@ app-container {
 app-panel {
   display: grid;
   grid-auto-rows: auto;
-  border-radius: .3rem;
+  /* border-radius: .3rem; */
   overflow: hidden;
   /* border: solid 1px rgba(255,255,255,0.1); */
   align-content: start;
   justify-content: start;
+}
+
+/* ALL PANELS BUT HEADER and FOOTER */
+app-panel:not(:first-of-type):not(:last-of-type) {
+  /* grid-template-rows: repeat(minmax(0, 1fr)); */
+  gap: 1rem;
+}
+app-panel:nth-of-type(3) panel-section:nth-of-type(1) {
+  grid-template-rows: auto auto 1fr;
+}
+
+app-panel:nth-of-type(3) panel-section:nth-of-type(1) panel-list {
+  grid-auto-rows: min-content;
+}
+
+
+panel-section {
+  display: grid;
+  overflow: hidden;
+  /* align-items: start; */
+  padding: 1rem;
 }
 
 /* HEADER/FOOTER */
@@ -128,6 +149,7 @@ app-class {
 -----------------------------*/
 app-panel:nth-of-type(2) {
   width: max-content;
+  grid-template-rows: auto auto auto;
 }
 
 app-panel:nth-of-type(2) list-item{
@@ -163,16 +185,16 @@ label.active {
   color: rgba(255,255,255,1.0);
 }
 
-app-panel > input[type="checkbox"] {
+app-panel panel-section > input[type="checkbox"] {
   position: absolute;
   opacity: 0;
   z-index: -1;
 }
-app-panel > input[type="checkbox"] + label + panel-list {
+app-panel panel-section > input[type="checkbox"] + label + panel-list {
   max-height: 0;
 }
 
-app-panel > input[type="checkbox"]:checked + label + panel-list {max-height: 100%;}
+app-panel panel-section > input[type="checkbox"]:checked + label + panel-list {max-height: 100%;}
 
 /*label::after {
   position: absolute;
@@ -231,8 +253,14 @@ close-panel:hover {color: rgba(48,190,255,1.0);}
 /*-----------------------------
   PAGINATION
 -----------------------------*/
-app-panel:nth-of-type(3) > list-item:first-of-type {
-  grid-template-columns: auto  1fr auto auto auto auto auto;
+app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(1) {
+  grid-template-columns: auto 1fr auto auto auto auto auto;
+}
+app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(1) list-cell:nth-of-type(1) {
+  color:rgba(255,255,255,1.0);
+}
+app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(2) {
+  grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 4rem) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr);
 }
 
 app-panel:nth-of-type(3) panel-header list-item {
@@ -270,12 +298,13 @@ app-panel:nth-of-type(3) panel-header list-item list-cell:hover {
     ASIDE
 -----------------------------*/
 .aside app-panel:nth-of-type(3) {
+  grid-template-rows: 1fr auto;
   resize: horizontal;
   min-width: 20rem;
   max-width: 60vw;
 }
-.aside app-panel:nth-of-type(3) panel-list:last-child panel-corner-bottom-right,
-.aside app-panel:nth-of-type(3) app-panel-scroll:last-child panel-corner-bottom-right
+
+.aside app-panel:nth-of-type(3) panel-section:last-child panel-corner-bottom-right
  {display: none;}
 
 .aside app-panel:nth-of-type(4),
@@ -343,7 +372,6 @@ panel-list {
   display: grid;
   overflow: auto;
   position: relative;
-  overflow: overlay;
   /* gap: 2px; */
 }
 
@@ -374,7 +402,15 @@ app-panel:nth-of-type(3) panel-list list-item list-cell:nth-of-type(2) {width: a
 app-panel:nth-of-type(5) > list-item:first-of-type {
   grid-template-columns: 1fr auto;
 }
-app-panel:nth-of-type(4) list-item {grid-template-columns: 1fr auto;}
+app-panel:nth-of-type(4) panel-section > list-item:nth-of-type(1) {grid-template-columns: 1fr auto auto auto;}
+
+app-panel:nth-of-type(4) panel-list list-item {
+  grid-template-columns: 1fr auto;
+}
+
+app-panel:nth-of-type(5) panel-section > list-item:nth-of-type(1) {
+  grid-template-columns: 1fr auto;
+}
 
 list-cell {
   text-overflow: ellipsis;
@@ -394,8 +430,7 @@ app-panel:nth-of-type(2) list-cell:last-of-type {
 /*-----------------------------
   PANEL BORDER LINES
 -----------------------------*/
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) app-panel-scroll,
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-list {
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-section {
   --border-color: #FFFFFF;
   background-clip: border-box;
   position: relative;
@@ -403,17 +438,16 @@ app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-list
   border: none;
 }
 
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) app-panel-scroll:after,
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-list:after,
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) app-panel-scroll:before,
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-list:before {
+
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-section:after,
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-section:before {
   content: "";
   position: absolute;
   opacity: .2;
   z-index: -1;
 }
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) app-panel-scroll:before,
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-list:before {
+
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-section:before {
   left: 15px;
   right: 15px;
   top: 0;
@@ -422,8 +456,7 @@ app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-list
   border-bottom: 1px solid var(--border-color);
 }
 
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) app-panel-scroll:after,
-app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-list:after {
+app-panel:not(:first-of-type):not(:last-of-type):not(:nth-of-type(2)) panel-section:after {
   top: 15px;
   bottom: 15px;
   left: 0;

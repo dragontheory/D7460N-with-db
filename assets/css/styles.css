@@ -307,10 +307,20 @@ app-panel:nth-of-type(3) panel-header list-item list-cell:hover {
 .aside app-panel:nth-of-type(3) panel-section:last-child panel-corner-bottom-right
  {display: none;}
 
-.aside app-panel:nth-of-type(4),
+.aside app-panel:nth-of-type(4) {
+  display: grid;
+  grid-template-rows: auto auto auto;
+}
+
 .aside app-panel:nth-of-type(5) {
   display: grid;
+  grid-template-rows: 1fr;
 }
+
+.aside app-panel:nth-of-type(5) panel-section{
+  grid-template-rows: auto auto 1fr;
+}
+
 .aside app-container{
   /* grid-template-columns: repeat(4, auto); */
   grid-template-columns: max-content max-content auto auto;
@@ -319,6 +329,11 @@ app-panel:nth-of-type(3) panel-header list-item list-cell:hover {
 p, h2 {
   margin: 0;
   padding: 1rem
+}
+
+p {
+  white-space: normal;
+  overflow: unset;
 }
 
 h2 {

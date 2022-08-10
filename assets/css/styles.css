@@ -274,7 +274,10 @@ app-panel:nth-of-type(3) panel-header list-item list-cell:hover {
   min-width: 20rem;
   max-width: 60vw;
 }
-/* .aside app-panel:nth-of-type(3) panel-corner-bottom-right {display: none;} */
+.aside app-panel:nth-of-type(3) panel-list:last-child panel-corner-bottom-right,
+.aside app-panel:nth-of-type(3) app-panel-scroll:last-child panel-corner-bottom-right
+ {display: none;}
+
 .aside app-panel:nth-of-type(4),
 .aside app-panel:nth-of-type(5) {
   display: grid;

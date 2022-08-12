@@ -172,8 +172,6 @@ app-search button {
   justify-self: end;
   cursor: pointer;
 }
-  border-radius: 0;
-}
 
 /*-----------------------------
     NAV
@@ -340,7 +338,7 @@ app-panel:nth-of-type(3) panel-header list-item list-cell:hover {
 
 .aside app-panel:nth-of-type(4) {
   display: grid;
-  grid-template-rows: auto auto auto;
+  grid-template-columns: minmax(10rem, 100vw);
 }
 
 .aside app-panel:nth-of-type(5) {
@@ -354,7 +352,7 @@ app-panel:nth-of-type(3) panel-header list-item list-cell:hover {
 
 .aside app-container{
   /* grid-template-columns: repeat(4, auto); */
-  grid-template-columns: max-content max-content auto auto;
+  grid-template-columns: max-content max-content auto;
 }
 
 p, h2 {

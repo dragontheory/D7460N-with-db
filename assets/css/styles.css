@@ -96,6 +96,10 @@ app-panel:nth-of-type(3) panel-section:nth-of-type(1) panel-list {
   grid-auto-rows: min-content;
 }
 
+app-panel:nth-of-type(3) panel-section:nth-of-type(2) {
+  grid-template-rows: auto auto 1fr;
+}
+
 
 panel-section {
   display: grid;
@@ -291,11 +295,24 @@ save-panel {
 
 close-panel:hover {color: rgba(48,190,255,1.0);}
 
+
+app-panel:nth-of-type(3) panel-section:nth-of-type(2) list-item:nth-of-type(1) list-cell:nth-of-type(3) input[type=checkbox] {
+  display: none;
+}
+
+app-panel:nth-of-type(3) panel-section:nth-of-type(2) list-item:nth-of-type(1) list-cell:nth-of-type(3) span::before {
+  content: "\2610";
+}
+app-panel:nth-of-type(3) panel-section:nth-of-type(2) list-item:nth-of-type(1) list-cell:nth-of-type(3) input[type=checkbox]:checked + span::before {
+  content: "\2637";
+}
+
+
 /*-----------------------------
   PAGINATION
 -----------------------------*/
 app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(1) {
-  grid-template-columns: auto 1fr auto auto auto auto auto;
+  grid-template-columns: auto auto 1fr auto auto auto auto auto;
 }
 app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(1) list-cell:nth-of-type(1) {
   color:rgba(255,255,255,1.0);

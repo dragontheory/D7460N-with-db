@@ -104,6 +104,18 @@ panel-section {
   padding: 1rem;
 }
 
+app-panel:nth-of-type(3) panel-section:nth-of-type(1) {
+  display: none;
+}
+
+.intro app-panel:nth-of-type(3) panel-section:nth-of-type(1) {
+  display: grid;
+}
+
+.intro app-panel:nth-of-type(3) panel-section:nth-of-type(2) {
+  display: none;
+}
+
 /* HEADER/FOOTER */
 app-panel:first-of-type,
 app-panel:last-of-type {

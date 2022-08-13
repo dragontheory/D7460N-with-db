@@ -11,6 +11,13 @@
     <title>D7460N</title>
     <link type="image/svg+xml" rel="icon" href="assets/images/logo.svg" />
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
+
+	<style>
+		body.pagination search-results {
+			overflow-y: hidden;
+		}
+	</style>
+
     <style type="text/acss">
 
 	/***
@@ -80,47 +87,24 @@
 		$viewPerPage: 25;		/* adjusts dynamically per screen size */
 	}
 
+	a[data-page]:click {
+		$viewPageNo: {@data-page};
+		$viewPerPage: $totalVisible;
+		search-results {
+			trigger: fetchRows;
+		}
+	}
+
 
 	/***
 	 * Call data on body init.
 	**/
-
 	body:init {
 		search-results list-item {
 			$liCo++;
 		}
 		search-results {
-			trigger: countRows;
-		}
-
-		search-results {
-			/* turn off scroll bar - this should go into CSS or maybe not, depending on the view. */
-			overflow-y: hidden;
-		}
-		search-results {
-			ajax: "{$rowPopulationURL}" get get-pars(perPage={$viewPerPage})json await;
-			/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
-			/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
-			search-results list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
-			ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
-			}*/
-			console-log: "getting here";
-			trigger: setup;
-			$startingLiCo: $liCo;
-			/* Get total records available */
-			
-			@each $item in {JSON}.data {
-				$liCo++;
-				$rowHTML: "<list-item data-co='{$liCo}' data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
-				@each $fieldKey in $rowFields {
-					$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
-				}
-				$rowHTML: $rowHTML + "</list-item>";
-				render-before-end: "{$rowHTML}";
-			}
-
-			$totalRecords: {JSON}.totalRecords;
-			trigger: countRows;
+			trigger: fetchRows;
 		}
 		/* Set up reactive variable for this so we don't have to render again it later. */
 		label[for="powerstats"] panel-meta {
@@ -145,7 +129,37 @@
 		body {
 			remove-class: .intro;
 		}
+		search-results {
+			trigger: countRows;
+		}
 	}
+
+	search-results:fetchRows {
+		ajax: "{$rowPopulationURL}" get get-pars(page={$viewPageNo}&perPage={$viewPerPage})json await;
+		/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
+		/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
+		search-results list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
+		ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
+		}*/
+		console-log: "getting here";
+		trigger: setup;
+		$startingLiCo: $liCo;
+		/* Get total records available */
+
+		render: "";
+		@each $item in {JSON}.data {
+			$liCo++;
+			$rowHTML: "<list-item data-co='{$liCo}' data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+			@each $fieldKey in $rowFields {
+				$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
+			}
+			$rowHTML: $rowHTML + "</list-item>";
+			render-before-end: "{$rowHTML}";
+		}
+
+		$totalRecords: {JSON}.totalRecords;
+	}
+
 
 	/***
 	 * Draw the row headings.
@@ -167,46 +181,19 @@
 	/***
 	 * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
 	**/
-	body.pagination search-results:countRows {
-		$totalVisible: -1;
-		$totalNonVisible: -1;
-		$foundNonVisible: false;
+	search-results:countRows {
+		$totalVisible: 0;
+		$totalNonVisible: 0;
 		@for $n from $startingLiCo + 1 to $liCo {
-			@if completely-visible(list-item[data-co="{$n}"]) {
+			@if completely-visible(list-item[data-co="{$n}"] list-cell scope(search-results)) {
 				$totalVisible++;
 				list-item[data-co="{$n}"] {
-					opacity: 1;
-				}
-				$m: $n - 1;
-				list-item[data-co="{$m}"] {
-					opacity: 1;
-				}
-				$m: $n - 2;
-				list-item[data-co="{$m}"] {
 					opacity: 1;
 				}
 			} @else {
 				$totalNonVisible++;
 				list-item[data-co="{$n}"] {
 					opacity: 0;
-
-console-log: "row {$n} not visible";
-
-				}
-				@if !$foundNonVisible {
-					$foundNonVisible: true;
-					$totalNonVisible++;
-					$m: $n - 1;
-					list-item[data-co="{$m}"] {
-						$totalVisible--;
-						$totalNonVisible++;
-						opacity: 0;
-					}
-					$m: $n - 2;
-					list-item[data-co="{$m}"] {
-						$totalNonVisible++;
-						opacity: 0;
-					}
 				}
 			}
 		}
@@ -227,17 +214,13 @@ console-log: "row {$n} not visible";
 			}
 		}
 		/* Draw initial page numbers */
-		app-panel:nth-of-type(3) panel-header list-item { {
+/*		app-panel:nth-of-type(3) panel-header list-item { {
 			@if $totalVisible > 0 {
-				render: "<list-cell><a href=''>01</a></list-cell>
-					<list-cell><a href=''>02</a></list-cell>
-					<list-cell><a href=''>03</a></list-cell>
-					<list-cell><a href=''>04</a></list-cell>
-					<list-cell><a href=''>05</a></list-cell>";
+				render: "";
 			} @else {
 				render: "";
 			}
-		}
+		}*/
 	}
 
 
@@ -283,7 +266,6 @@ console-log: "row {$n} not visible";
 			o.obj.dispatchEvent(dragonEvent);
 		=};
 	}
-
 
 	/***
 	 * Show panels when there are children of panel-list.
@@ -557,11 +539,11 @@ console-log: "row {$n} not visible";
             <list-cell title="Toggle row/card view">
               <label><input type="checkbox"><span class="label"></span></label>
             </list-cell>
-            <list-cell><a href="#">01</a></list-cell>
-            <list-cell><a href="#">02</a></list-cell>
-            <list-cell><a href="#">03</a></list-cell>
-            <list-cell><a href="#">04</a></list-cell>
-            <list-cell><a href="#">05</a></list-cell>
+            <list-cell><a href="#" data-page="1">01</a></list-cell>
+            <list-cell><a href="#" data-page="2">02</a></list-cell>
+            <list-cell><a href="#" data-page="3">03</a></list-cell>
+            <list-cell><a href="#" data-page="4">04</a></list-cell>
+            <list-cell><a href="#" data-page="5">05</a></list-cell>
           </list-item>
           <list-item>
             <list-headings></list-headings>

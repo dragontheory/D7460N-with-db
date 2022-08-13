@@ -79,8 +79,6 @@
 	 * Functionality variables for the app prior to initialization.
 	**/
 	body:preInit {
-		$liCo: 0;
-		$startingLiCo: 0;
 		$totalRecords: 0;
 		$viewPageNo: 1;			/* adjusts dynamically per screen size */
 		$viewTotalPages: 0;		/* adjusts dynamically per screen size */
@@ -100,11 +98,8 @@
 	 * Call data on body init.
 	**/
 	body:init {
-		search-results list-item {
-			$liCo++;
-		}
 		search-results {
-			trigger: fetchRows;
+			trigger: initialisePageNumbers, fetchRows;
 		}
 		/* Set up reactive variable for this so we don't have to render again it later. */
 		label[for="powerstats"] panel-meta {
@@ -130,7 +125,7 @@
 			remove-class: .intro;
 		}
 		search-results {
-			trigger: countRows;
+			trigger: countRows, updatePageNumbers;
 		}
 	}
 
@@ -141,15 +136,12 @@
 		search-results list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
 		ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
 		}*/
-		console-log: "getting here";
 		trigger: setup;
-		$startingLiCo: $liCo;
 		/* Get total records available */
 
 		render: "";
 		@each $item in {JSON}.data {
-			$liCo++;
-			$rowHTML: "<list-item data-co='{$liCo}' data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+			$rowHTML: "<list-item data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
 			@each $fieldKey in $rowFields {
 				$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
 			}
@@ -158,6 +150,10 @@
 		}
 
 		$totalRecords: {JSON}.totalRecords;
+
+		body:not(.intro) search-results {
+			trigger: updatePageNumbers;
+		}
 	}
 
 
@@ -174,7 +170,7 @@
 
 	window:resize {
 		body.pagination search-results {
-			trigger: countRows;
+			trigger: countRows, updatePageNumbers;
 		}
 	}
 
@@ -184,17 +180,13 @@
 	search-results:countRows {
 		$totalVisible: 0;
 		$totalNonVisible: 0;
-		@for $n from $startingLiCo + 1 to $liCo {
-			@if completely-visible(list-item[data-co="{$n}"] list-cell scope(search-results)) {
+		search-results list-item {
+			@if completely-visible(& list-cell scope(search-results)) {
 				$totalVisible++;
-				list-item[data-co="{$n}"] {
-					opacity: 1;
-				}
+				opacity: 1;
 			} @else {
 				$totalNonVisible++;
-				list-item[data-co="{$n}"] {
-					opacity: 0;
-				}
+				opacity: 0;
 			}
 		}
 		/* Adjust for top header row */
@@ -223,6 +215,121 @@
 		}*/
 	}
 
+	search-results:updatePageNumbers {
+		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
+		$noNextPage: false;
+		$noEllipsis1: false;
+		$noEllipsis2: false;
+		$noPrevPage: false;
+		$noPageLink2: false;
+		$noPageLink3: false;
+		$noPageLink4: false;
+		@if ($viewTotalPages < 5) {
+			/* Pages less than 5 */
+			$noPrevPage: true;
+			$noEllipsis1: true;
+			$noEllipsis2: true;
+			$noNextPage: true;
+			@if $viewTotalPages < 2 {
+				$noPageLink2: true;
+			}
+			@if $viewTotalPages < 3 {
+				$noPageLink3: true;
+			}
+			@if $viewTotalPages < 4 {
+				$noPageLink4: true;
+			}
+		} @else if ($viewPageNo == 1) {
+			/* First page */
+			$noPrevPage: true;
+			$noEllipsis1: true;
+			$pageLink1: 1;
+			$pageLink2: 2;
+			$pageLink3: 3;
+			$pageLink4: $viewTotalPages;
+			$pageNext: 2;
+		} @else if ($viewPageNo > $viewTotalPages - 2) {
+			/* Last page */
+			$pagePrev: $viewPageNo - 1;
+			$noNextPage: true;
+			$noEllipsis2: true;
+			$pageLink1: 1;
+			$pageLink2: $viewTotalPages - 2;
+			$pageLink3: $viewTotalPages - 1;
+			$pageLink4: $viewTotalPages;
+		} @else {
+			$pagePrev: $viewPageNo - 1;
+			$pageNext: $viewPageNo + 1;
+			$noEllipsis1: true;
+			$pageLink1: $viewPageNo - 1;
+			$pageLink2: $viewPageNo;
+			$pageLink3: $viewPageNo + 1;
+			$pageLink4: $viewTotalPages;
+		}
+
+		pagination-links {
+			set-attribute: data-page "{$viewPageNo}";
+			@if ($noNextPage) {
+				add-class: .noNext;
+			} @else {
+				remove-class: .noNext;
+			}
+			@if ($noPrevPage) {
+				add-class: .noPrev;
+			} @else {
+				remove-class: .noPrev;
+			}
+			@if ($noEllipsis1) {
+				add-class: .noEllipsis1;
+			} @else {
+				remove-class: .noEllipsis1;
+			}
+			@if ($noEllipsis2) {
+				add-class: .noEllipsis2;
+			} @else {
+				remove-class: .noEllipsis2;
+			}
+			@if ($noPageLink2) {
+				add-class: .noPageLink2;
+			} @else {
+				remove-class: .noPageLink2;
+			}
+			@if ($noPageLink3) {
+				add-class: .noPageLink3;
+			} @else {
+				remove-class: .noPageLink3;
+			}
+			@if ($noPageLink4) {
+				add-class: .noPageLink4;
+			} @else {
+				remove-class: .noPageLink4;
+			}
+		}
+	}
+
+	@component pagination-links {
+		html {
+			<acss-style>
+				pagination-links.noPrev list-cell:first-of-type,
+				pagination-links.noEllipsis1 list-cell:nth-of-type(3),
+				pagination-links.noPageLink2 list-cell:nth-of-type(4),
+				pagination-links.noPageLink3 list-cell:nth-of-type(5),
+				pagination-links.noEllipsis2 list-cell:nth-of-type(6),
+				pagination-links.noPageLink4 list-cell:nth-of-type(7),
+				pagination-links.noNext list-cell:last-of-type {
+					display: none;
+				}
+			</acss-style>
+            <list-cell><a href="#" data-page="{{$pagePrev}}">&lt;</a></list-cell>
+            <list-cell><a href="#" data-page="{{$pageLink1}}">{{$pageLink1}}</a></list-cell>
+            <list-cell>...</list-cell>
+            <list-cell><a href="#" data-page="{{$pageLink2}}">{{$pageLink2}}</a></list-cell>
+            <list-cell><a href="#" data-page="{{$pageLink3}}">{{$pageLink3}}</a></list-cell>
+            <list-cell>...</list-cell>
+            <list-cell><a href="#" data-page="{{$pageLink4}}">{{$pageLink4}}</a></list-cell>
+            <list-cell><a href="#" data-page="{{$pageNext}}">&gt;</a></list-cell>
+		}
+	}
 
 	/***
 	 * Call data to app-panel:nth-of-type(4).
@@ -539,11 +646,7 @@
             <list-cell title="Toggle row/card view">
               <label><input type="checkbox"><span class="label"></span></label>
             </list-cell>
-            <list-cell><a href="#" data-page="1">01</a></list-cell>
-            <list-cell><a href="#" data-page="2">02</a></list-cell>
-            <list-cell><a href="#" data-page="3">03</a></list-cell>
-            <list-cell><a href="#" data-page="4">04</a></list-cell>
-            <list-cell><a href="#" data-page="5">05</a></list-cell>
+            <pagination-links></pagination-links>
           </list-item>
           <list-item>
             <list-headings></list-headings>

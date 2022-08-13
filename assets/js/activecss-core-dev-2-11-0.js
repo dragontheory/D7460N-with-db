@@ -8146,15 +8146,8 @@ const _removeVarPlaceholders = obj => {
 	// Iterate tree and find unique ref enclosures, mark content node directly with var reference and remove comment nodes.
 	let nodesToRemove = [];
 	let thisNode, thisVar, insertedNode;
-
-	while (true) {
+	while (treeWalker.nextNode()) {
 		thisNode = treeWalker.currentNode;
-
-//console.log('_removeVarPlaceholders, thisNode:', thisNode);
-
-		if (!thisNode.data) break;
-
-
 		if (thisNode.data.substr(0, 11) == 'active-var-') {
 			nodesToRemove.push(thisNode);	// Mark for removal.
 			thisVar = thisNode.data.substr(11);
@@ -8173,7 +8166,6 @@ const _removeVarPlaceholders = obj => {
 		} else if (thisNode.data == '/active-var') {
 			nodesToRemove.push(thisNode);	// Mark for removal. Don't remove them yet as it buggers up the treewalker.
 		}
-		if (!treeWalker.nextNode()) break;
 	}
 
 	nodesToRemove.forEach(nod => {	// jshint ignore:line

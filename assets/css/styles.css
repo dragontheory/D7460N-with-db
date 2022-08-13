@@ -470,11 +470,11 @@ app-panel:nth-of-type(2) panel-list list-item {
 }
 
 app-panel:nth-of-type(3) > list-item,
-app-panel:nth-of-type(3) panel-list list-item {
+search-results list-item {
   grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 4rem) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr);
 }
 
-app-panel:nth-of-type(3) panel-list list-item list-cell:nth-of-type(2) {width: auto;}
+search-results list-item list-cell:nth-of-type(2) {width: auto;}
 
 app-panel:nth-of-type(5) > list-item:first-of-type {
   grid-template-columns: 1fr auto;

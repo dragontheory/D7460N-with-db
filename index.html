@@ -12,153 +12,389 @@
     <link type="image/svg+xml" rel="icon" href="assets/images/logo.svg" />
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
     <style type="text/acss">
-      /* Call data on body init */
-      body:init {
-        var: totalVisible 0,
-        totalNonVisible 0,
-        liCo 0,
-        startingLiCo 0;
-        app-panel:nth-of-type(3) panel-list list-item {var: liCo++;}
-        app-panel:nth-of-type(3) panel-list {trigger: countRows;}
-        app-panel:nth-of-type(3) panel-list {
-          ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/" get json await;
-          /* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
-          /* Pre-fetch JSON on mouseover to make the user think it's really quick.
-          app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-id}"):mouseover {
-            ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
-          }*/
-          console-log: "getting here";
-          trigger: setup;
-          var: startingLiCo {liCo};
-          @each item in {JSON} {
-            var: liCo++;
-            render-before-end:
-            "<list-item data-co=\"{liCo}\" data-id=\"{item.id}\">
-              <list-cell><input type="checkbox" id="" name="table-row" value="" /></list-cell>
-              <list-cell>{item.id}</list-cell>
-              <list-cell>{item.name}</list-cell>
-              <list-cell>{item.username}</list-cell>
-              <list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell>
-              <list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell>
-            </list-item>";
-          }
-          trigger: countRows;
-        }
-      }
 
-      /* This is the custom event -
-      it gets used twice -
-      once when the page is drawn and again when the button is clicked */
-      app-panel:nth-of-type(3) panel-list:countRows {
-        @for n from {startingLiCo} + 1 to {liCo} {
-          @if completely-visible(list-item[data-co="{n}"]) {
-            var: totalVisible++;
-          } @else {
-            var: totalNonVisible++;
-          }
-        }
-        #visibleCount {
-          @if {totalVisible} < 10 {
-            render: 0{totalVisible};
-          } @else {
-            render: {totalVisible};
-          }
-        }
-        #nonVisibleCount {
-          @if {totalNonVisible} < 10 {
-            render: 0{totalNonVisible};
-          } @else {
-            render: {totalNonVisible};
-          }
-        }
-      }
+	/***
+	 * Developer defined variables for setting up data schema.
+	**/
+	body:preInit {
+		/* Define API */
+		$rowPopulationURL: "https://activecss.org/get-supes.php";
+		$asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
+		$apiSchema: {
+			id: { displayTitle: "ID", apiLocation: "id", fieldType: "text" },
+			slug: { displayTitle: "Slug", apiLocation: "slug", fieldType: "text" },
+			alias: { displayTitle: "Name", apiLocation: "name", fieldType: "text" },
+			name: { displayTitle: "Real name", apiLocation: "biography.fullName", fieldType: "text" },
+			alignment: { displayTitle: "Status", apiLocation: "biography.alignment", fieldType: "text" },
+			affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation", fieldType: "text" },
+			power: { displayTitle: "Power", apiLocation: "powerstats.power", fieldType: "text" },
+			intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence", fieldType: "text" },
+			strength: { displayTitle: "Strength", apiLocation: "powerstats.strength", fieldType: "text" },
+			speed: { displayTitle: "Speed", apiLocation: "powerstats.speed", fieldType: "text" },
+			durability: { displayTitle: "Durability", apiLocation: "powerstats.durability", fieldType: "text" },
+			combat: { displayTitle: "Combat", apiLocation: "powerstats.combat", fieldType: "text" },
+			gender: { displayTitle: "Gender", apiLocation: "appearance.gender", fieldType: "text" },
+			race: { displayTitle: "Race", apiLocation: "appearance.race", fieldType: "text" },
+			heightInches: { displayTitle: "Height", apiLocation: "appearance.height[0]", fieldType: "text" },
+			heightCm: { displayTitle: "Height", apiLocation: "appearance.height[1]", fieldType: "text" },
+			weightPounds: { displayTitle: "Weight", apiLocation: "appearance.weight[0]", fieldType: "text" },
+			weightKilos: { displayTitle: "Weight", apiLocation: "appearance.weight[1]", fieldType: "text" },
+			eyeColor: { displayTitle: "Eye color", apiLocation: "appearance.eyeColor", fieldType: "text" },
+			hairColor: { displayTitle: "Hair color", apiLocation: "appearance.hairColor", fieldType: "text" },
+			alterEgos: { displayTitle: "Alter egos", apiLocation: "biography.alterEgos", fieldType: "text" },
+			placeOfBirth: { displayTitle: "Place of birth", apiLocation: "biography.placeOfBirth", fieldType: "text" },
+			firstAppearance: { displayTitle: "First appearance", apiLocation: "biography.firstAppearance", fieldType: "text" },
+			publisher: { displayTitle: "Publisher", apiLocation: "biography.publisher", fieldType: "text" },
+			occupation: { displayTitle: "Occupation", apiLocation: "work.occupation", fieldType: "text" },
+			base: { displayTitle: "Base", apiLocation: "work.base", fieldType: "text" },
+			relatives: { displayTitle: "Relatives", apiLocation: "connections.relatives", fieldType: "text" },
+			image_xs: { displayTitle: "Extra small image", apiLocation: "images.xs", fieldType: "text" },
+			image_sm: { displayTitle: "Small image", apiLocation: "images.sm", fieldType: "text" },
+			image_md: { displayTitle: "Medium image", apiLocation: "images.md", fieldType: "text" },
+			image_lg: { displayTitle: "Large image", apiLocation: "images.lg", fieldType: "text" },
+		};
 
-      /* Call data to app-panel:nth-of-type(4) */
-      app-panel:nth-of-type(3) panel-list list-item:not-if-var(currentUserID "{@data-liCo}"):click {
-        var: currentUserID "{@data-id}";
-        ajax: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json cache await;
-        var: item {JSON};
-        app-panel:nth-of-type(4) panel-list {
-          render: "<list-item><list-cell>ID</list-cell><list-cell>{item.id}</list-cell></list-item>
-                  <list-item><list-cell>name</list-cell><list-cell>{item.name}</list-cell></list-item>
-                  <list-item><list-cell>username</list-cell><list-cell>{item.username}</list-cell></list-item>
-                  <list-item><list-cell>website</list-cell><list-cell><a href=\"https://{item.website}\" target=\"_new\">{item.website}</a></list-cell></list-item>
-                  <list-item><list-cell>email</list-cell><list-cell><a href=\"mailto:{item.email}\" target=\"_new\">{item.email}</a></list-cell></list-item>
-                  <input id=\"userID\" type=\"hidden\" value=\"{item.id}\">";
-        }
-        run: {=
-          const dragonEvent = new Event('rowclicked', { bubbles: true });
-          o.obj.dispatchEvent(dragonEvent);
-        =};
-      }
+		/* Define which fields to display in each row. */
+		$rowFields: [ 'alias', 'name', 'alignment', 'affiliations', 'power' ];
 
-      /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(2) panel-list list-item:not-if-empty:observe {
-        body {add-class: nav;}
-        console-log: "Show NAV";
-      }
+		/* Define which fields to display in the top profile panel. */
+		$profileFields: [ 'alias', 'slug'];
 
-      /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(2) panel-list list-item:if-empty:observe {
-        body {remove-class: nav;}
-        console-log: "Hide NAV";
-      }
+		/* Define which fields to display in the power panel. */
+		$powerFields: [ 'intelligence', 'strength', 'speed', 'durability', 'power' ];
 
-      /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(3) panel-list list-item:not-if-empty:observe {
-        body {add-class: main;}
-        console-log: "Show MAIN";
-      }
+		/* Define which fields to display in the power panel. */
+		$appearanceFields: [ 'gender', 'race', 'heightInches', 'weightKilos', 'eyeColor', 'hairColor' ];
+	}
 
-      /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(3) panel-list list-item:if-empty:observe {
-        body {remove-class: main;}
-        app-panel:nth-of-type(3) {remove-attribute: style;}
-        console-log: "Hide MAIN";
-      }
 
-      /* Show panels when there are children of panel-list */
-      app-panel:nth-of-type(4) panel-list list-item:not-if-empty:observe {
-        body {add-class: aside;}
-        console-log: "Show ASIDE";
-      }
+	/***
+	 * Functionality variables for the app prior to initialization.
+	**/
+	body:preInit {
+		$liCo: 0;
+		$startingLiCo: 0;
+		$totalRecords: 0;
+		$viewPageNo: 1;			/* adjusts dynamically per screen size */
+		$viewTotalPages: 0;		/* adjusts dynamically per screen size */
+		$viewPerPage: 25;		/* adjusts dynamically per screen size */
+	}
 
-      app-panel:nth-of-type(4) panel-list #userID:draw { {
-        app-panel:nth-of-type(3) panel-list list-item[data-id="{currentUserID}"] {
-	      take-class: .active scope(app-panel:nth-of-type(3) panel-list);
-        console-log: "Take MAIN .active";
-        }
-      }
 
-      /* app-panel:nth-of-type(4) panel-list:if-empty:observe{
-      app-panel:nth-of-type(3) panel-list list-item.active {
-        remove-class: .active;
-        console-log: "Remove LIST-ITEM .active";
-        }
-      } */
+	/***
+	 * Call data on body init.
+	**/
 
-      /* Hide panel when there are NO children of panel-list */
-      app-panel:nth-of-type(4) panel-list:if-empty:observe {
-        var: currentUserID null;
-        body {remove-class: aside;}
-        console-log: "Hide ASIDE";
-        app-panel:nth-of-type(3) panel-list list-item.active {
-          remove-class: .active scope(app-panel:nth-of-type(3) panel-list);
-          console-log: "Remove MAIN LIST-ITEM .active";
-        }
-        app-panel:nth-of-type(3) {remove-attribute: style;}
-        console-log: "Remove MAIN size attribute";
-      }
+	body:init {
+		search-results list-item {
+			$liCo++;
+		}
+		search-results {
+			trigger: countRows;
+		}
 
-      close-panel:click,
-      app-panel:nth-of-type(3) panel-list list-item:if-var(currentUserID "{@data-liCo}"):click {
-        empty: app-panel:nth-of-type(4) panel-list;
-        console-log: "Empty panel-list to close panel";
-      }
+		search-results {
+			/* turn off scroll bar - this should go into CSS or maybe not, depending on the view. */
+			overflow-y: hidden;
+		}
+		search-results {
+			ajax: "{$rowPopulationURL}" get get-pars(perPage={$viewPerPage})json await;
+			/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
+			/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
+			search-results list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
+			ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
+			}*/
+			console-log: "getting here";
+			trigger: setup;
+			$startingLiCo: $liCo;
+			/* Get total records available */
+			
+			@each $item in {JSON}.data {
+				$liCo++;
+				$rowHTML: "<list-item data-co='{$liCo}' data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+				@each $fieldKey in $rowFields {
+					$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
+				}
+				$rowHTML: $rowHTML + "</list-item>";
+				render-before-end: "{$rowHTML}";
+			}
+
+			$totalRecords: {JSON}.totalRecords;
+			trigger: countRows;
+		}
+		/* Set up reactive variable for this so we don't have to render again it later. */
+		label[for="powerstats"] panel-meta {
+			render: "[ {{$powerFields.length}} ]";
+		}
+		/* Set up reactive variable for this so we don't have to render again it later. */
+		label[for="appearance"] panel-meta {
+			render: "[ {{$appearanceFields.length}} ]";
+		}
+	}
+
+
+	/***
+	 * Stop default behaviour of links, except outside links.
+	**/
+	a:not([target]):click {
+		prevent-default: true;
+	}
+
+	/* link from the welcome panel to the list view results */
+	#listView:click {
+		body {
+			remove-class: .intro;
+		}
+	}
+
+	/***
+	 * Draw the row headings.
+	**/
+	list-headings:draw {
+		$headingsHTML: "<list-cell><input type='checkbox'></list-cell>";
+		@each $fieldKey in $rowFields {
+			$headingsHTML: $headingsHTML + "<list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>";
+		}
+		render-replace: "{$headingsHTML}";
+	}
+
+	window:resize {
+		body.pagination search-results {
+			trigger: countRows;
+		}
+	}
+
+	/***
+	 * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
+	**/
+	body.pagination search-results:countRows {
+		$totalVisible: -1;
+		$totalNonVisible: -1;
+		$foundNonVisible: false;
+		@for $n from $startingLiCo + 1 to $liCo {
+			@if completely-visible(list-item[data-co="{$n}"]) {
+				$totalVisible++;
+				list-item[data-co="{$n}"] {
+					opacity: 1;
+				}
+				$m: $n - 1;
+				list-item[data-co="{$m}"] {
+					opacity: 1;
+				}
+				$m: $n - 2;
+				list-item[data-co="{$m}"] {
+					opacity: 1;
+				}
+			} @else {
+				$totalNonVisible++;
+				list-item[data-co="{$n}"] {
+					opacity: 0;
+
+console-log: "row {$n} not visible";
+
+				}
+				@if !$foundNonVisible {
+					$foundNonVisible: true;
+					$totalNonVisible++;
+					$m: $n - 1;
+					list-item[data-co="{$m}"] {
+						$totalVisible--;
+						$totalNonVisible++;
+						opacity: 0;
+					}
+					$m: $n - 2;
+					list-item[data-co="{$m}"] {
+						$totalNonVisible++;
+						opacity: 0;
+					}
+				}
+			}
+		}
+		/* Adjust for top header row */
+		$totalVisible: $totalVisible < 0 ? 0 : $totalVisible;
+		#visibleCount {
+			@if $totalVisible < 10 {
+				render: "0{$totalVisible}";
+			} @else {
+				render: "{$totalVisible}";
+			}
+		}
+		#nonVisibleCount {
+			@if $totalNonVisible < 10 {
+				render: "0{$totalNonVisible}";
+			} @else {
+				render: "{$totalNonVisible}";
+			}
+		}
+		/* Draw initial page numbers */
+		app-panel:nth-of-type(3) panel-header list-item { {
+			@if $totalVisible > 0 {
+				render: "<list-cell><a href=''>01</a></list-cell>
+					<list-cell><a href=''>02</a></list-cell>
+					<list-cell><a href=''>03</a></list-cell>
+					<list-cell><a href=''>04</a></list-cell>
+					<list-cell><a href=''>05</a></list-cell>";
+			} @else {
+				render: "";
+			}
+		}
+	}
+
+
+	/***
+	 * Call data to app-panel:nth-of-type(4).
+	**/
+	search-results list-item:not-if-var($currentUserID "{@data-id}"):click {
+		$currentUserID: "{@data-id}";
+		ajax: "{$asidePopulationURL}" get json cache await;
+		$item: {JSON}.data[0];
+		panel-section[data-section="profile"] panel-list {
+			$avatarImg: getVar($item, $apiSchema['image_sm'].apiLocation);
+			$alias: getVar($item, $apiSchema['alias'].apiLocation);
+			$asideHTML: "<list-item><list-cell><img src='{$avatarImg}' alt='{$alias}' title='{$alias}' /></list-cell></list-item>";
+			
+			@each $fieldKey in $profileFields {
+				$asideHTML: $asideHTML + 
+				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+			}
+			render: "{$asideHTML}";
+		}
+		panel-section[data-section="power"] panel-list {
+			$asideHTML: "";
+			@each $fieldKey in $powerFields {
+				$asideHTML: $asideHTML + 
+				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+			}
+			render: "{$asideHTML}";
+		}
+		panel-section[data-section="appearance"] panel-list {
+			$asideHTML: "";
+			@each $fieldKey in $appearanceFields {
+				$asideHTML: $asideHTML + 
+				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+			}
+			render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
+		}
+		run: {=
+			const dragonEvent = new Event('rowclicked', { bubbles: true });
+			o.obj.dispatchEvent(dragonEvent);
+		=};
+	}
+
+
+	/***
+	 * Show panels when there are children of panel-list.
+	**/
+	app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
+		body {
+			add-class: .nav;
+		}
+		console-log: "Show NAV";
+	}
+
+
+	/***
+	 * Show panels when there are children of panel-list.
+	**/
+	app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
+		body {
+			add-class: .nav;
+		}
+		console-log: "Show NAV";
+	}
+
+
+	/***
+	 * Show panels when there are children of panel-list.
+	**/
+	search-results:not-if-empty-trimmed:observe {
+		body {
+			add-class: main;
+		}
+		console-log: "Show MAIN";
+	}
+
+
+	/***
+	 * Hide panel when there are NO children of panel-list.
+	**/
+	search-results:if-empty-trimmed:observe {
+		body {
+			remove-class: main;
+		}
+		search-results < app-panel {
+			remove-attribute: style;
+		}
+		console-log: "Hide MAIN";
+	}
+
+
+	/***
+	 * Show panels when there are children of panel-list.
+	**/
+	app-panel:nth-of-type(4) panel-list:first-of-type:not-if-empty-trimmed:observe {
+		body {
+			add-class: aside;
+		}
+		console-log: "Show ASIDE";
+	}
+
+
+	/***
+	 *
+	*/
+	#userID:draw { {
+		search-results list-item[data-id="{$currentUserID}"] {
+			take-class: .active scope(search-results);
+			console-log: "Take MAIN .active";
+		}
+	}
+
+
+	/* app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe{
+		search-results list-item.active {
+			remove-class: .active;
+			console-log: "Remove LIST-ITEM .active";
+		}
+	} */
+
+
+	/***
+	 * Hide panel when there are NO children of panel-list.
+	**/
+	app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe {
+		$currentUserID: null;
+		body {
+			remove-class: aside;
+		}
+		console-log: "Hide ASIDE";
+		search-results list-item.active {
+			remove-class: .active scope(search-results);
+			console-log: "Remove MAIN LIST-ITEM .active";
+		}
+		search-results < app-panel {
+			remove-attribute: style;
+		}
+		console-log: "Remove MAIN size attribute";
+	}
+
+
+	/***
+	 * Close the panel when the close button or the same row is clicked. Empty the aside panel.
+	**/
+	close-panel:click,
+	search-results list-item:if-var($currentUserID "{@data-id}"):click {
+		empty: app-panel:nth-of-type(4) panel-list;
+		console-log: "Empty panel-list to close panel";
+	}
+
     </style>
   </head>
 
-  <body class="intro" style="opacity: 0.0; transition: opacity 1s ease-in-out;">
+  <body class="intro pagination" style="opacity: 0.0; transition: opacity 1s ease-in-out;">
     <script>0</script>
     <app-container>
       <app-panel>
@@ -304,6 +540,7 @@
           <app-intro>
            <h1>Welcome to SUPER DB</h1>
            <p>Search, filter, and find your favorite Supers!</p>
+           <a id="listView" href="">switch to list view</a>
            <p>Current as of [ date / time ]</p>
           </app-intro>
           <panel-corner-top-left></panel-corner-top-left>
@@ -327,15 +564,10 @@
             <list-cell><a href="#">05</a></list-cell>
           </list-item>
           <list-item>
-            <list-cell><input type="checkbox"></list-cell>
-            <list-cell>ID</list-cell>
-            <list-cell>Name</list-cell>
-            <list-cell>Username</list-cell>
-            <list-cell>Website</list-cell>
-            <list-cell>Email</list-cell>
+            <list-headings></list-headings>
           </list-item>
-          <panel-list>
-          </panel-list>
+          <search-results>
+          </search-results>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>
@@ -355,7 +587,7 @@
         </panel-section>
       </app-panel>
       <app-panel>
-        <panel-section>
+        <panel-section data-section="profile">
           <list-item>
             <list-cell>PROFILE : :</list-cell>
             <list-cell title="Reset">[ &#9735; </list-cell>
@@ -363,130 +595,32 @@
             <list-cell title="Close panel"> x ]</list-cell>
           </list-item>
           <panel-list>
-            <list-item>
-              <list-cell>
-                <img src="https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/images/sm/1-a-bomb.jpg" alt="A-Bomb"
-                title="A-Bomb" />
-              </list-cell>
-              <list-cell></list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>ID</list-cell>
-              <list-cell>
-                <input type="text" id="id" name="id" value="1" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Name</list-cell>
-              <list-cell>
-                <input type="text" id="id" name="name" value="A-Bomb" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Slug</list-cell>
-              <list-cell>
-                <input type="text" id="id" name="slug" value="1-a-bomb" required />
-              </list-cell>
-            </list-item>
           </panel-list>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>
           <panel-corner-bottom-right></panel-corner-bottom-right>
         </panel-section>
-        <panel-section>
+        <panel-section data-section="power">
           <input id="powerstats" type="checkbox" checked />
           <label for="powerstats" title="Toggle open/close">
             <panel-title>POWER STATS : :</panel-title>
             <panel-meta title="Number of stats">[ 6 ]</panel-meta>
           </label>
           <panel-list>
-            <list-item>
-              <list-cell>Intelligence</list-cell>
-              <list-cell>
-                <input type="text" id="intelligence" name="intelligence" value="38" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Strength</list-cell>
-              <list-cell>
-                <input type="text" id="strength" name="strength" value="100" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Speed</list-cell>
-              <list-cell>
-                <input type="text" id="speed" name="speed" value="17" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Durability</list-cell>
-              <list-cell>
-                <input type="text" id="durability" name="durability" value="80" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Power</list-cell>
-              <list-cell>
-                <input type="text" id="power" name="power" value="24" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Combat</list-cell>
-              <list-cell>
-                <input type="text" id="combat" name="combat" value="64" required />
-              </list-cell>
-            </list-item>
           </panel-list>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>
           <panel-corner-bottom-right></panel-corner-bottom-right>
         </panel-section>
-        <panel-section>
+        <panel-section data-section="appearance">
           <input id="appearance" type="checkbox" checked />
           <label for="appearance" title="Toggle open/close">
             <panel-title>APPEARANCE : :</panel-title>
             <panel-meta title="Number of stats">[ 6 ]</panel-meta>
           </label>
           <panel-list>
-            <list-item>
-              <list-cell>Gender</list-cell>
-              <list-cell>
-                <input type="text" id="gender" name="gender" value="Male" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Race</list-cell>
-              <list-cell>
-                <input type="text" id="race" name="race" value="Human" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Height</list-cell>
-              <list-cell>
-                <input type="text" id="height" name="height" value="6'8 203 cm" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Weight</list-cell>
-              <list-cell>
-                <input type="text" id="weight" name="weight" value="980 lb 441 kg" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Eye Color</list-cell>
-              <list-cell>
-                <input type="text" id="eyeColor" name="eyeColor" value="Yellow" required />
-              </list-cell>
-            </list-item>
-            <list-item>
-              <list-cell>Hair Color</list-cell>
-              <list-cell>
-                <input type="text" id="hairColor" name="hairColor" value="64" required />
-              </list-cell>
-            </list-item>
-            <input id="userID" type="hidden" value="8313856133">
           </panel-list>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>

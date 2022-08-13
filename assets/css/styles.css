@@ -602,6 +602,7 @@ panel-corner-top-right:before {
   height: 8px;
   background: var(--border-color);
   opacity: .5;
+  transition: opacity 250ms;
 }
 
 panel-corner-bottom-left:after,
@@ -614,6 +615,21 @@ panel-corner-top-right:after {
   height: 2px;
   background: var(--border-color);
   opacity: .5;
+  transition: opacity 250ms;
+}
+
+panel-section:hover panel-corner-bottom-left:before,
+panel-section:hover panel-corner-bottom-right:before,
+panel-section:hover panel-corner-top-left:before,
+panel-section:hover panel-corner-top-right:before {
+  opacity: 1.0;
+}
+
+panel-section:hover panel-corner-bottom-left:after,
+panel-section:hover panel-corner-bottom-right:after,
+panel-section:hover panel-corner-top-left:after,
+panel-section:hover panel-corner-top-right:after {
+  opacity: 1.0;
 }
 
 

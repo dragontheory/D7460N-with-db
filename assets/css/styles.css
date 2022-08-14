@@ -469,6 +469,9 @@ list-item.active {
   background-color: rgba(48,190,255,0.2);
   color: rgba(255,255,255,1.0);
 }
+list-item[data-empty-row] {
+	pointer-events: none;
+}
 app-panel:nth-of-type(2) panel-list list-item {
   grid-template-columns: 2rem 1fr auto;
 }

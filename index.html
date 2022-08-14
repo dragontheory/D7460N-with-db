@@ -152,7 +152,7 @@
 		@if ("{$totalVisible}" != "" && $rowsPresent < $totalVisible) {
 			/* Handle last page scenario where the number of rows shown may not be the total that could be shown if there were more records */
 			@for $n from 1 to ($totalVisible - $rowsPresent) {
-				$rowHTML: $rowHTML + "<list-item style='pointer-events: none;'><list-cell>&nbsp;</list-cell><list-cell>&nbsp;</list-cell></list-item>";
+				$rowHTML: $rowHTML + "<list-item data-empty-row=''><list-cell>&nbsp;</list-cell><list-cell>&nbsp;</list-cell></list-item>";
 			}
 		}
 		render: "{$rowHTML}";

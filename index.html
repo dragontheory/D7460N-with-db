@@ -74,6 +74,9 @@
 	**/
 	body:preInit {
 		$totalRecords: 0;
+		$totalVisible: 0;
+		$totalNonVisible: 0;
+		$viewRecordNo: 1;
 		$viewPageNo: 1;			/* adjusts dynamically per screen size */
 		$viewTotalPages: 0;		/* adjusts dynamically per screen size */
 		$viewPerPage: 25;		/* adjusts dynamically per screen size */
@@ -82,6 +85,7 @@
 	a[data-page]:not(.currentPage):click {
 		$viewPageNo: {@data-page};
 		$viewPerPage: $totalVisible;
+		$viewRecordNo: ($viewPageNo * $viewPerPage) + 1 - $viewPerPage;
 		panel-list[data-search-results] {
 			trigger: fetchRows;
 		}
@@ -119,7 +123,7 @@
 			remove-class: .intro;
 		}
 		panel-list[data-search-results] {
-			trigger: countRows after stack, updatePageNumbers after stack;
+			trigger: countRows, updatePageNumbers after stack;
 		}
 	}
 
@@ -164,21 +168,44 @@
 
 	window:resize {
 		body.pagination panel-list[data-search-results] {
-			trigger: countRows, updatePageNumbers;
+			trigger: countRows after stack, updatePageNumbers after stack;
 		}
 	}
 
 	/***
 	 * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
 	**/
-	panel-list[data-search-results]:countRows {
+	body.pagination panel-list[data-search-results]:countRows {
 		$containerHeight: getComputedStyle(o.secSelObj).height.slice(0, -2);
 		$rowHeight: (o.secSelObj.firstChild) ? getComputedStyle(o.secSelObj.firstChild).height.slice(0, -2) : 0;
 		@if ($rowHeight == 0) {
 			exit;
 		}
+
+		$priorVisible: $totalVisible;
+		$priorNonVisible: $totalNonVisible;
+
 		$totalVisible: Math.floor($containerHeight / $rowHeight);
-		$totalNonVisible: $viewPerPage - $totalVisible;
+		$totalNonVisible: $viewPerPage - $totalVisible + 1;
+		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
+
+		/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure. */
+		@if ($totalVisible != 0) {
+			$viewPageNo: ($viewRecordNo / $totalVisible < 1) ? 1 : Math.floor($viewRecordNo / $totalVisible) + 1;
+		}
+
+		/* First count how many items there are currently - we may need to grab some more if this is a resize */
+		$displayCount: 0;
+		panel-list[data-search-results] list-item {
+			$displayCount++;
+		}
+		@if ($displayCount < $totalVisible) {
+			/* We need to grab some more records. Fetch some more rows and come back. */
+			$viewPerPage: $totalVisible;
+			trigger: fetchRows;
+			exit;
+		}
+
 		$displayCount: 0;
 		panel-list[data-search-results] list-item {
 			$displayCount++;
@@ -188,6 +215,7 @@
 				set-attribute: data-invisible;
 			}
 		}
+
 		#visibleCount {
 			@if $totalVisible < 10 {
 				render: "0{$totalVisible}";
@@ -202,7 +230,6 @@
 				render: "{$totalNonVisible}";
 			}
 		}
-		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
 	}
 
 	panel-list[data-search-results]:updatePageNumbers {
@@ -325,6 +352,16 @@
 	@component pagination-links {
 		html {
 			<acss-style>
+
+/* remove when the window resizing stuff is done, as it requires the rows to be fixed height for the resizing adjustment to work */
+/*panel-list[data-search-results] {
+	overflow-y: hidden;
+	height: calc(100vh - 400px);
+}
+panel-list[data-search-results] list-item {
+	height: 36px;
+}*/
+
 				pagination-links.noPageLink1 list-cell:nth-of-type(1),
 				pagination-links.noEllipsis1 list-cell:nth-of-type(2),
 				pagination-links.noPageLink2 list-cell:nth-of-type(3),

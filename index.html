@@ -12,12 +12,6 @@
     <link type="image/svg+xml" rel="icon" href="assets/images/logo.svg" />
     <link type="text/css" rel="stylesheet" href="assets/css/styles.css" />
 
-	<style>
-		body.pagination search-results {
-			overflow-y: hidden;
-		}
-	</style>
-
     <style type="text/acss">
 
 	/***
@@ -88,7 +82,7 @@
 	a[data-page]:not(.currentPage):click {
 		$viewPageNo: {@data-page};
 		$viewPerPage: $totalVisible;
-		search-results {
+		panel-list[data-search-results] {
 			trigger: fetchRows;
 		}
 	}
@@ -98,7 +92,7 @@
 	 * Call data on body init.
 	**/
 	body:init {
-		search-results {
+		panel-list[data-search-results] {
 			trigger: initialisePageNumbers, fetchRows;
 		}
 		/* Set up reactive variable for this so we don't have to render again it later. */
@@ -124,42 +118,34 @@
 		body {
 			remove-class: .intro;
 		}
-		search-results {
-			trigger: countRows, updatePageNumbers after stack;
+		panel-list[data-search-results] {
+			trigger: countRows after stack, updatePageNumbers after stack;
 		}
 	}
 
-	search-results:fetchRows {
+	panel-list[data-search-results]:fetchRows {
 		ajax: "{$rowPopulationURL}" get get-pars(page={$viewPageNo}&perPage={$viewPerPage})json await;
 		/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
 		/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
-		search-results list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
+		panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
 		ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
 		}*/
 		trigger: setup;
 		/* Get total records available */
 
 		$rowHTML: "";
-		$rowsPresent: 0;
 		@each $item in {JSON}.data {
-			$rowsPresent++;
 			$rowHTML: $rowHTML + "<list-item data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
 			@each $fieldKey in $rowFields {
 				$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
 			}
 			$rowHTML: $rowHTML + "</list-item>";
 		}
-		@if ("{$totalVisible}" != "" && $rowsPresent < $totalVisible) {
-			/* Handle last page scenario where the number of rows shown may not be the total that could be shown if there were more records */
-			@for $n from 1 to ($totalVisible - $rowsPresent) {
-				$rowHTML: $rowHTML + "<list-item data-empty-row=''><list-cell>&nbsp;</list-cell><list-cell>&nbsp;</list-cell></list-item>";
-			}
-		}
 		render: "{$rowHTML}";
 
 		$totalRecords: {JSON}.totalRecords;
 
-		body:not(.intro) search-results {
+		body:not(.intro) panel-list[data-search-results] {
 			trigger: updatePageNumbers;
 		}
 	}
@@ -177,7 +163,7 @@
 	}
 
 	window:resize {
-		body.pagination search-results {
+		body.pagination panel-list[data-search-results] {
 			trigger: countRows, updatePageNumbers;
 		}
 	}
@@ -185,16 +171,21 @@
 	/***
 	 * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
 	**/
-	search-results:countRows {
-		$totalVisible: 0;
-		$totalNonVisible: 0;
-		search-results list-item {
-			@if completely-visible(& list-cell scope(search-results)) {
-				$totalVisible++;
-				opacity: 1;
+	panel-list[data-search-results]:countRows {
+		$containerHeight: getComputedStyle(o.secSelObj).height.slice(0, -2);
+		$rowHeight: (o.secSelObj.firstChild) ? getComputedStyle(o.secSelObj.firstChild).height.slice(0, -2) : 0;
+		@if ($rowHeight == 0) {
+			exit;
+		}
+		$totalVisible: Math.floor($containerHeight / $rowHeight);
+		$totalNonVisible: $viewPerPage - $totalVisible;
+		$displayCount: 0;
+		panel-list[data-search-results] list-item {
+			$displayCount++;
+			@if $displayCount <= $totalVisible {
+				remove-attribute: data-invisible;
 			} @else {
-				$totalNonVisible++;
-				opacity: 0;
+				set-attribute: data-invisible;
 			}
 		}
 		#visibleCount {
@@ -214,7 +205,7 @@
 		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
 	}
 
-	search-results:updatePageNumbers {
+	panel-list[data-search-results]:updatePageNumbers {
 		$noEllipsis1: false;
 		$noEllipsis2: false;
 		$noPageLink1: false;
@@ -348,6 +339,9 @@
 					box-shadow: none;
 					cursor: default;
 				}
+				panel-list[data-search-results] list-item[data-invisible] {
+					display: none;
+				}
 
 			</acss-style>
             <list-cell><a href="#" data-page="1">1</a></list-cell>
@@ -363,7 +357,7 @@
 	/***
 	 * Call data to app-panel:nth-of-type(4).
 	**/
-	search-results list-item:not-if-var($currentUserID "{@data-id}"):click {
+	panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):click {
 		$currentUserID: "{@data-id}";
 		ajax: "{$asidePopulationURL}" get json cache await;
 		$item: {JSON}.data[0];
@@ -428,7 +422,7 @@
 	/***
 	 * Show panels when there are children of panel-list.
 	**/
-	search-results:not-if-empty-trimmed:observe {
+	panel-list[data-search-results]:not-if-empty-trimmed:observe {
 		body {
 			add-class: main;
 		}
@@ -439,11 +433,11 @@
 	/***
 	 * Hide panel when there are NO children of panel-list.
 	**/
-	search-results:if-empty-trimmed:observe {
+	panel-list[data-search-results]:if-empty-trimmed:observe {
 		body {
 			remove-class: main;
 		}
-		search-results < app-panel {
+		panel-list[data-search-results] < app-panel {
 			remove-attribute: style;
 		}
 		console-log: "Hide MAIN";
@@ -465,15 +459,15 @@
 	 *
 	*/
 	#userID:draw { {
-		search-results list-item[data-id="{$currentUserID}"] {
-			take-class: .active scope(search-results);
+		panel-list[data-search-results] list-item[data-id="{$currentUserID}"] {
+			take-class: .active scope(panel-list[data-search-results]);
 			console-log: "Take MAIN .active";
 		}
 	}
 
 
 	/* app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe{
-		search-results list-item.active {
+		panel-list[data-search-results] list-item.active {
 			remove-class: .active;
 			console-log: "Remove LIST-ITEM .active";
 		}
@@ -489,11 +483,11 @@
 			remove-class: aside;
 		}
 		console-log: "Hide ASIDE";
-		search-results list-item.active {
-			remove-class: .active scope(search-results);
+		panel-list[data-search-results] list-item.active {
+			remove-class: .active scope(panel-list[data-search-results]);
 			console-log: "Remove MAIN LIST-ITEM .active";
 		}
-		search-results < app-panel {
+		panel-list[data-search-results] < app-panel {
 			remove-attribute: style;
 		}
 		console-log: "Remove MAIN size attribute";
@@ -504,7 +498,7 @@
 	 * Close the panel when the close button or the same row is clicked. Empty the aside panel.
 	**/
 	close-panel:click,
-	search-results list-item:if-var($currentUserID "{@data-id}"):click {
+	panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):click {
 		empty: app-panel:nth-of-type(4) panel-list;
 		console-log: "Empty panel-list to close panel";
 	}
@@ -700,8 +694,8 @@
           <list-item>
             <list-headings></list-headings>
           </list-item>
-          <search-results>
-          </search-results>
+          <panel-list data-search-results="">
+          </panel-list>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>

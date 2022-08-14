@@ -8415,8 +8415,23 @@ const _replaceJSExpression = (sel, realVal=false, quoteIfString=false, varScope=
 		}
 
 		try {
+
+if (str.indexOf('o.secSelObj') !== -1) {
+	console.log('_replaceJSExpression, wot:', wot);
+}
+
 			res = Function('scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar', '"use strict";return (' + wot + ');')(scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar);		// jshint ignore:line
+
+if (str.indexOf('o.secSelObj') !== -1) {
+	console.log('_replaceJSExpression, result:', res);
+}
+
 		} catch (err) {
+
+if (str.indexOf('o.secSelObj') !== -1) {
+	console.log('_replaceJSExpression, err:', err);
+}
+
 			try {
 				res = Function('scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar', '"use strict";return ("' + wot.replace(/"/gm, '\\"') + '");')(scopedProxy, o, scopedOrig, escapeHTML, unEscapeHTML, getVar);		// jshint ignore:line
 			} catch (err) {

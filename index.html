@@ -139,15 +139,23 @@
 		trigger: setup;
 		/* Get total records available */
 
-		render: "";
+		$rowHTML: "";
+		$rowsPresent: 0;
 		@each $item in {JSON}.data {
-			$rowHTML: "<list-item data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+			$rowsPresent++;
+			$rowHTML: $rowHTML + "<list-item data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
 			@each $fieldKey in $rowFields {
 				$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
 			}
 			$rowHTML: $rowHTML + "</list-item>";
-			render-before-end: "{$rowHTML}";
 		}
+		@if ("{$totalVisible}" != "" && $rowsPresent < $totalVisible) {
+			/* Handle last page scenario where the number of rows shown may not be the total that could be shown if there were more records */
+			@for $n from 1 to ($totalVisible - $rowsPresent) {
+				$rowHTML: $rowHTML + "<list-item style='pointer-events: none;'><list-cell>&nbsp;</list-cell><list-cell>&nbsp;</list-cell></list-item>";
+			}
+		}
+		render: "{$rowHTML}";
 
 		$totalRecords: {JSON}.totalRecords;
 

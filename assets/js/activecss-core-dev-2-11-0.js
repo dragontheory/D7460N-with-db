@@ -8287,7 +8287,7 @@ const _replaceAttrs = (obj, sel, secSelObj=null, o=null, func='', varScope=null,
 			}
 			if (func == 'Var' && !wot.startsWith('host')) {
 
-console.log('_replaceAttrs, realWot:', realWot);
+//console.log('_replaceAttrs, realWot:', realWot);
 
 				// Assume it isn't ready to be evaluated. Useful for presetting on variable assignment. Encrypt a bit, but only to stop someone accidentally typing
 				// it in user content - there is no security risk with this, because any attribute referenced is on the page already.

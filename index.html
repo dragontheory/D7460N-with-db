@@ -85,7 +85,7 @@
 		$viewPerPage: 25;		/* adjusts dynamically per screen size */
 	}
 
-	a[data-page]:click {
+	a[data-page]:not(.currentPage):click {
 		$viewPageNo: {@data-page};
 		$viewPerPage: $totalVisible;
 		search-results {
@@ -125,7 +125,7 @@
 			remove-class: .intro;
 		}
 		search-results {
-			trigger: countRows, updatePageNumbers;
+			trigger: countRows, updatePageNumbers after stack;
 		}
 	}
 
@@ -205,6 +205,7 @@
 				render: "{$totalNonVisible}";
 			}
 		}
+		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
 		/* Draw initial page numbers */
 /*		app-panel:nth-of-type(3) panel-header list-item { {
 			@if $totalVisible > 0 {
@@ -216,20 +217,17 @@
 	}
 
 	search-results:updatePageNumbers {
-		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
-		$noNextPage: false;
 		$noEllipsis1: false;
 		$noEllipsis2: false;
-		$noPrevPage: false;
+		$noPageLink1: false;
 		$noPageLink2: false;
 		$noPageLink3: false;
 		$noPageLink4: false;
-		@if ($viewTotalPages < 5) {
-			/* Pages less than 5 */
-			$noPrevPage: true;
+		$noPageLink5: false;
+		@if ($viewTotalPages < 6) {
+			/* Pages less than 6 */
 			$noEllipsis1: true;
 			$noEllipsis2: true;
-			$noNextPage: true;
 			@if $viewTotalPages < 2 {
 				$noPageLink2: true;
 			}
@@ -239,46 +237,41 @@
 			@if $viewTotalPages < 4 {
 				$noPageLink4: true;
 			}
+			@if $viewTotalPages < 5 {
+				$noPageLink5: true;
+			}
 		} @else if ($viewPageNo == 1) {
 			/* First page */
-			$noPrevPage: true;
+			$noPageLink1: true;
 			$noEllipsis1: true;
-			$pageLink1: 1;
-			$pageLink2: 2;
-			$pageLink3: 3;
-			$pageLink4: $viewTotalPages;
-			$pageNext: 2;
+			$pageLink2: 1;
+			$pageLink3: 2;
+			$pageLink4: 3;
+			$pageLink5: $viewTotalPages;
 		} @else if ($viewPageNo > $viewTotalPages - 2) {
 			/* Last page */
-			$pagePrev: $viewPageNo - 1;
-			$noNextPage: true;
 			$noEllipsis2: true;
-			$pageLink1: 1;
-			$pageLink2: $viewTotalPages - 2;
-			$pageLink3: $viewTotalPages - 1;
-			$pageLink4: $viewTotalPages;
+			$noPageLink2: true;
+			$pageLink2: $viewTotalPages - 3;
+			$pageLink3: $viewTotalPages - 2;
+			$pageLink4: $viewTotalPages - 1;
+			$pageLink5: $viewTotalPages;
 		} @else {
-			$pagePrev: $viewPageNo - 1;
-			$pageNext: $viewPageNo + 1;
-			$noEllipsis1: true;
-			$pageLink1: $viewPageNo - 1;
-			$pageLink2: $viewPageNo;
-			$pageLink3: $viewPageNo + 1;
-			$pageLink4: $viewTotalPages;
+			@if ($viewPageNo == $viewTotalPages - 2) {
+				$noEllipsis2: true;
+			}
+			@if ($viewPageNo < 4) {
+				$noPageLink1: true;
+				$noEllipsis1: true;
+			}
+			$pageLink2: $viewPageNo - 1;
+			$pageLink3: $viewPageNo;
+			$pageLink4: $viewPageNo + 1;
+			$pageLink5: $viewTotalPages;
 		}
 
 		pagination-links {
 			set-attribute: data-page "{$viewPageNo}";
-			@if ($noNextPage) {
-				add-class: .noNext;
-			} @else {
-				remove-class: .noNext;
-			}
-			@if ($noPrevPage) {
-				add-class: .noPrev;
-			} @else {
-				remove-class: .noPrev;
-			}
 			@if ($noEllipsis1) {
 				add-class: .noEllipsis1;
 			} @else {
@@ -288,6 +281,11 @@
 				add-class: .noEllipsis2;
 			} @else {
 				remove-class: .noEllipsis2;
+			}
+			@if ($noPageLink1) {
+				add-class: .noPageLink1;
+			} @else {
+				remove-class: .noPageLink1;
 			}
 			@if ($noPageLink2) {
 				add-class: .noPageLink2;
@@ -304,30 +302,47 @@
 			} @else {
 				remove-class: .noPageLink4;
 			}
+			@if ($noPageLink5) {
+				add-class: .noPageLink5;
+			} @else {
+				remove-class: .noPageLink5;
+			}
+			trigger: setCurrentPage after 10ms;
+		}
+	}
+
+	pagination-links:setCurrentPage {
+		& a[data-page="{@data-page}"]:not(.pageArrow) {
+			/* For page 1, this actually runs twice and pageLink2 ends up taking the class and pageLink1,
+			which also has data-page="1" is already hidden so there is no DOM flicker. */
+			take-class: .currentPage;
 		}
 	}
 
 	@component pagination-links {
 		html {
 			<acss-style>
-				pagination-links.noPrev list-cell:first-of-type,
-				pagination-links.noEllipsis1 list-cell:nth-of-type(3),
-				pagination-links.noPageLink2 list-cell:nth-of-type(4),
-				pagination-links.noPageLink3 list-cell:nth-of-type(5),
+				pagination-links.noPageLink1 list-cell:nth-of-type(1),
+				pagination-links.noEllipsis1 list-cell:nth-of-type(2),
+				pagination-links.noPageLink2 list-cell:nth-of-type(3),
+				pagination-links.noPageLink3 list-cell:nth-of-type(4),
+				pagination-links.noPageLink4 list-cell:nth-of-type(5),
 				pagination-links.noEllipsis2 list-cell:nth-of-type(6),
-				pagination-links.noPageLink4 list-cell:nth-of-type(7),
-				pagination-links.noNext list-cell:last-of-type {
+				pagination-links.noPageLink5 list-cell:nth-of-type(7) {
 					display: none;
 				}
+				pagination-links a.currentPage {
+					color: #fff;
+				}
+
 			</acss-style>
-            <list-cell><a href="#" data-page="{{$pagePrev}}">&lt;</a></list-cell>
-            <list-cell><a href="#" data-page="{{$pageLink1}}">{{$pageLink1}}</a></list-cell>
+            <list-cell><a href="#" data-page="1">1</a></list-cell>
             <list-cell>...</list-cell>
             <list-cell><a href="#" data-page="{{$pageLink2}}">{{$pageLink2}}</a></list-cell>
             <list-cell><a href="#" data-page="{{$pageLink3}}">{{$pageLink3}}</a></list-cell>
-            <list-cell>...</list-cell>
             <list-cell><a href="#" data-page="{{$pageLink4}}">{{$pageLink4}}</a></list-cell>
-            <list-cell><a href="#" data-page="{{$pageNext}}">&gt;</a></list-cell>
+            <list-cell>...</list-cell>
+            <list-cell><a href="#" data-page="{{$pageLink5}}">{{$pageLink5}}</a></list-cell>
 		}
 	}
 

@@ -189,8 +189,6 @@
 				opacity: 0;
 			}
 		}
-		/* Adjust for top header row */
-		$totalVisible: $totalVisible < 0 ? 0 : $totalVisible;
 		#visibleCount {
 			@if $totalVisible < 10 {
 				render: "0{$totalVisible}";
@@ -206,14 +204,6 @@
 			}
 		}
 		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
-		/* Draw initial page numbers */
-/*		app-panel:nth-of-type(3) panel-header list-item { {
-			@if $totalVisible > 0 {
-				render: "";
-			} @else {
-				render: "";
-			}
-		}*/
 	}
 
 	search-results:updatePageNumbers {
@@ -228,6 +218,14 @@
 			/* Pages less than 6 */
 			$noEllipsis1: true;
 			$noEllipsis2: true;
+			$pageLink1: 1;
+			$pageLink2: 2;
+			$pageLink3: 3;
+			$pageLink4: 4;
+			$pageLink5: 5;
+			@if $viewTotalPages == 0 {
+				$noPageLink1: true;
+			}
 			@if $viewTotalPages < 2 {
 				$noPageLink2: true;
 			}
@@ -249,7 +247,7 @@
 			$pageLink4: 3;
 			$pageLink5: $viewTotalPages;
 		} @else if ($viewPageNo > $viewTotalPages - 2) {
-			/* Last page */
+			/* Last few pages */
 			$noEllipsis2: true;
 			$noPageLink2: true;
 			$pageLink2: $viewTotalPages - 3;
@@ -257,10 +255,13 @@
 			$pageLink4: $viewTotalPages - 1;
 			$pageLink5: $viewTotalPages;
 		} @else {
+			/* All other pages */
 			@if ($viewPageNo == $viewTotalPages - 2) {
+				/* Last few pages */
 				$noEllipsis2: true;
 			}
 			@if ($viewPageNo < 4) {
+				/* First few pages */
 				$noPageLink1: true;
 				$noEllipsis1: true;
 			}
@@ -683,7 +684,7 @@
             <list-cell title="Toggle row/card view">
               <label><input type="checkbox"><span class="label"></span></label>
             </list-cell>
-            <pagination-links></pagination-links>
+            <pagination-links class="noPageLink1 noEllipsis1 noPageLink2 noPageLink3 noPageLink4 noEllipsis2 noPageLink5"></pagination-links>
           </list-item>
           <list-item>
             <list-headings></list-headings>

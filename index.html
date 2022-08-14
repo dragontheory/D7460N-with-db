@@ -262,8 +262,11 @@
 			}
 			@if ($viewPageNo < 4) {
 				/* First few pages */
-				$noPageLink1: true;
 				$noEllipsis1: true;
+			}
+			@if ($viewPageNo < 3) {
+				/* First few pages */
+				$noPageLink1: true;
 			}
 			$pageLink2: $viewPageNo - 1;
 			$pageLink3: $viewPageNo;

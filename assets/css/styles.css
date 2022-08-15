@@ -314,6 +314,12 @@ app-panel:nth-of-type(3) panel-section:nth-of-type(2) list-item:nth-of-type(1) l
   content: "\2637";
 }
 
+list-cell:empty::after  {
+  content: 'no data';
+  color: rgba(255,255,255,0.2);
+  text-shadow: 1px -1px 0 rgba(0,0,0,0.5);
+}
+
 
 /*-----------------------------
   PAGINATION

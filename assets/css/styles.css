@@ -97,7 +97,7 @@ app-panel:nth-of-type(3) panel-section:nth-of-type(1) panel-list {
 }
 
 app-panel:nth-of-type(3) panel-section:nth-of-type(2) {
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
 }
 
 
@@ -215,8 +215,7 @@ app-panel:nth-of-type(2) list-item{
 app-panel:nth-of-type(3) panel-corner-bottom-right {display: initial;}
 
 /* HIDE BY DEFAULT */
-app-panel:nth-of-type(4),
-app-panel:nth-of-type(5) {display: none;}
+app-panel:nth-of-type(4) {display: none;}
 
 label,
 panel-header {
@@ -326,7 +325,7 @@ app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(1) list-cell:nth-
   color:rgba(255,255,255,1.0);
 }
 app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(2) {
-  grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 4rem) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr);
+  grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(3rem, 1fr) minmax(3rem, 4rem);
 }
 
 app-panel:nth-of-type(3) panel-header list-item {
@@ -476,9 +475,13 @@ app-panel:nth-of-type(2) panel-list list-item {
   grid-template-columns: 2rem 1fr auto;
 }
 
+app-panel:nth-of-type(3) {
+  grid-template-rows: 1fr auto;
+}
+
 app-panel:nth-of-type(3) > list-item,
 app-panel:nth-of-type(3) panel-list list-item {
-  grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 4rem) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr) minmax(3rem, 1fr);
+  grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(3rem, 1fr) minmax(3rem, 3rem);
 }
 
 app-panel:nth-of-type(3) panel-list list-item list-cell:nth-of-type(2) {width: auto;}
@@ -893,7 +896,7 @@ laser-beams laser-beam:nth-child(4) {
   }
 }
 @keyframes lf2 {
-  0% {left: 200%;
+  0% {left: 200%;}
   100% {
     left: -200%;
     opacity: 0;

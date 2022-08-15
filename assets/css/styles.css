@@ -484,6 +484,10 @@ app-panel:nth-of-type(3) panel-list list-item {
   grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(3rem, 1fr) minmax(3rem, 3rem);
 }
 
+.card app-panel:nth-of-type(3) panel-list list-item {
+  grid-template-columns: 1fr;
+}
+
 app-panel:nth-of-type(3) panel-list list-item list-cell:nth-of-type(2) {width: auto;}
 
 app-panel:nth-of-type(5) > list-item:first-of-type {

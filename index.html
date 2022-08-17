@@ -187,8 +187,7 @@
 		$totalVisible: Math.floor($containerHeight / $rowHeight);
 		$totalNonVisible: $viewPerPage - $totalVisible + 1;
 		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
-
-		$viewTotalPages: ($viewTotalPages == Infinity) ? 0 : $viewTotalPages;
+		$viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0) ? 0 : $viewTotalPages;
 
 		/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure. */
 		@if ($totalVisible != 0) {
@@ -354,6 +353,7 @@
 	@component pagination-links {
 		html {
 			<acss-style>
+				pagination-links.noPagination,
 				pagination-links.noPageLink1 list-cell:nth-of-type(1),
 				pagination-links.noEllipsis1 list-cell:nth-of-type(2),
 				pagination-links.noPageLink2 list-cell:nth-of-type(3),

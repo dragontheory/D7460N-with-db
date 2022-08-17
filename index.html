@@ -117,16 +117,6 @@
 		prevent-default: true;
 	}
 
-	/* link from the welcome panel to the list view results */
-	#listView:click {
-		body {
-			remove-class: .intro;
-		}
-		panel-list[data-search-results] {
-			trigger: countRows, updatePageNumbers after stack;
-		}
-	}
-
 	panel-list[data-search-results]:fetchRows {
 		ajax: "{$rowPopulationURL}" get get-pars(page={$viewPageNo}&perPage={$viewPerPage})json await;
 		/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
@@ -150,7 +140,7 @@
 		$totalRecords: {JSON}.totalRecords;
 
 		body:not(.intro) panel-list[data-search-results] {
-			trigger: updatePageNumbers;
+			trigger: countRows after stack;
 		}
 	}
 
@@ -168,7 +158,7 @@
 
 	window:resize {
 		body.pagination panel-list[data-search-results] {
-			trigger: countRows after stack, updatePageNumbers after stack;
+			trigger: countRows after stack;
 		}
 	}
 
@@ -176,11 +166,20 @@
 	 * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
 	**/
 	body.pagination panel-list[data-search-results]:countRows {
-		$containerHeight: getComputedStyle(o.secSelObj).height.slice(0, -2);
-		$rowHeight: (o.secSelObj.firstChild) ? getComputedStyle(o.secSelObj.firstChild).height.slice(0, -2) : 0;
+		$panelSection: o.secSelObj.closest('panel-section');
+		$panelSectionHeight: parseInt(getComputedStyle($panelSection).height);
+		$panelHeader: $panelSection.querySelector('list-item:first-of-type');
+		$panelHeaderHeight: parseInt(getComputedStyle($panelHeader).height);
+		$panelRowHeader: $panelSection.querySelector('list-item:nth-of-type(2)');
+		$panelRowHeaderHeight: parseInt(getComputedStyle($panelRowHeader).height);
+		$firstRow: o.secSelObj.firstChild;
+		$firstRowHeight: parseInt(getComputedStyle(o.secSelObj.firstChild).height);
+		$rowHeight: ($firstRowHeight) ? $firstRowHeight : $rowHeight;
 		@if ($rowHeight == 0) {
 			exit;
 		}
+
+		$containerHeight: $panelSectionHeight - $panelHeaderHeight - $panelRowHeaderHeight - $rowHeight;
 
 		$priorVisible: $totalVisible;
 		$priorNonVisible: $totalNonVisible;
@@ -188,6 +187,8 @@
 		$totalVisible: Math.floor($containerHeight / $rowHeight);
 		$totalNonVisible: $viewPerPage - $totalVisible + 1;
 		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
+
+		$viewTotalPages: ($viewTotalPages == Infinity) ? 0 : $viewTotalPages;
 
 		/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure. */
 		@if ($totalVisible != 0) {
@@ -230,6 +231,7 @@
 				render: "{$totalNonVisible}";
 			}
 		}
+		trigger: updatePageNumbers;
 	}
 
 	panel-list[data-search-results]:updatePageNumbers {
@@ -352,16 +354,6 @@
 	@component pagination-links {
 		html {
 			<acss-style>
-
-/* remove when the window resizing stuff is done, as it requires the rows to be fixed height for the resizing adjustment to work */
-/*panel-list[data-search-results] {
-	overflow-y: hidden;
-	height: calc(100vh - 400px);
-}
-panel-list[data-search-results] list-item {
-	height: 36px;
-}*/
-
 				pagination-links.noPageLink1 list-cell:nth-of-type(1),
 				pagination-links.noEllipsis1 list-cell:nth-of-type(2),
 				pagination-links.noPageLink2 list-cell:nth-of-type(3),

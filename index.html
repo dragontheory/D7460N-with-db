@@ -200,9 +200,7 @@
 			$displayCount++;
 		}
 
-
-
-		@if ($totalVisible > 0 && $displayCount < $totalVisible - 1) {
+		@if ($totalVisible > 0 && $displayCount < $totalVisible - 1 && (($viewPerPage * $viewPageNo) + $totalVisible  < $totalRecords)) {
 			/* We need to grab some more records. Fetch some more rows and come back. */
 			$viewPerPage: $totalVisible;
 			trigger: fetchRows;

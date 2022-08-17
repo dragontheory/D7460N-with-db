@@ -199,7 +199,10 @@
 		panel-list[data-search-results] list-item {
 			$displayCount++;
 		}
-		@if ($displayCount < $totalVisible) {
+
+
+
+		@if ($totalVisible > 0 && $displayCount < $totalVisible - 1) {
 			/* We need to grab some more records. Fetch some more rows and come back. */
 			$viewPerPage: $totalVisible;
 			trigger: fetchRows;
@@ -344,8 +347,6 @@
 
 	pagination-links:setCurrentPage {
 		& a[data-page="{@data-page}"]:not(.pageArrow) {
-			/* For page 1, this actually runs twice and pageLink2 ends up taking the class and pageLink1,
-			which also has data-page="1" is already hidden so there is no DOM flicker. */
 			take-class: .currentPage;
 		}
 	}

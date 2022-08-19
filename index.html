@@ -393,9 +393,9 @@
 			$avatarImg: getVar($item, $apiSchema['image_sm'].apiLocation);
 			$alias: getVar($item, $apiSchema['alias'].apiLocation);
 			$asideHTML: "<list-item><list-cell><img src='{$avatarImg}' alt='{$alias}' title='{$alias}' /></list-cell></list-item>";
-			
+
 			@each $fieldKey in $profileFields {
-				$asideHTML: $asideHTML + 
+				$asideHTML: $asideHTML +
 				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
 				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
 			}
@@ -404,7 +404,7 @@
 		panel-section[data-section="power"] panel-list {
 			$asideHTML: "";
 			@each $fieldKey in $powerFields {
-				$asideHTML: $asideHTML + 
+				$asideHTML: $asideHTML +
 				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
 				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
 			}
@@ -413,7 +413,7 @@
 		panel-section[data-section="appearance"] panel-list {
 			$asideHTML: "";
 			@each $fieldKey in $appearanceFields {
-				$asideHTML: $asideHTML + 
+				$asideHTML: $asideHTML +
 				"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
 				"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
 			}
@@ -537,6 +537,7 @@
   <body class="pagination" style="opacity: 0.0; transition: opacity 1s ease-in-out;">
     <script>0</script>
     <app-container>
+			<!-- BEGIN HEADER -->
       <app-panel>
         <app-logo title="Super DB">
           <super-hero>
@@ -566,6 +567,8 @@
         </app-search>
         <app-user>First LastName</app-user>
       </app-panel>
+			<!-- END HEADER -->
+			<!-- BEGIN NAV-->
       <app-panel>
         <panel-section>
           <input id="filer01" type="checkbox" checked />
@@ -695,6 +698,8 @@
           </panel-list>
         </panel-section>
       </app-panel>
+			<!-- END NAV -->
+			<!-- BEGIN MAIN -->
       <app-panel>
         <panel-section>
           <app-intro>
@@ -742,6 +747,8 @@
           <panel-corner-bottom-right></panel-corner-bottom-right>
         </panel-section>
       </app-panel>
+			<!-- END HEADER -->
+			<!-- BEGIN PROFILE -->
       <app-panel>
         <panel-section data-section="profile">
           <list-item>
@@ -784,7 +791,9 @@
           <panel-corner-bottom-right></panel-corner-bottom-right>
         </panel-section>
       </app-panel>
-      <!-- <app-panel>
+			<!-- END PROFILE -->
+      <!-- BEGIN META -->
+			<!-- <app-panel>
         <panel-section>
           <list-item>
             <list-cell>META : :</list-cell>
@@ -821,11 +830,14 @@
           <panel-corner-bottom-right></panel-corner-bottom-right>
         </panel-section>
       </app-panel> -->
+			<!-- END META -->
+			<!-- BEGIN FOOTER -->
       <app-panel>
         <app-author>D7460N</app-author>
         <app-class></app-class>
         <app-version>v0.000000001</app-version>
       </app-panel>
+			<!-- END FOOTER -->
     </app-container>
 
     <script type="text/javascript" charset="utf-8" src="assets/js/activecss-dev-2-11-0.min.js"></script>

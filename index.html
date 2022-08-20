@@ -178,16 +178,14 @@
 		$firstRow: o.secSelObj.firstChild;
 		$firstRowHeight: parseInt(getComputedStyle(o.secSelObj.firstChild).height);
 		$rowHeight: ($firstRowHeight) ? $firstRowHeight : $rowHeight;
-		@if ($rowHeight == 0) {
-			exit;
-		}
+		$rowHeight: isNaN($rowHeight) ? 0 : $rowHeight;
 
 		$containerHeight: $panelSectionHeight - $panelHeaderHeight - $panelRowHeaderHeight - $rowHeight;
 
 		$priorVisible: $totalVisible;
 		$priorNonVisible: $totalNonVisible;
 
-		$totalVisible: Math.floor($containerHeight / $rowHeight);
+		$totalVisible: $rowHeight ? Math.floor($containerHeight / $rowHeight) : 0;
 		$totalNonVisible: $viewPerPage - $totalVisible + 1;
 		@if ($totalRecords > 0) {
 			$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
@@ -254,9 +252,6 @@
 		$noPageLink3: false;
 		$noPageLink4: false;
 		$noPageLink5: false;
-
-console-log: "$viewTotalPages: {$viewTotalPages}";
-
 		@if ($viewTotalPages < 6) {
 			/* Pages less than 6 */
 			$noEllipsis1: true;

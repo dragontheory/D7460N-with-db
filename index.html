@@ -129,17 +129,18 @@
 		/* Get total records available */
 
 		$rowHTML: "";
-		@each $item in {JSON}.data {
-			$rowHTML: $rowHTML + "<list-item data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
-			@each $fieldKey in $rowFields {
-				$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
-			}
-			$rowHTML: $rowHTML + "</list-item>";
-		}
-		render: "{$rowHTML}";
-
 		$totalRecords: {JSON}.totalRecords;
 
+		@if $totalRecords > 0 {
+			@each $item in {JSON}.data {
+				$rowHTML: $rowHTML + "<list-item data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+				@each $fieldKey in $rowFields {
+					$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
+				}
+				$rowHTML: $rowHTML + "</list-item>";
+			}
+		}
+		render: "{$rowHTML}";
 
 		body:not(.intro) panel-list[data-search-results] {
 			trigger: countRows after stack;
@@ -188,8 +189,10 @@
 
 		$totalVisible: Math.floor($containerHeight / $rowHeight);
 		$totalNonVisible: $viewPerPage - $totalVisible + 1;
-		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
-		$viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0) ? 0 : $viewTotalPages;
+		@if ($totalRecords > 0) {
+			$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
+		}
+		$viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0 || $totalRecords == 0) ? 0 : $viewTotalPages;
 
 		/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure. */
 		@if ($totalVisible != 0) {
@@ -251,6 +254,9 @@
 		$noPageLink3: false;
 		$noPageLink4: false;
 		$noPageLink5: false;
+
+console-log: "$viewTotalPages: {$viewTotalPages}";
+
 		@if ($viewTotalPages < 6) {
 			/* Pages less than 6 */
 			$noEllipsis1: true;
@@ -553,9 +559,10 @@
 		}
 		/* Set the page number to 1. */
 		$viewPageNo: 1;
+		$viewRecordNo: 1;
 		/* Fetch the search results using the existing method of populating the list. */
 		panel-list[data-search-results] {
-			trigger: fetchRows after stack;
+			trigger: fetchRows;
 		}
 	}
 

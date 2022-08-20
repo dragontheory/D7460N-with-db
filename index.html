@@ -231,6 +231,13 @@
 				render: "{$totalNonVisible}";
 			}
 		}
+
+		
+		/* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
+		#userID {
+			trigger: draw;
+		}
+
 		trigger: updatePageNumbers;
 	}
 

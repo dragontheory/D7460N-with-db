@@ -176,6 +176,12 @@
 			}
 		}
 
+		@if exists(body.pagination) {
+			body {
+				add-class: .rendering;
+			}
+		}
+
 		@if ($fromInfiniteScroll) {
 			$fromInfiniteScroll: false;
 			render-before-end: "{$rowHTML}";
@@ -198,7 +204,7 @@
 		run: {=
 			/* add window to run function */
 			window.infiniteObserver.observe(o.secSelObj);
-		=} after stack;
+		=};
 	}
 
 
@@ -291,6 +297,7 @@
 
 		trigger: updatePageNumbers;
 	}
+
 
 	panel-list[data-search-results]:updatePageNumbers {
 		$noEllipsis1: false;
@@ -405,11 +412,20 @@
 		& a[data-page="{@data-page}"]:not(.pageArrow) {
 			take-class: .currentPage;
 		}
+
+		body {
+			remove-class: .rendering;
+		}
 	}
 
 	@component pagination-links {
 		html {
 			<acss-style>
+				body.rendering panel-list[data-search-results] list-item,
+				body.rendering pagination-links {
+					opacity: 0;
+				}
+
 				body:not(.pagination) pagination-links,
 				pagination-links.noPagination,
 				pagination-links.noPageLink1 list-cell:nth-of-type(1),

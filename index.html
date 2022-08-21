@@ -81,6 +81,22 @@
 		$viewTotalPages: 0;		/* adjusts dynamically per screen size */
 		$viewPerPage: 25;		/* adjusts dynamically per screen size */
 		$srchValue: "";
+		$fromInfiniteScroll: false;
+		/* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list at. */
+		run: {=
+			vars $viewPageNo, $fromInfiniteScroll;
+			window.infiniteObserver = new IntersectionObserver(function(entries, observer) {
+				entries.forEach(function(entry) {
+					if (entry.isIntersecting) {
+						window.infiniteObserver.unobserve(entry.target);
+						$viewPageNo++;
+						entry.target.removeAttribute('data-infinite-next');
+						$fromInfiniteScroll = true;
+						ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
+					}
+				});
+			});
+		=};
 	}
 
 	a[data-page]:not(.currentPage):click {
@@ -97,9 +113,7 @@
 	 * Call data on body init.
 	**/
 	body:init {
-		panel-list[data-search-results] {
-			trigger: initialisePageNumbers, fetchRows;
-		}
+		add-class: .pagination;
 		/* Set up reactive variable for this so we don't have to render again it later. */
 		label[for="powerstats"] panel-meta {
 			render: "[ {{$powerFields.length}} ]";
@@ -110,6 +124,14 @@
 		}
 	}
 
+	/* Display initial records after pagination / infinite scrolling toggle */
+	body.pagination:observe, body:not(.pagination):observe {
+		$viewPageNo: 1;
+		$viewRecordNo: 1;
+		panel-list[data-search-results] {
+			trigger: fetchRows;
+		}
+	}
 
 	/***
 	 * Stop default behaviour of links, except outside links.
@@ -130,21 +152,54 @@
 
 		$rowHTML: "";
 		$totalRecords: {JSON}.totalRecords;
+		$infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
+		$searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
+		$isPagination: body.classList.contains('pagination');
 
 		@if $totalRecords > 0 {
+			$n: 0;
 			@each $item in {JSON}.data {
-				$rowHTML: $rowHTML + "<list-item data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+				$n++;
+				$rowHTML: $rowHTML + "<list-item ";
+				@if ($isPagination && $n == $infiniteTriggerNum) {
+					$rowHTML: $rowHTML + "data-infinite-next='' ";
+				}
+				$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
 				@each $fieldKey in $rowFields {
-					$rowHTML: $rowHTML + "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell>";
+					/* Add highlight class to items in row if they match. */
+					$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
+					@if ($srchValue != "") {
+						$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<highlight-term>$2</highlight-term>$3').trim();
+					}
+					$rowHTML: $rowHTML + "<list-cell>" + $fieldData + "</list-cell>";
 				}
 				$rowHTML: $rowHTML + "</list-item>";
 			}
 		}
-		render: "{$rowHTML}";
+
+		@if ($fromInfiniteScroll) {
+			$fromInfiniteScroll: false;
+			render-before-end: "{$rowHTML}";
+		} @else {
+			render: "{$rowHTML}";
+		}
+
+		/* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
+		#userID {
+			trigger: draw;
+		}
 
 		body:not(.intro) panel-list[data-search-results] {
 			trigger: countRows after stack;
 		}
+	}
+
+	/* Set up infinite-scrolling on this element. */
+	body list-item[data-infinite-next]:draw {
+		run: {=
+			/* add window to run function */
+			window.infiniteObserver.observe(o.secSelObj);
+		=} after stack;
 	}
 
 
@@ -233,12 +288,6 @@
 			} @else {
 				render: "{$totalNonVisible}";
 			}
-		}
-
-		
-		/* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
-		#userID {
-			trigger: draw;
 		}
 
 		trigger: updatePageNumbers;
@@ -362,6 +411,7 @@
 	@component pagination-links {
 		html {
 			<acss-style>
+				body:not(.pagination) pagination-links,
 				pagination-links.noPagination,
 				pagination-links.noPageLink1 list-cell:nth-of-type(1),
 				pagination-links.noEllipsis1 list-cell:nth-of-type(2),
@@ -377,8 +427,11 @@
 					box-shadow: none;
 					cursor: default;
 				}
-				panel-list[data-search-results] list-item[data-invisible] {
+				body.pagination panel-list[data-search-results] list-item[data-invisible] {
 					display: none;
+				}
+				highlight-term {
+					background-color: yellow;
 				}
 			</acss-style>
 			<list-cell><a href="#" data-page="1">1</a></list-cell>
@@ -503,14 +556,6 @@
 	}
 
 
-	/* app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe{
-		panel-list[data-search-results] list-item.active {
-			remove-class: .active;
-			console-log: "Remove LIST-ITEM .active";
-		}
-	} */
-
-
 	/***
 	 * Hide panel when there are NO children of panel-list.
 	**/
@@ -542,9 +587,9 @@
 
 	/* User search. Detect a key stroke in the search input field and decide what to do. */
 	app-search > input:input {
-		@if not-empty(self) && min-length(self 3) {
+		@if not-empty(self) && min-length(self 2) {
 			/* Set the search value to a variable if the search string has at least 3 characters. */
-			$srchValue: "{@@value}";
+			$srchValue: "{@@value}".trim();
 		} @else if empty(self) {
 			/* Clear the search variable if there is nothing in the search box. */
 			$srchValue: "";
@@ -561,10 +606,17 @@
 		}
 	}
 
+	/* Toggle pagination / infinite scrolling. */
+	list-cell[data-pagination] input[type="checkbox"]:click {
+		body {
+			toggle-class: .pagination;
+		}
+	}
+
     </style>
   </head>
 
-  <body class="pagination" style="opacity: 0.0; transition: opacity 1s ease-in-out;">
+  <body style="opacity: 0.0; transition: opacity 1s ease-in-out;">
     <script>0</script>
     <app-container>
 			<!-- BEGIN HEADER -->
@@ -750,6 +802,9 @@
               [&#160;<span id="visibleCount"></span>&#160;/&#160;<span id="nonVisibleCount"></span>&#160;]
             </list-cell>
             <list-cell title="Toggle row/card view">
+              <label><input type="checkbox"><span class="label"></span></label>
+            </list-cell>
+            <list-cell data-pagination title="Toggle pagination / infinite scrolling">
               <label><input type="checkbox"><span class="label"></span></label>
             </list-cell>
             <pagination-links class="noPageLink1 noEllipsis1 noPageLink2 noPageLink3 noPageLink4 noEllipsis2 noPageLink5"></pagination-links>

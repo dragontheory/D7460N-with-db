@@ -168,7 +168,7 @@
 					/* Add highlight class to items in row if they match. */
 					$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
 					@if ($srchValue != "") {
-						$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<mark-highlight>$2</mark-highlight>$3').trim();
+						$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<mark>$2</mark>$3').trim();
 					}
 					$rowHTML: $rowHTML + "<list-cell>" + $fieldData + "</list-cell>";
 				}
@@ -445,7 +445,7 @@
 				body.pagination panel-list[data-search-results] list-item[data-invisible] {
 					display: none;
 				}
-				mark-highlight {
+				mark {
 					background-color: yellow;
 				}
 			</acss-style>

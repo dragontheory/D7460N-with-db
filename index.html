@@ -113,7 +113,7 @@
 	 * Call data on body init.
 	**/
 	body:init {
-		add-class: .pagination;
+		add-class: .pagination, .rendering;
 		/* Set up reactive variable for this so we don't have to render again it later. */
 		label[for="powerstats"] panel-meta {
 			render: "[ {{$powerFields.length}} ]";

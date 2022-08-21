@@ -141,7 +141,7 @@
 	}
 
 	panel-list[data-search-results]:fetchRows {
-		ajax: "{$rowPopulationURL}" get get-pars(page={$viewPageNo}&perPage={$viewPerPage}&srch={$srchValue})json await;
+		ajax: "{$rowPopulationURL}" get get-pars(page={$viewPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json cache await;
 		/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
 		/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
 		panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
@@ -154,14 +154,13 @@
 		$totalRecords: {JSON}.totalRecords;
 		$infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
 		$searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
-		$isPagination: body.classList.contains('pagination');
 
 		@if $totalRecords > 0 {
 			$n: 0;
 			@each $item in {JSON}.data {
 				$n++;
 				$rowHTML: $rowHTML + "<list-item ";
-				@if ($isPagination && $n == $infiniteTriggerNum) {
+				@if ($n == $infiniteTriggerNum) {
 					$rowHTML: $rowHTML + "data-infinite-next='' ";
 				}
 				$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
@@ -169,7 +168,7 @@
 					/* Add highlight class to items in row if they match. */
 					$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
 					@if ($srchValue != "") {
-						$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<highlight-term>$2</highlight-term>$3').trim();
+						$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<mark-highlight>$2</mark-highlight>$3').trim();
 					}
 					$rowHTML: $rowHTML + "<list-cell>" + $fieldData + "</list-cell>";
 				}
@@ -430,7 +429,7 @@
 				body.pagination panel-list[data-search-results] list-item[data-invisible] {
 					display: none;
 				}
-				highlight-term {
+				mark-highlight {
 					background-color: yellow;
 				}
 			</acss-style>
@@ -587,6 +586,7 @@
 
 	/* User search. Detect a key stroke in the search input field and decide what to do. */
 	app-search > input:input {
+		cancel-timer: searchFetch;
 		@if not-empty(self) && min-length(self 2) {
 			/* Set the search value to a variable if the search string has at least 3 characters. */
 			$srchValue: "{@@value}".trim();
@@ -600,9 +600,9 @@
 		/* Set the page number to 1. */
 		$viewPageNo: 1;
 		$viewRecordNo: 1;
-		/* Fetch the search results using the existing method of populating the list. */
+		/* Fetch the search results using the existing method of populating the list. Do it after someone has finished typing quickly. */
 		panel-list[data-search-results] {
-			trigger: fetchRows;
+			trigger: fetchRows after 100ms label searchFetch;
 		}
 	}
 

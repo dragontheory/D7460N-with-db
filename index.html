@@ -211,12 +211,12 @@
 	/***
 	 * Draw the row headings.
 	**/
-	list-headings:draw {
-		$headingsHTML: "<list-cell><input type='checkbox'></list-cell>";
+	list-item[data-search-headings]:draw {
+		$headingsHTML: "<list-cell>/* <input type='checkbox'> */</list-cell>";
 		@each $fieldKey in $rowFields {
 			$headingsHTML: $headingsHTML + "<list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>";
 		}
-		render-replace: "{$headingsHTML}";
+		render: "{$headingsHTML}";
 	}
 
 	window:resize {
@@ -822,8 +822,7 @@
             </list-cell>
             <pagination-links class="noPageLink1 noEllipsis1 noPageLink2 noPageLink3 noPageLink4 noEllipsis2 noPageLink5"></pagination-links>
           </list-item>
-          <list-item>
-            <list-headings></list-headings>
+          <list-item data-search-headings>
           </list-item>
           <panel-list data-search-results="">
           </panel-list>

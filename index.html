@@ -170,7 +170,7 @@
 					@if ($srchValue != "") {
 						$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<mark>$2</mark>$3').trim();
 					}
-					$rowHTML: $rowHTML + "<list-cell>" + $fieldData + "</list-cell>";
+					$rowHTML: $rowHTML + "<list-cell>" + $fieldData.trim() + "</list-cell>";
 				}
 				$rowHTML: $rowHTML + "</list-item>";
 			}

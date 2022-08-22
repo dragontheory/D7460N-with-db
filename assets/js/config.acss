@@ -1,0 +1,615 @@
+/***
+ * Developer defined variables for setting up data schema.
+**/
+body:preInit {
+	/* Define API */
+	$rowPopulationURL: "https://activecss.org/get-supes.php";
+	$asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
+	$apiSchema: {
+		id: { displayTitle: "ID", apiLocation: "id", fieldType: "text" },
+		slug: { displayTitle: "Slug", apiLocation: "slug", fieldType: "text" },
+		alias: { displayTitle: "Name", apiLocation: "name", fieldType: "text" },
+		name: { displayTitle: "Real name", apiLocation: "biography.fullName", fieldType: "text" },
+		alignment: { displayTitle: "Status", apiLocation: "biography.alignment", fieldType: "text" },
+		affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation", fieldType: "text" },
+		power: { displayTitle: "Power", apiLocation: "powerstats.power", fieldType: "text" },
+		intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence", fieldType: "text" },
+		strength: { displayTitle: "Strength", apiLocation: "powerstats.strength", fieldType: "text" },
+		speed: { displayTitle: "Speed", apiLocation: "powerstats.speed", fieldType: "text" },
+		durability: { displayTitle: "Durability", apiLocation: "powerstats.durability", fieldType: "text" },
+		combat: { displayTitle: "Combat", apiLocation: "powerstats.combat", fieldType: "text" },
+		gender: { displayTitle: "Gender", apiLocation: "appearance.gender", fieldType: "text" },
+		race: { displayTitle: "Race", apiLocation: "appearance.race", fieldType: "text" },
+		heightInches: { displayTitle: "Height", apiLocation: "appearance.height[0]", fieldType: "text" },
+		heightCm: { displayTitle: "Height", apiLocation: "appearance.height[1]", fieldType: "text" },
+		weightPounds: { displayTitle: "Weight", apiLocation: "appearance.weight[0]", fieldType: "text" },
+		weightKilos: { displayTitle: "Weight", apiLocation: "appearance.weight[1]", fieldType: "text" },
+		eyeColor: { displayTitle: "Eye color", apiLocation: "appearance.eyeColor", fieldType: "text" },
+		hairColor: { displayTitle: "Hair color", apiLocation: "appearance.hairColor", fieldType: "text" },
+		alterEgos: { displayTitle: "Alter egos", apiLocation: "biography.alterEgos", fieldType: "text" },
+		placeOfBirth: { displayTitle: "Place of birth", apiLocation: "biography.placeOfBirth", fieldType: "text" },
+		firstAppearance: { displayTitle: "First appearance", apiLocation: "biography.firstAppearance", fieldType: "text" },
+		publisher: { displayTitle: "Publisher", apiLocation: "biography.publisher", fieldType: "text" },
+		occupation: { displayTitle: "Occupation", apiLocation: "work.occupation", fieldType: "text" },
+		base: { displayTitle: "Base", apiLocation: "work.base", fieldType: "text" },
+		relatives: { displayTitle: "Relatives", apiLocation: "connections.relatives", fieldType: "text" },
+		image_xs: { displayTitle: "Extra small image", apiLocation: "images.xs", fieldType: "text" },
+		image_sm: { displayTitle: "Small image", apiLocation: "images.sm", fieldType: "text" },
+		image_md: { displayTitle: "Medium image", apiLocation: "images.md", fieldType: "text" },
+		image_lg: { displayTitle: "Large image", apiLocation: "images.lg", fieldType: "text" },
+	};
+
+	/* Define which fields to display in each row. */
+	$rowFields: [ 'id', 'alias', 'name', 'alignment', 'affiliations', 'power' ];
+
+	/* Define which fields to display in the top profile panel. */
+	$profileFields: [ 'id', 'alias', 'slug'];
+
+	/* Define which fields to display in the power panel. */
+	$powerFields: [ 'intelligence', 'strength', 'speed', 'durability', 'power' ];
+
+	/* Define which fields to display in the power panel. */
+	$appearanceFields: [ 'gender', 'race', 'heightInches', 'weightKilos', 'eyeColor', 'hairColor' ];
+}
+
+
+/***
+ * Functionality variables for the app prior to initialization.
+**/
+body:preInit {
+	$totalRecords: 0;
+	$totalVisible: 0;
+	$totalNonVisible: 0;
+	$viewRecordNo: 1;
+	$viewPageNo: 1;			/* adjusts dynamically per screen size */
+	$viewTotalPages: 0;		/* adjusts dynamically per screen size */
+	$viewPerPage: 25;		/* adjusts dynamically per screen size */
+	$srchValue: "";
+	$fromInfiniteScroll: false;
+	/* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list at. */
+	run: {=
+		vars $viewPageNo, $fromInfiniteScroll;
+		window.infiniteObserver = new IntersectionObserver(function(entries, observer) {
+			entries.forEach(function(entry) {
+				if (entry.isIntersecting) {
+					window.infiniteObserver.unobserve(entry.target);
+					$viewPageNo++;
+					entry.target.removeAttribute('data-infinite-next');
+					$fromInfiniteScroll = true;
+					ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
+				}
+			});
+		});
+	=};
+}
+
+a[data-page]:not(.currentPage):click {
+	$viewPageNo: {@data-page};
+	$viewPerPage: $totalVisible;
+	$viewRecordNo: ($viewPageNo * $viewPerPage) + 1 - $viewPerPage;
+	panel-list[data-search-results] {
+		trigger: fetchRows;
+	}
+}
+
+
+/***
+ * Call data on body init.
+**/
+body:init {
+	add-class: .pagination, .rendering;
+	/* Set up reactive variable for this so we don't have to render again it later. */
+	label[for="powerstats"] panel-meta {
+		render: "[ {{$powerFields.length}} ]";
+	}
+	/* Set up reactive variable for this so we don't have to render again it later. */
+	label[for="appearance"] panel-meta {
+		render: "[ {{$appearanceFields.length}} ]";
+	}
+}
+
+/* Display initial records after pagination / infinite scrolling toggle */
+body.pagination:observe, body:not(.pagination):observe {
+	$viewPageNo: 1;
+	$viewRecordNo: 1;
+	panel-list[data-search-results] {
+		trigger: fetchRows;
+	}
+}
+
+/***
+ * Stop default behaviour of links, except outside links.
+**/
+a:not([target]):click {
+	prevent-default: true;
+}
+
+panel-list[data-search-results]:fetchRows {
+	ajax: "{$rowPopulationURL}" get get-pars(page={$viewPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json cache await;
+	/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
+	/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
+	panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
+	ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
+	}*/
+	trigger: setup;
+	/* Get total records available */
+
+	$rowHTML: "";
+	$totalRecords: {JSON}.totalRecords;
+	$infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
+	$searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
+
+	@if $totalRecords > 0 {
+		$n: 0;
+		@each $item in {JSON}.data {
+			$n++;
+			$rowHTML: $rowHTML + "<list-item ";
+			@if ($n == $infiniteTriggerNum) {
+				$rowHTML: $rowHTML + "data-infinite-next='' ";
+			}
+/*			$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";*/
+			$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
+			@each $fieldKey in $rowFields {
+				/* Add highlight class to items in row if they match. */
+				$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
+				@if ($srchValue != "") {
+					$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<mark>$2</mark>$3').trim();
+				}
+				$rowHTML: $rowHTML + "<list-cell>" + $fieldData.trim() + "</list-cell>";
+			}
+			$rowHTML: $rowHTML + "</list-item>";
+		}
+	}
+
+	@if exists(body.pagination) {
+		body {
+			add-class: .rendering;
+		}
+	}
+
+	@if ($fromInfiniteScroll) {
+		$fromInfiniteScroll: false;
+		render-before-end: "{$rowHTML}";
+	} @else {
+		render: "{$rowHTML}";
+	}
+
+	/* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
+	#userID {
+		trigger: draw;
+	}
+
+	body:not(.intro) panel-list[data-search-results] {
+		trigger: countRows after stack;
+	}
+}
+
+/* Set up infinite-scrolling on this element. */
+body list-item[data-infinite-next]:draw {
+	run: {=
+		/* add window to run function */
+		window.infiniteObserver.observe(o.secSelObj);
+	=};
+}
+
+
+/***
+ * Draw the row headings.
+**/
+list-item[data-search-headings]:draw {
+/*	$headingsHTML: "<list-cell> <input type='checkbox'> </list-cell>";*/
+	$headingsHTML: "";
+	@each $fieldKey in $rowFields {
+		$headingsHTML: $headingsHTML + "<list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>";
+	}
+	render: "{$headingsHTML}";
+}
+
+window:resize {
+	body.pagination panel-list[data-search-results] {
+		trigger: countRows after stack;
+	}
+}
+
+/***
+ * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
+**/
+body.pagination panel-list[data-search-results]:countRows {
+	$panelSection: o.secSelObj.closest('panel-section');
+	$panelSectionHeight: parseInt(getComputedStyle($panelSection).height);
+	$panelHeader: $panelSection.querySelector('list-item:first-of-type');
+	$panelHeaderHeight: parseInt(getComputedStyle($panelHeader).height);
+	$panelRowHeader: $panelSection.querySelector('list-item:nth-of-type(2)');
+	$panelRowHeaderHeight: parseInt(getComputedStyle($panelRowHeader).height);
+	$firstRow: o.secSelObj.firstChild;
+	$firstRowHeight: parseInt(getComputedStyle(o.secSelObj.firstChild).height);
+	$rowHeight: ($firstRowHeight) ? $firstRowHeight : $rowHeight;
+	$rowHeight: isNaN($rowHeight) ? 0 : $rowHeight;
+
+	$containerHeight: $panelSectionHeight - $panelHeaderHeight - $panelRowHeaderHeight - $rowHeight;
+
+	$priorVisible: $totalVisible;
+	$priorNonVisible: $totalNonVisible;
+
+	$totalVisible: $rowHeight ? Math.floor($containerHeight / $rowHeight) : 0;
+	$totalNonVisible: $viewPerPage - $totalVisible + 1;
+	@if ($totalRecords > 0) {
+		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
+	}
+	$viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0 || $totalRecords == 0) ? 0 : $viewTotalPages;
+
+	/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure. */
+	@if ($totalVisible != 0) {
+		$viewPageNo: ($viewRecordNo / $totalVisible < 1) ? 1 : Math.floor($viewRecordNo / $totalVisible) + 1;
+	}
+
+	/* First count how many items there are currently - we may need to grab some more if this is a resize */
+	$displayCount: 0;
+	panel-list[data-search-results] list-item {
+		$displayCount++;
+	}
+
+	@if ($totalVisible > 0 && $displayCount < $totalVisible - 1 && (($viewPerPage * $viewPageNo) + $totalVisible  < $totalRecords)) {
+		/* We need to grab some more records. Fetch some more rows and come back. */
+		$viewPerPage: $totalVisible;
+		trigger: fetchRows;
+		exit;
+	}
+
+	$displayCount: 0;
+	panel-list[data-search-results] list-item {
+		$displayCount++;
+		@if $displayCount <= $totalVisible {
+			remove-attribute: data-invisible;
+		} @else {
+			set-attribute: data-invisible;
+		}
+	}
+
+	#visibleCount {
+		@if $totalVisible < 10 {
+			render: "0{$totalVisible}";
+		} @else {
+			render: "{$totalVisible}";
+		}
+	}
+	#nonVisibleCount {
+		@if $totalNonVisible < 10 {
+			render: "0{$totalNonVisible}";
+		} @else {
+			render: "{$totalNonVisible}";
+		}
+	}
+
+	trigger: updatePageNumbers;
+}
+
+
+panel-list[data-search-results]:updatePageNumbers {
+	$noEllipsis1: false;
+	$noEllipsis2: false;
+	$noPageLink1: false;
+	$noPageLink2: false;
+	$noPageLink3: false;
+	$noPageLink4: false;
+	$noPageLink5: false;
+	@if ($viewTotalPages < 6) {
+		/* Pages less than 6 */
+		$noEllipsis1: true;
+		$noEllipsis2: true;
+		$pageLink1: 1;
+		$pageLink2: 2;
+		$pageLink3: 3;
+		$pageLink4: 4;
+		$pageLink5: 5;
+		@if $viewTotalPages == 0 {
+			$noPageLink1: true;
+		}
+		@if $viewTotalPages < 2 {
+			$noPageLink2: true;
+		}
+		@if $viewTotalPages < 3 {
+			$noPageLink3: true;
+		}
+		@if $viewTotalPages < 4 {
+			$noPageLink4: true;
+		}
+		@if $viewTotalPages < 5 {
+			$noPageLink5: true;
+		}
+	} @else if ($viewPageNo == 1) {
+		/* First page */
+		$noPageLink1: true;
+		$noEllipsis1: true;
+		$pageLink2: 1;
+		$pageLink3: 2;
+		$pageLink4: 3;
+		$pageLink5: $viewTotalPages;
+	} @else if ($viewPageNo > $viewTotalPages - 2) {
+		/* Last few pages */
+		$noEllipsis2: true;
+		$noPageLink2: true;
+		$pageLink2: $viewTotalPages - 3;
+		$pageLink3: $viewTotalPages - 2;
+		$pageLink4: $viewTotalPages - 1;
+		$pageLink5: $viewTotalPages;
+	} @else {
+		/* All other pages */
+		@if ($viewPageNo == $viewTotalPages - 2) {
+			/* Last few pages */
+			$noEllipsis2: true;
+		}
+		@if ($viewPageNo < 4) {
+			/* First few pages */
+			$noEllipsis1: true;
+		}
+		@if ($viewPageNo < 3) {
+			/* First few pages */
+			$noPageLink1: true;
+		}
+		$pageLink2: $viewPageNo - 1;
+		$pageLink3: $viewPageNo;
+		$pageLink4: $viewPageNo + 1;
+		$pageLink5: $viewTotalPages;
+	}
+
+	pagination-links {
+		set-attribute: data-page "{$viewPageNo}";
+		@if ($noEllipsis1) {
+			add-class: .noEllipsis1;
+		} @else {
+			remove-class: .noEllipsis1;
+		}
+		@if ($noEllipsis2) {
+			add-class: .noEllipsis2;
+		} @else {
+			remove-class: .noEllipsis2;
+		}
+		@if ($noPageLink1) {
+			add-class: .noPageLink1;
+		} @else {
+			remove-class: .noPageLink1;
+		}
+		@if ($noPageLink2) {
+			add-class: .noPageLink2;
+		} @else {
+			remove-class: .noPageLink2;
+		}
+		@if ($noPageLink3) {
+			add-class: .noPageLink3;
+		} @else {
+			remove-class: .noPageLink3;
+		}
+		@if ($noPageLink4) {
+			add-class: .noPageLink4;
+		} @else {
+			remove-class: .noPageLink4;
+		}
+		@if ($noPageLink5) {
+			add-class: .noPageLink5;
+		} @else {
+			remove-class: .noPageLink5;
+		}
+		trigger: setCurrentPage after 10ms;
+	}
+}
+
+pagination-links:setCurrentPage {
+	& a[data-page="{@data-page}"]:not(.pageArrow) {
+		take-class: .currentPage;
+	}
+
+	body {
+		remove-class: .rendering;
+	}
+}
+
+@component pagination-links {
+	html {
+		<acss-style>
+			body.rendering panel-list[data-search-results] list-item,
+			body.rendering pagination-links {
+				opacity: 0;
+			}
+
+			body:not(.pagination) pagination-links,
+			pagination-links.noPagination,
+			pagination-links.noPageLink1 list-cell:nth-of-type(1),
+			pagination-links.noEllipsis1 list-cell:nth-of-type(2),
+			pagination-links.noPageLink2 list-cell:nth-of-type(3),
+			pagination-links.noPageLink3 list-cell:nth-of-type(4),
+			pagination-links.noPageLink4 list-cell:nth-of-type(5),
+			pagination-links.noEllipsis2 list-cell:nth-of-type(6),
+			pagination-links.noPageLink5 list-cell:nth-of-type(7) {
+				display: none;
+			}
+			pagination-links list-cell a.currentPage {
+				color: #fff;
+				box-shadow: none;
+				cursor: default;
+			}
+			body.pagination panel-list[data-search-results] list-item[data-invisible] {
+				display: none;
+			}
+		</acss-style>
+		<list-cell><a href="#" data-page="1">1</a></list-cell>
+		<list-cell>...</list-cell>
+		<list-cell><a href="#" data-page="{{$pageLink2}}">{{$pageLink2}}</a></list-cell>
+		<list-cell><a href="#" data-page="{{$pageLink3}}">{{$pageLink3}}</a></list-cell>
+		<list-cell><a href="#" data-page="{{$pageLink4}}">{{$pageLink4}}</a></list-cell>
+		<list-cell>...</list-cell>
+		<list-cell><a href="#" data-page="{{$pageLink5}}">{{$pageLink5}}</a></list-cell>
+	}
+}
+
+/***
+ * Call data to app-panel:nth-of-type(4).
+**/
+panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):click {
+	$currentUserID: "{@data-id}";
+	ajax: "{$asidePopulationURL}" get json cache await;
+	$item: {JSON}.data[0];
+	panel-section[data-section="profile"] panel-list {
+		$avatarImg: getVar($item, $apiSchema['image_sm'].apiLocation);
+		$alias: getVar($item, $apiSchema['alias'].apiLocation);
+		$asideHTML: "<list-item><list-cell><img src='{$avatarImg}' alt='{$alias}' title='{$alias}' /></list-cell></list-item>";
+
+		@each $fieldKey in $profileFields {
+			$asideHTML: $asideHTML +
+			"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+			"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+		}
+		render: "{$asideHTML}";
+	}
+	panel-section[data-section="power"] panel-list {
+		$asideHTML: "";
+		@each $fieldKey in $powerFields {
+			$asideHTML: $asideHTML +
+			"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+			"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+		}
+		render: "{$asideHTML}";
+	}
+	panel-section[data-section="appearance"] panel-list {
+		$asideHTML: "";
+		@each $fieldKey in $appearanceFields {
+			$asideHTML: $asideHTML +
+			"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+			"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+		}
+		render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
+	}
+	run: {=
+		const dragonEvent = new Event('rowclicked', { bubbles: true });
+		o.obj.dispatchEvent(dragonEvent);
+	=};
+}
+
+/***
+ * Show panels when there are children of panel-list.
+**/
+app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
+	body {
+		add-class: .nav;
+	}
+	console-log: "Show NAV";
+}
+
+
+/***
+ * Show panels when there are children of panel-list.
+**/
+app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
+	body {
+		add-class: .nav;
+	}
+	console-log: "Show NAV";
+}
+
+
+/***
+ * Show panels when there are children of panel-list.
+**/
+panel-list[data-search-results]:not-if-empty-trimmed:observe {
+	body {
+		add-class: main;
+	}
+	console-log: "Show MAIN";
+}
+
+
+/***
+ * Hide panel when there are NO children of panel-list.
+**/
+panel-list[data-search-results]:if-empty-trimmed:observe {
+	body {
+		remove-class: main;
+	}
+	panel-list[data-search-results] < app-panel {
+		remove-attribute: style;
+	}
+	console-log: "Hide MAIN";
+}
+
+
+/***
+ * Show panels when there are children of panel-list.
+**/
+app-panel:nth-of-type(4) panel-list:first-of-type:not-if-empty-trimmed:observe {
+	body {
+		add-class: aside;
+	}
+	console-log: "Show ASIDE";
+}
+
+
+/***
+ *
+*/
+#userID:draw { {
+	panel-list[data-search-results] list-item[data-id="{$currentUserID}"] {
+		take-class: .active scope(panel-list[data-search-results]);
+		console-log: "Take MAIN .active";
+	}
+}
+
+
+/***
+ * Hide panel when there are NO children of panel-list.
+**/
+app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe {
+	$currentUserID: null;
+	body {
+		remove-class: aside;
+	}
+	console-log: "Hide ASIDE";
+	panel-list[data-search-results] list-item.active {
+		remove-class: .active scope(panel-list[data-search-results]);
+		console-log: "Remove MAIN LIST-ITEM .active";
+	}
+	panel-list[data-search-results] < app-panel {
+		remove-attribute: style;
+	}
+	console-log: "Remove MAIN size attribute";
+}
+
+
+/***
+ * Close the panel when the close button or the same row is clicked. Empty the aside panel.
+**/
+close-panel:click,
+panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):click {
+	empty: app-panel:nth-of-type(4) panel-list;
+	console-log: "Empty panel-list to close panel";
+}
+
+/* User search. Detect a key stroke in the search input field and decide what to do. */
+app-search > input:input {
+	cancel-timer: searchFetch;
+	@if not-empty(self) && min-length(self 2) {
+		/* Set the search value to a variable if the search string has at least 3 characters. */
+		$srchValue: "{@@value}".trim();
+	} @else if empty(self) {
+		/* Clear the search variable if there is nothing in the search box. */
+		$srchValue: "";
+	} @else {
+		/* Don't do anything. */
+		exit;
+	}
+	/* Set the page number to 1. */
+	$viewPageNo: 1;
+	$viewRecordNo: 1;
+	/* Fetch the search results using the existing method of populating the list. Do it after someone has finished typing quickly. */
+	panel-list[data-search-results] {
+		trigger: fetchRows after 100ms label searchFetch;
+	}
+}
+
+/* Toggle pagination / infinite scrolling. */
+list-cell[data-pagination] input[type="checkbox"]:click {
+	body {
+		toggle-class: .pagination;
+	}
+}
+
+</style>

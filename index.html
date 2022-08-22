@@ -56,10 +56,10 @@
 		};
 
 		/* Define which fields to display in each row. */
-		$rowFields: [ 'alias', 'name', 'alignment', 'affiliations', 'power' ];
+		$rowFields: [ 'id', 'alias', 'name', 'alignment', 'affiliations', 'power' ];
 
 		/* Define which fields to display in the top profile panel. */
-		$profileFields: [ 'alias', 'slug'];
+		$profileFields: [ 'id', 'alias', 'slug'];
 
 		/* Define which fields to display in the power panel. */
 		$powerFields: [ 'intelligence', 'strength', 'speed', 'durability', 'power' ];
@@ -163,7 +163,7 @@
 				@if ($n == $infiniteTriggerNum) {
 					$rowHTML: $rowHTML + "data-infinite-next='' ";
 				}
-				$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";
+				$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
 				@each $fieldKey in $rowFields {
 					/* Add highlight class to items in row if they match. */
 					$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';

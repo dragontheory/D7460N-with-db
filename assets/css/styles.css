@@ -285,6 +285,7 @@ panel-meta {
   font-size: 0.8rem;
   letter-spacing: .05rem;
   padding: 0.5rem;
+  white-space: nowrap
 }
 
 close-panel,

@@ -232,14 +232,16 @@
 			<!-- BEGIN PROFILE -->
       <app-panel>
         <panel-section data-section="profile">
-          <list-item>
-            <list-cell>PROFILE : :</list-cell>
-            <list-cell title="Reset">[ &#9735; </list-cell>
-            <list-cell title="Edit"> &#9998; </list-cell>
-            <list-cell title="Close panel"> x ]</list-cell>
-          </list-item>
-          <panel-list>
-          </panel-list>
+          <input id="profile" type="checkbox" checked />
+          <label for="profile">
+            <panel-title>PROFILE : :</panel-title>
+            <panel-meta>
+              <list-cell title="Reset">[ &#9735; </list-cell>
+              <list-cell title="Edit"> &#9998; </list-cell>
+              <list-cell title="Close panel"> x ]</list-cell>
+            </panel-meta>
+          </label>
+          <panel-list></panel-list>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>
@@ -251,8 +253,7 @@
             <panel-title>POWER STATS : :</panel-title>
             <panel-meta title="Number of stats">[ 6 ]</panel-meta>
           </label>
-          <panel-list>
-          </panel-list>
+          <panel-list></panel-list>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>
@@ -264,8 +265,7 @@
             <panel-title>APPEARANCE : :</panel-title>
             <panel-meta title="Number of stats">[ 6 ]</panel-meta>
           </label>
-          <panel-list>
-          </panel-list>
+          <panel-list></panel-list>
           <panel-corner-top-left></panel-corner-top-left>
           <panel-corner-top-right></panel-corner-top-right>
           <panel-corner-bottom-left></panel-corner-bottom-left>
@@ -276,10 +276,11 @@
       <!-- BEGIN META -->
 			<!-- <app-panel>
         <panel-section>
-          <list-item>
-            <list-cell>META : :</list-cell>
+          <input id="filer03" type="checkbox" checked />
+          <label for="filer03">
+            <panel-title>META : :</panel-title>
             <list-cell title="Close panel">[ x ]</list-cell>
-          </list-item>
+          </label>
           <panel-list>
             <list-item>
               <list-cell>Last updated:</list-cell>
@@ -325,9 +326,7 @@
     <script type="text/javascript" charset="utf-8" src="assets/js/scripts.js"></script>
     <noscript>
       <style>
-        body {
-          opacity: 1.0;
-        }
+        body {opacity: 1.0;}
       </style>
     </noscript>
   </body>

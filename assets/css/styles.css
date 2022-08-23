@@ -493,6 +493,7 @@ app-panel:nth-of-type(3) {
 app-panel:nth-of-type(3) > list-item,
 app-panel:nth-of-type(3) panel-list list-item {
   grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(3rem, 1fr) minmax(3rem, 3rem);
+  align-items: start;
 }
 
 .card app-panel:nth-of-type(3) panel-list list-item {
@@ -516,9 +517,9 @@ app-panel:nth-of-type(4) panel-list list-item:last-of-type {
 
 
 list-cell {
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: hidden; */
   padding: .5rem;
 }
 

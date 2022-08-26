@@ -138,10 +138,9 @@
   }
 
   /* ALL PANELS BUT HEADER and FOOTER */
-  app-panel:not(:first-of-type):not(:last-of-type) {
-    /* grid-template-rows: repeat(minmax(0, 1fr)); */
+  /* app-panel:not(:first-of-type):not(:last-of-type) {
     gap: 1rem;
-  }
+  } */
   app-panel:nth-of-type(3) panel-section:nth-of-type(1) {
     grid-template-rows: auto auto 1fr;
   }
@@ -222,6 +221,11 @@
   app-panel:nth-of-type(2) {
     width: 250px;
     grid-template-rows: auto auto auto;
+  }
+
+  app-panel:nth-of-type(2) panel-section {
+   padding-top: 0;
+   padding-bottom: 0;
   }
 
   app-panel:nth-of-type(2) list-item{box-shadow: none;}
@@ -349,6 +353,7 @@
   .aside app-panel:nth-of-type(4) {
     display: grid;
     grid-template-columns: minmax(10rem, 100vw);
+    gap: 1rem;
   }
 
   .aside app-panel:nth-of-type(5) {
@@ -429,6 +434,7 @@
 
   app-panel:nth-of-type(3) {
     grid-template-rows: 1fr auto;
+    gap: 1rem;
   }
 
   app-panel:nth-of-type(3) > list-item,

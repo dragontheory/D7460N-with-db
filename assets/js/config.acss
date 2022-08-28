@@ -61,31 +61,72 @@ body:preInit {
 	$totalVisible: 0;
 	$totalNonVisible: 0;
 	$viewRecordNo: 1;
+	$fetchPageNo: 1;		/* adjusts dynamically per screen size */
 	$viewPageNo: 1;			/* adjusts dynamically per screen size */
 	$viewTotalPages: 0;		/* adjusts dynamically per screen size */
 	$viewPerPage: 25;		/* adjusts dynamically per screen size */
 	$srchValue: "";
 	$fromInfiniteScroll: false;
-	/* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list at. */
+	window.infiniteScrollOn: false;
+	$fromExtraFetch: false;
+	/* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list. */
 	run: {=
 		vars $viewPageNo, $fromInfiniteScroll;
 		window.infiniteObserver = new IntersectionObserver(function(entries, observer) {
 			entries.forEach(function(entry) {
-				if (entry.isIntersecting) {
+				if (entry.isIntersecting && window.infiniteScrollOn) {
+					let infiniteTriggers = document.querySelectorAll('list-item[data-infinite-next]');
+					if (infiniteTriggers) {
+						let numOfInfiniteTriggers = infiniteTriggers.length;
+						infiniteTriggers.forEach(el, index => {
+							if (index < numOfInfiniteTriggers - 1) {
+								el.removeAttribute('data-infinite-next');
+							}
+						});
+					}
 					window.infiniteObserver.unobserve(entry.target);
 					$viewPageNo++;
 					entry.target.removeAttribute('data-infinite-next');
 					$fromInfiniteScroll = true;
+					console.log('INFINITE SCROLL FETCHING ROWS');
 					ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
 				}
 			});
 		});
+
+		window.visibleObserver = new IntersectionObserver(function(entries, observer) {
+			if (!window.infiniteScrollOn) {
+				entries.forEach(function(entry) {
+					if (entry.isIntersecting) {
+						if (entry.target.parentNode.previousSibling) {
+							if (entry.target.parentNode.previousSibling.previousSibling) {
+								entry.target.parentNode.previousSibling.previousSibling.removeAttribute('data-invisible');
+							}
+							entry.target.parentNode.previousSibling.removeAttribute('data-invisible');
+						}
+					} else {
+						if (entry.target.parentNode.previousSibling) {
+							entry.target.parentNode.previousSibling.setAttribute('data-invisible', '');
+						}
+						entry.target.parentNode.setAttribute('data-invisible', '');
+					}
+				});
+				if (window.countRowTimer) clearTimeout(window.countRowTimer);
+				window.countRowTimer = setTimeout(() => {
+					ActiveCSS.trigger(document.querySelector('body.pagination panel-list[data-search-results]'), 'countRows')
+				}, 100);
+			}
+		});
+
 	=};
 }
 
 a[data-page]:not(.currentPage):click {
 	$viewPageNo: {@data-page};
-	$viewPerPage: $totalVisible;
+	$fetchPageNo: $viewPageNo;
+	@if ($viewRecordNo + $totalVisible < $totalRecords) {
+		$viewPerPage: $totalVisible;
+	}
 	$viewRecordNo: ($viewPageNo * $viewPerPage) + 1 - $viewPerPage;
 	panel-list[data-search-results] {
 		trigger: fetchRows;
@@ -97,7 +138,7 @@ a[data-page]:not(.currentPage):click {
  * Call data on body init.
 **/
 body:init {
-	add-class: .pagination, .rendering;
+	add-class: .pagination;
 	/* Set up reactive variable for this so we don't have to render again it later. */
 	label[for="powerstats"] panel-meta {
 		render: "[ {{$powerFields.length}} ]";
@@ -111,10 +152,16 @@ body:init {
 /* Display initial records after pagination / infinite scrolling toggle */
 body.pagination:observe, body:not(.pagination):observe {
 	$viewPageNo: 1;
+	$fetchPageNo: $viewPageNo;
 	$viewRecordNo: 1;
+	window.infiniteScrollOn: false;
 	panel-list[data-search-results] {
 		trigger: fetchRows;
 	}
+}
+
+body:not(.pagination):observe {
+	window.infiniteScrollOn: true;
 }
 
 /***
@@ -125,13 +172,12 @@ a:not([target]):click {
 }
 
 panel-list[data-search-results]:fetchRows {
-	ajax: "{$rowPopulationURL}" get get-pars(page={$viewPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json cache await;
+	ajax: "{$rowPopulationURL}" get get-pars(page={$fetchPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json await;
 	/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
 	/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
 	panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
 	ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
 	}*/
-	trigger: setup;
 	/* Get total records available */
 
 	$rowHTML: "";
@@ -147,8 +193,7 @@ panel-list[data-search-results]:fetchRows {
 			@if ($n == $infiniteTriggerNum) {
 				$rowHTML: $rowHTML + "data-infinite-next='' ";
 			}
-/*			$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'><list-cell><input type='checkbox' id='' name='table-row' value='' /></list-cell>";*/
-			$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
+			$rowHTML: $rowHTML + "data-tmp-invisible='' data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
 			@each $fieldKey in $rowFields {
 				/* Add highlight class to items in row if they match. */
 				$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
@@ -161,26 +206,22 @@ panel-list[data-search-results]:fetchRows {
 		}
 	}
 
-	@if exists(body.pagination) {
-		body {
-			add-class: .rendering;
-		}
-	}
-
-	@if ($fromInfiniteScroll) {
+	@if ($fromInfiniteScroll || $fromExtraFetch) {
 		$fromInfiniteScroll: false;
+		$fromExtraFetch: false;
 		render-before-end: "{$rowHTML}";
 	} @else {
+		scroll-y: top;
 		render: "{$rowHTML}";
+	}
+
+	@if !$fromInfiniteScroll {
+		trigger: resetVisibleObserver after stack;
 	}
 
 	/* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
 	#userID {
 		trigger: draw;
-	}
-
-	body:not(.intro) panel-list[data-search-results] {
-		trigger: countRows after stack;
 	}
 }
 
@@ -192,12 +233,25 @@ body list-item[data-infinite-next]:draw {
 	=};
 }
 
+panel-list[data-search-results]:resetVisibleObserver {
+	console-log: "RESET VISIBLE OBSERVER";
+	@if window.visibleObserver {
+		run: {=
+			window.visibleObserver.disconnect();
+		=};
+	}
+	& list-item {
+		run: {=
+			window.visibleObserver.observe(o.secSelObj.querySelector('list-cell'), { root: o.secSelObj.parentNode, threshold: 1 });
+		=} after stack;
+	}
+}
+
 
 /***
  * Draw the row headings.
 **/
 list-item[data-search-headings]:draw {
-/*	$headingsHTML: "<list-cell> <input type='checkbox'> </list-cell>";*/
 	$headingsHTML: "";
 	@each $fieldKey in $rowFields {
 		$headingsHTML: $headingsHTML + "<list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>";
@@ -205,65 +259,20 @@ list-item[data-search-headings]:draw {
 	render: "{$headingsHTML}";
 }
 
-window:resize {
-	body.pagination panel-list[data-search-results] {
-		trigger: countRows after stack;
-	}
-}
-
 /***
  * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
 **/
 body.pagination panel-list[data-search-results]:countRows {
-	$panelSection: o.secSelObj.closest('panel-section');
-	$panelSectionHeight: parseInt(getComputedStyle($panelSection).height);
-	$panelHeader: $panelSection.querySelector('list-item:first-of-type');
-	$panelHeaderHeight: parseInt(getComputedStyle($panelHeader).height);
-	$panelRowHeader: $panelSection.querySelector('list-item:nth-of-type(2)');
-	$panelRowHeaderHeight: parseInt(getComputedStyle($panelRowHeader).height);
-	$firstRow: o.secSelObj.firstChild;
-	$firstRowHeight: parseInt(getComputedStyle(o.secSelObj.firstChild).height);
-	$rowHeight: ($firstRowHeight) ? $firstRowHeight : $rowHeight;
-	$rowHeight: isNaN($rowHeight) ? 0 : $rowHeight;
+	console-log: "COUNTING ROWS";
+	$totalVisible: 0;
+	$totalNonVisible: 0;
 
-	$containerHeight: $panelSectionHeight - $panelHeaderHeight - $panelRowHeaderHeight - $rowHeight;
-
-	$priorVisible: $totalVisible;
-	$priorNonVisible: $totalNonVisible;
-
-	$totalVisible: $rowHeight ? Math.floor($containerHeight / $rowHeight) : 0;
-	$totalNonVisible: $viewPerPage - $totalVisible + 1;
-	@if ($totalRecords > 0) {
-		$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
-	}
-	$viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0 || $totalRecords == 0) ? 0 : $viewTotalPages;
-
-	/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure. */
-	@if ($totalVisible != 0) {
-		$viewPageNo: ($viewRecordNo / $totalVisible < 1) ? 1 : Math.floor($viewRecordNo / $totalVisible) + 1;
+	panel-list[data-search-results] list-item:not([data-invisible]) {
+		$totalVisible++;
 	}
 
-	/* First count how many items there are currently - we may need to grab some more if this is a resize */
-	$displayCount: 0;
-	panel-list[data-search-results] list-item {
-		$displayCount++;
-	}
-
-	@if ($totalVisible > 0 && $displayCount < $totalVisible - 1 && (($viewPerPage * $viewPageNo) + $totalVisible  < $totalRecords)) {
-		/* We need to grab some more records. Fetch some more rows and come back. */
-		$viewPerPage: $totalVisible;
-		trigger: fetchRows;
-		exit;
-	}
-
-	$displayCount: 0;
-	panel-list[data-search-results] list-item {
-		$displayCount++;
-		@if $displayCount <= $totalVisible {
-			remove-attribute: data-invisible;
-		} @else {
-			set-attribute: data-invisible;
-		}
+	panel-list[data-search-results] list-item[data-invisible] {
+		$totalNonVisible++;
 	}
 
 	#visibleCount {
@@ -281,11 +290,42 @@ body.pagination panel-list[data-search-results]:countRows {
 		}
 	}
 
+	if ($viewRecordNo + $totalVisible < $totalRecords) {
+		$viewPerPage: $totalVisible;
+	}
+
+	@if ($totalNonVisible <= 0 && $viewRecordNo + $totalVisible < $totalRecords) {
+		/* We need to grab some more records. Fetch some more rows and come back. */
+		console-log: "FETCHING MORE ROWS";
+		$fetchPageNo++;
+		$fromExtraFetch: true;
+		trigger: fetchRows;
+		exit;
+	}
+
+	@if ($viewRecordNo + $totalVisible < $totalRecords) {
+		@if ($totalRecords > 0) {
+			$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
+		}
+		$viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0 || $totalRecords == 0) ? 0 : $viewTotalPages;
+
+		/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure.
+		Don't readjust the page number if this if it's the last page of the results. */
+
+		$viewPageNo: ($viewRecordNo / $totalVisible < 1) ? 1 : Math.floor($viewRecordNo / $totalVisible) + 1;
+	}
+
+	panel-list[data-search-results] list-item[data-tmp-invisible] {
+		remove-attribute: data-tmp-invisible;
+	}
+
+
 	trigger: updatePageNumbers;
 }
 
 
 panel-list[data-search-results]:updatePageNumbers {
+	console-log: "UPDATING PAGINATION";
 	$noEllipsis1: false;
 	$noEllipsis2: false;
 	$noPageLink1: false;
@@ -390,28 +430,26 @@ panel-list[data-search-results]:updatePageNumbers {
 		} @else {
 			remove-class: .noPageLink5;
 		}
-		trigger: setCurrentPage after 10ms;
 	}
 }
 
-pagination-links:setCurrentPage {
-	& a[data-page="{@data-page}"]:not(.pageArrow) {
-		take-class: .currentPage;
+pagination-links list-cell a:if-inner-text("{$viewPageNo}"):observe {
+	console-log: "SET CURRENT PAGE TO {$viewPageNo}";
+	& < pagination-links a[data-page] {
+		remove-class: .currentPage;
 	}
-
-	body {
-		remove-class: .rendering;
+	add-class: .currentPage;
+	panel-list[data-search-results] {
+		trigger: updatePageNumbers;
 	}
 }
 
 @component pagination-links {
 	html {
 		<acss-style>
-			body.rendering panel-list[data-search-results] list-item,
-			body.rendering pagination-links {
-				opacity: 0;
+			body.pagination panel-list[data-search-results] {
+				overflow-y: hidden;
 			}
-
 			body:not(.pagination) pagination-links,
 			pagination-links.noPagination,
 			pagination-links.noPageLink1 list-cell:nth-of-type(1),
@@ -428,8 +466,9 @@ pagination-links:setCurrentPage {
 				box-shadow: none;
 				cursor: default;
 			}
-			body.pagination panel-list[data-search-results] list-item[data-invisible] {
-				display: none;
+			body.pagination panel-list[data-search-results] list-item[data-invisible],
+			body.pagination panel-list[data-search-results] list-item[data-tmp-invisible] {
+				opacity: 0;
 			}
 		</acss-style>
 		<list-cell><a href="#" data-page="1">1</a></list-cell>

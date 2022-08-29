@@ -174,12 +174,13 @@
     grid-auto-flow: column;
     grid-auto-columns: 1fr 1fr 1fr;
     /* background-color: rgba(255,255,255,0.03); */
-    padding: 1rem;
+    /* padding: 1rem; */
   }
 
   app-panel:first-of-type {
     grid-template-columns: auto 1fr auto auto;
     gap: 1rem;
+    overflow: visible;
   }
 
   app-logo {position: relative;}
@@ -882,12 +883,17 @@
   }
   @layer d7460n {
     d7460n-logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: rgba(255,255,255,1.0);
+    }
+    d7460n-logo::after {
         content: url(../images/logo.svg);
         position: absolute;
-        top: -20px;
-        left: -5px;
-        /* width: 100%; */
-        height: 200%;
+        top: -15px;
+        left: 9px;
+        width: 4rem;
+        height: 4rem;
     }
   }
 }

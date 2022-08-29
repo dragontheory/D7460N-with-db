@@ -485,20 +485,7 @@
 } */
 
 @layer themes{
-  @layer light {
-    body {
-      background: linear-gradient(#182c38, #101925);
-      background-size: cover;
-      overflow: hidden;
-    }
-  }
-  @layer dark {
-    body {
-      background: linear-gradient(#101925, #182c38);
-      background-size: cover;
-      overflow: hidden;
-    }
-  }
+
   @layer blue {
     html:before {
       content: "";
@@ -522,7 +509,6 @@
       background-image: url(../images/pattern.png);
       background-size: 4.6875rem;
       background-repeat: repeat;
-      background-attachment: initial;
       z-index: -5;
     }
     html:after {

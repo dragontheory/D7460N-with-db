@@ -17,7 +17,7 @@
 
   p, h2 {
     margin: 0;
-    padding: 1rem
+    /* padding: 1rem */
   }
 
   p {
@@ -63,7 +63,8 @@
     text-transform: uppercase;
   }
 
-  panel-section:hover label{
+  panel-section:hover label,
+  app-panel:nth-of-type(3) panel-section:nth-of-type(2):hover > list-item:nth-of-type(1) {
     color: rgba(255,255,255,1.0);
   }
 
@@ -426,6 +427,18 @@
     background-color: rgba(48,190,255,0.2);
     color: rgba(255,255,255,1.0);
   }
+
+  app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(1):hover,
+  app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(2):hover {
+    background-color: rgba(48,190,255,0.0);
+    color: rgba(255,255,255,0.5);
+    cursor: default;
+  }
+
+  app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(1):hover label {
+    background-color: rgba(48,190,255,0.0);
+  }
+
   list-item[data-empty-row] {
     pointer-events: none;
   }

@@ -880,6 +880,16 @@
       }
     }
   }
+  @layer d7460n {
+    d7460n-logo {
+        content: url(../images/logo.svg);
+        position: absolute;
+        top: -20px;
+        left: -5px;
+        /* width: 100%; */
+        height: 200%;
+    }
+  }
 }
 
 

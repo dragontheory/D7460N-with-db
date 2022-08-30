@@ -40,7 +40,7 @@ body:preInit {
 	};
 
 	/* Define which fields to display in each row. */
-	$rowFields: [ 'id', 'alias', 'name', 'alignment', 'affiliations', 'power' ];
+	$rowFields: [ 'id', 'alias', 'name', 'alignment', 'power', 'affiliations' ];
 
 	/* Define which fields to display in the top profile panel. */
 	$profileFields: [ 'id', 'alias', 'slug'];

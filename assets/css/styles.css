@@ -304,7 +304,7 @@
     }
 
     app-panel:nth-of-type(3) panel-section > list-item:nth-of-type(2) {
-      grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(3rem, 1fr) minmax(3rem, 4rem);
+      grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(4rem, 4rem) minmax(3rem, 1fr);
     }
 
     app-panel:nth-of-type(3) panel-header list-item {
@@ -453,7 +453,7 @@
 
   app-panel:nth-of-type(3) > list-item,
   app-panel:nth-of-type(3) panel-list list-item {
-    grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(3rem, 1fr) minmax(3rem, 3rem);
+    grid-template-columns: minmax(3rem, 3rem) minmax(3rem, 9rem) minmax(3rem, 9rem) minmax(3rem, 5rem) minmax(4rem, 4rem) minmax(3rem, 1fr);
     align-items: start;
   }
 

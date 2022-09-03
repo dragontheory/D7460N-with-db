@@ -121,8 +121,20 @@ body:preInit {
 	=};
 }
 
-a[data-page]:not(.currentPage):click {
-	$viewPageNo: {@data-page};
+
+pagination-links list-cell a[data-page]:click {
+	$goToPage: "{@data-page}";
+	@if $goToPage == "first" {
+		$viewPageNo: 1;
+	} @else if $goToPage == "previous" {
+		$viewPageNo--;
+	} @else if $goToPage == "next" {
+		$viewPageNo++;
+	} @else {
+		/* We don't know the real last page due to the nature of the UI. The highest page number is when displaying 1 item per page - the total number of records.
+		Any back-end fetching the last page for this UI needs to return the last page if the page number requested is too high. */
+		$viewPageNo: $totalRecords;
+	}
 	$fetchPageNo: $viewPageNo;
 	@if ($viewRecordNo + $totalVisible < $totalRecords) {
 		$viewPerPage: $totalVisible;
@@ -184,6 +196,7 @@ panel-list[data-search-results]:fetchRows {
 	$totalRecords: {JSON}.totalRecords;
 	$infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
 	$searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
+	$lastPageNo: Math.ceil($totalRecords / {JSON}.perPage);
 
 	@if $totalRecords > 0 {
 		$n: 0;
@@ -211,6 +224,7 @@ panel-list[data-search-results]:fetchRows {
 		$fromExtraFetch: false;
 		render-before-end: "{$rowHTML}";
 	} @else {
+		$viewPageNo: {JSON}.pageNo;
 		scroll-y: top;
 		render: "{$rowHTML}";
 	}
@@ -222,6 +236,22 @@ panel-list[data-search-results]:fetchRows {
 	/* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
 	#userID {
 		trigger: draw;
+	}
+
+console-log: "$viewPageNo: {$viewPageNo}, $lastPageNo: {$lastPageNo}";
+
+	/* Update the pagination links here for speed - we have all the information we need at this point. */
+	pagination-links {
+		@if $viewPageNo == 1 {
+			add-class: noFirstPages;
+		} @else {
+			remove-class: noFirstPages;
+		}
+		@if $viewPageNo == $lastPageNo {
+			add-class: noLastPages;
+		} @else {
+			remove-class: noLastPages;
+		}
 	}
 }
 
@@ -294,7 +324,11 @@ body.pagination panel-list[data-search-results]:countRows {
 		$viewPerPage: $totalVisible;
 	}
 
-	@if ($totalNonVisible <= 0 && $viewRecordNo + $totalVisible < $totalRecords) {
+console-log: $fetchPageNo;
+console-log: $lastPageNo;
+
+
+	@if ($totalNonVisible <= 1 && $fetchPageNo <= $lastPageNo) {
 		/* We need to grab some more records. Fetch some more rows and come back. */
 		console-log: "FETCHING MORE ROWS";
 		$fetchPageNo++;
@@ -302,6 +336,7 @@ body.pagination panel-list[data-search-results]:countRows {
 		trigger: fetchRows;
 		exit;
 	}
+
 
 	@if ($viewRecordNo + $totalVisible < $totalRecords) {
 		@if ($totalRecords > 0) {
@@ -319,167 +354,8 @@ body.pagination panel-list[data-search-results]:countRows {
 		remove-attribute: data-tmp-invisible;
 	}
 
-
-	trigger: updatePageNumbers;
 }
 
-
-panel-list[data-search-results]:updatePageNumbers {
-	console-log: "UPDATING PAGINATION";
-	$noEllipsis1: false;
-	$noEllipsis2: false;
-	$noPageLink1: false;
-	$noPageLink2: false;
-	$noPageLink3: false;
-	$noPageLink4: false;
-	$noPageLink5: false;
-	@if ($viewTotalPages < 6) {
-		/* Pages less than 6 */
-		$noEllipsis1: true;
-		$noEllipsis2: true;
-		$pageLink1: 1;
-		$pageLink2: 2;
-		$pageLink3: 3;
-		$pageLink4: 4;
-		$pageLink5: 5;
-		@if $viewTotalPages == 0 {
-			$noPageLink1: true;
-		}
-		@if $viewTotalPages < 2 {
-			$noPageLink2: true;
-		}
-		@if $viewTotalPages < 3 {
-			$noPageLink3: true;
-		}
-		@if $viewTotalPages < 4 {
-			$noPageLink4: true;
-		}
-		@if $viewTotalPages < 5 {
-			$noPageLink5: true;
-		}
-	} @else if ($viewPageNo == 1) {
-		/* First page */
-		$noPageLink1: true;
-		$noEllipsis1: true;
-		$pageLink2: 1;
-		$pageLink3: 2;
-		$pageLink4: 3;
-		$pageLink5: $viewTotalPages;
-	} @else if ($viewPageNo > $viewTotalPages - 2) {
-		/* Last few pages */
-		$noEllipsis2: true;
-		$noPageLink2: true;
-		$pageLink2: $viewTotalPages - 3;
-		$pageLink3: $viewTotalPages - 2;
-		$pageLink4: $viewTotalPages - 1;
-		$pageLink5: $viewTotalPages;
-	} @else {
-		/* All other pages */
-		@if ($viewPageNo == $viewTotalPages - 2) {
-			/* Last few pages */
-			$noEllipsis2: true;
-		}
-		@if ($viewPageNo < 4) {
-			/* First few pages */
-			$noEllipsis1: true;
-		}
-		@if ($viewPageNo < 3) {
-			/* First few pages */
-			$noPageLink1: true;
-		}
-		$pageLink2: $viewPageNo - 1;
-		$pageLink3: $viewPageNo;
-		$pageLink4: $viewPageNo + 1;
-		$pageLink5: $viewTotalPages;
-	}
-
-	pagination-links {
-		set-attribute: data-page "{$viewPageNo}";
-		@if ($noEllipsis1) {
-			add-class: .noEllipsis1;
-		} @else {
-			remove-class: .noEllipsis1;
-		}
-		@if ($noEllipsis2) {
-			add-class: .noEllipsis2;
-		} @else {
-			remove-class: .noEllipsis2;
-		}
-		@if ($noPageLink1) {
-			add-class: .noPageLink1;
-		} @else {
-			remove-class: .noPageLink1;
-		}
-		@if ($noPageLink2) {
-			add-class: .noPageLink2;
-		} @else {
-			remove-class: .noPageLink2;
-		}
-		@if ($noPageLink3) {
-			add-class: .noPageLink3;
-		} @else {
-			remove-class: .noPageLink3;
-		}
-		@if ($noPageLink4) {
-			add-class: .noPageLink4;
-		} @else {
-			remove-class: .noPageLink4;
-		}
-		@if ($noPageLink5) {
-			add-class: .noPageLink5;
-		} @else {
-			remove-class: .noPageLink5;
-		}
-	}
-}
-
-pagination-links list-cell a:if-inner-text("{$viewPageNo}"):observe {
-	console-log: "SET CURRENT PAGE TO {$viewPageNo}";
-	& < pagination-links a[data-page] {
-		remove-class: .currentPage;
-	}
-	add-class: .currentPage;
-	panel-list[data-search-results] {
-		trigger: updatePageNumbers;
-	}
-}
-
-@component pagination-links {
-	html {
-		<acss-style>
-			body.pagination panel-list[data-search-results] {
-				overflow-y: hidden;
-			}
-			body:not(.pagination) pagination-links,
-			pagination-links.noPagination,
-			pagination-links.noPageLink1 list-cell:nth-of-type(1),
-			pagination-links.noEllipsis1 list-cell:nth-of-type(2),
-			pagination-links.noPageLink2 list-cell:nth-of-type(3),
-			pagination-links.noPageLink3 list-cell:nth-of-type(4),
-			pagination-links.noPageLink4 list-cell:nth-of-type(5),
-			pagination-links.noEllipsis2 list-cell:nth-of-type(6),
-			pagination-links.noPageLink5 list-cell:nth-of-type(7) {
-				display: none;
-			}
-			pagination-links list-cell a.currentPage {
-				color: #fff;
-				box-shadow: none;
-				cursor: default;
-			}
-			body.pagination panel-list[data-search-results] list-item[data-invisible],
-			body.pagination panel-list[data-search-results] list-item[data-tmp-invisible] {
-				opacity: 0;
-			}
-		</acss-style>
-		<list-cell><a href="#" data-page="1">1</a></list-cell>
-		<list-cell>...</list-cell>
-		<list-cell><a href="#" data-page="{{$pageLink2}}">{{$pageLink2}}</a></list-cell>
-		<list-cell><a href="#" data-page="{{$pageLink3}}">{{$pageLink3}}</a></list-cell>
-		<list-cell><a href="#" data-page="{{$pageLink4}}">{{$pageLink4}}</a></list-cell>
-		<list-cell>...</list-cell>
-		<list-cell><a href="#" data-page="{{$pageLink5}}">{{$pageLink5}}</a></list-cell>
-	}
-}
 
 /***
  * Call data to app-panel:nth-of-type(4).

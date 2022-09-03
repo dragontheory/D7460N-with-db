@@ -9302,6 +9302,8 @@ const _varUpdateDomDo = (change, dataObj) => {
 	}
 };
 
+const getVar = (baseVar, str) => _get(baseVar, str);
+
 ActiveCSS._deHighlightDOM = () => {
 	// Just get rid of all overlays on the screen.
 	document.querySelectorAll('.activecss-internal-devtools-overlay').forEach(function (obj) {
@@ -12341,8 +12343,6 @@ const escapeHTML = str => _safeTags(str);
 const escQuotes = str => {
 	return str.replace(/"/gm, "&quot;");
 };
-
-const getVar = (baseVar, str) => _get(baseVar, str);
 
 const unEscapeHTML = str => _unSafeTags(str);
 

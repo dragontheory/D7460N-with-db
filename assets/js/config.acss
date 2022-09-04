@@ -67,29 +67,30 @@ body:preInit {
 	$viewPerPage: 25;		/* adjusts dynamically per screen size */
 	$srchValue: "";
 	$fromInfiniteScroll: false;
-	window.infiniteScrollOn: false;
+	var: window.infiniteScrollOn false;
 	$fromExtraFetch: false;
 	/* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list. */
 	run: {=
-		vars $viewPageNo, $fromInfiniteScroll;
+		vars $viewPageNo, $fetchPageNo, $lastPageNo, $fromInfiniteScroll;
 		window.infiniteObserver = new IntersectionObserver(function(entries, observer) {
 			entries.forEach(function(entry) {
 				if (entry.isIntersecting && window.infiniteScrollOn) {
-					let infiniteTriggers = document.querySelectorAll('list-item[data-infinite-next]');
-					if (infiniteTriggers) {
-						let numOfInfiniteTriggers = infiniteTriggers.length;
-						infiniteTriggers.forEach(el, index => {
-							if (index < numOfInfiniteTriggers - 1) {
-								el.removeAttribute('data-infinite-next');
-							}
-						});
-					}
 					window.infiniteObserver.unobserve(entry.target);
-					$viewPageNo++;
+					let infiniteTriggers = document.querySelectorAll('list-item[data-infinite-next]');
+					infiniteTriggers.forEach((el, index) => {
+						if (index < infiniteTriggers.length - 1) {
+							el.removeAttribute('data-infinite-next');
+						}
+					});
+					$fetchPageNo++;
 					entry.target.removeAttribute('data-infinite-next');
-					$fromInfiniteScroll = true;
-					console.log('INFINITE SCROLL FETCHING ROWS');
-					ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
+					if ($fetchPageNo <= $lastPageNo) {
+						$fromInfiniteScroll = true;
+						console.log('INFINITE SCROLL FETCHING ROWS');
+						ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
+					} else {
+						$fetchPageNo--;
+					}
 				}
 			});
 		});
@@ -161,24 +162,22 @@ body:init {
 }
 
 /* Display initial records after pagination / infinite scrolling toggle */
-body.pagination:observe, body:not(.pagination):observe {
+body.pagination:draw, body:not(.pagination):draw {
 	$viewPageNo: 1;
 	$fetchPageNo: $viewPageNo;
 	$viewRecordNo: 1;
+	$viewPerPage: 25;
 	panel-list[data-search-results] {
 		trigger: fetchRows;
 	}
 }
 
 body.pagination:observe {
-	window.infiniteScrollOn: false;
+	var: window.infiniteScrollOn false;
 }
 
 body:not(.pagination):draw, body:not(.pagination):observe {
-
-console-log: "infinite scroll is on";
-
-	window.infiniteScrollOn: true;
+	var: window.infiniteScrollOn true;
 }
 
 /***
@@ -269,9 +268,6 @@ panel-list[data-search-results]:fetchRows {
 body list-item[data-infinite-next]:draw {
 	run: {=
 		/* add window to run function */
-
-console.log(o.secSelObj);
-
 		window.infiniteObserver.observe(o.secSelObj);
 	=};
 }
@@ -528,7 +524,10 @@ app-search > input:input {
 	}
 	/* Set the page number to 1. */
 	$viewPageNo: 1;
+	$fetchPageNo: 1;
 	$viewRecordNo: 1;
+	$viewPerPage: 25;
+
 	/* Fetch the search results using the existing method of populating the list. Do it after someone has finished typing quickly. */
 	panel-list[data-search-results] {
 		trigger: fetchRows after 100ms label searchFetch;

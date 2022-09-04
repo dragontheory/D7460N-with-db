@@ -196,12 +196,16 @@
               <label><input type="checkbox"></label>
             </list-cell>
 <!--            <pagination-links class="noPageLink1 noEllipsis1 noPageLink2 noPageLink3 noPageLink4 noEllipsis2 noPageLink5"></pagination-links>-->
-				<pagination-links class="noFirstPages noLastPages">
-					<list-cell><a href="#" data-page="first">first</a></list-cell>
-					<list-cell><a href="#" data-page="previous">previous</a></list-cell>
-					<list-cell><a href="#" data-page="next">next</a></list-cell>
-					<list-cell><a href="#" data-page="last">last</a></list-cell>
-				</pagination-links>
+			<list-cell data-total-records>
+			</list-cell>
+			<list-cell data-total-pages>
+			</list-cell>
+			<pagination-links class="noFirstPages noLastPages">
+				<list-cell><a href="#" data-page="first">first</a></list-cell>
+				<list-cell><a href="#" data-page="previous">previous</a></list-cell>
+				<list-cell><a href="#" data-page="next">next</a></list-cell>
+				<list-cell><a href="#" data-page="last">last</a></list-cell>
+			</pagination-links>
 				<style>
 					body.pagination panel-list[data-search-results] {
 						overflow-y: hidden;

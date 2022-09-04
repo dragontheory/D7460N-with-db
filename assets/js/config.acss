@@ -310,6 +310,7 @@ body.pagination panel-list[data-search-results]:countRows {
 			render: "{$totalVisible}";
 		}
 	}
+
 	#nonVisibleCount {
 		@if $totalNonVisible < 10 {
 			render: "0{$totalNonVisible}";
@@ -331,6 +332,15 @@ body.pagination panel-list[data-search-results]:countRows {
 		exit;
 	}
 
+	$lastPageNo: Math.ceil($totalRecords / $totalVisible);
+
+	list-cell[data-total-records] {
+		render: "Total: [ {$totalRecords} ]";
+	}
+
+	list-cell[data-total-pages] {
+		render: "Pages: [ {$lastPageNo} ]";
+	}
 
 	@if ($viewRecordNo + $totalVisible < $totalRecords) {
 		@if ($totalRecords > 0) {

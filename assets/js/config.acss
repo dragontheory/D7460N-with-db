@@ -238,8 +238,6 @@ panel-list[data-search-results]:fetchRows {
 		trigger: draw;
 	}
 
-console-log: "$viewPageNo: {$viewPageNo}, $lastPageNo: {$lastPageNo}";
-
 	/* Update the pagination links here for speed - we have all the information we need at this point. */
 	pagination-links {
 		@if $viewPageNo == 1 {
@@ -324,11 +322,7 @@ body.pagination panel-list[data-search-results]:countRows {
 		$viewPerPage: $totalVisible;
 	}
 
-console-log: $fetchPageNo;
-console-log: $lastPageNo;
-
-
-	@if ($totalNonVisible <= 1 && $fetchPageNo <= $lastPageNo) {
+	@if ($totalNonVisible <= 1 && $fetchPageNo < $lastPageNo) {
 		/* We need to grab some more records. Fetch some more rows and come back. */
 		console-log: "FETCHING MORE ROWS";
 		$fetchPageNo++;

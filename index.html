@@ -197,8 +197,10 @@
             </list-cell>
 <!--            <pagination-links class="noPageLink1 noEllipsis1 noPageLink2 noPageLink3 noPageLink4 noEllipsis2 noPageLink5"></pagination-links>-->
 			<list-cell data-total-records>
+				Total [ ]
 			</list-cell>
 			<list-cell data-total-pages>
+				Pages []
 			</list-cell>
 			<pagination-links class="noFirstPages noLastPages">
 				<list-cell><a href="#" data-page="first">first</a></list-cell>
@@ -210,6 +212,7 @@
 					body.pagination panel-list[data-search-results] {
 						overflow-y: hidden;
 					}
+					body:not(.pagination) list-cell[data-total-pages],
 					body.pagination panel-list[data-search-results] list-item[data-invisible],
 					body.pagination panel-list[data-search-results] list-item[data-tmp-invisible] {
 						opacity: 0;

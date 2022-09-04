@@ -150,7 +150,6 @@ pagination-links list-cell a[data-page]:click {
  * Call data on body init.
 **/
 body:init {
-	add-class: .pagination;
 	/* Set up reactive variable for this so we don't have to render again it later. */
 	label[for="powerstats"] panel-meta {
 		render: "[ {{$powerFields.length}} ]";
@@ -166,13 +165,19 @@ body.pagination:observe, body:not(.pagination):observe {
 	$viewPageNo: 1;
 	$fetchPageNo: $viewPageNo;
 	$viewRecordNo: 1;
-	window.infiniteScrollOn: false;
 	panel-list[data-search-results] {
 		trigger: fetchRows;
 	}
 }
 
-body:not(.pagination):observe {
+body.pagination:observe {
+	window.infiniteScrollOn: false;
+}
+
+body:not(.pagination):draw, body:not(.pagination):observe {
+
+console-log: "infinite scroll is on";
+
 	window.infiniteScrollOn: true;
 }
 
@@ -198,6 +203,10 @@ panel-list[data-search-results]:fetchRows {
 	$searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
 	$lastPageNo: Math.ceil($totalRecords / {JSON}.perPage);
 
+	list-cell[data-total-records] {
+		render: "Total: [ {$totalRecords} ]";
+	}
+
 	@if $totalRecords > 0 {
 		$n: 0;
 		@each $item in {JSON}.data {
@@ -206,7 +215,10 @@ panel-list[data-search-results]:fetchRows {
 			@if ($n == $infiniteTriggerNum) {
 				$rowHTML: $rowHTML + "data-infinite-next='' ";
 			}
-			$rowHTML: $rowHTML + "data-tmp-invisible='' data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
+			@if (!window.infiniteScrollOn) {
+				$rowHTML: $rowHTML + "data-tmp-invisible='' ";
+			}
+			$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
 			@each $fieldKey in $rowFields {
 				/* Add highlight class to items in row if they match. */
 				$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
@@ -257,6 +269,9 @@ panel-list[data-search-results]:fetchRows {
 body list-item[data-infinite-next]:draw {
 	run: {=
 		/* add window to run function */
+
+console.log(o.secSelObj);
+
 		window.infiniteObserver.observe(o.secSelObj);
 	=};
 }
@@ -333,10 +348,6 @@ body.pagination panel-list[data-search-results]:countRows {
 	}
 
 	$lastPageNo: Math.ceil($totalRecords / $totalVisible);
-
-	list-cell[data-total-records] {
-		render: "Total: [ {$totalRecords} ]";
-	}
 
 	list-cell[data-total-pages] {
 		render: "Pages: [ {$lastPageNo} ]";
@@ -525,9 +536,14 @@ app-search > input:input {
 }
 
 /* Toggle pagination / infinite scrolling. */
+list-cell[data-pagination] input[type="checkbox"]:draw,
 list-cell[data-pagination] input[type="checkbox"]:click {
 	body {
-		toggle-class: .pagination;
+		@if (document.querySelector("list-cell[data-pagination] input[type=checkbox]").checked) {
+			remove-class: .pagination;
+		} @else {
+			add-class: .pagination;
+		}
 	}
 }
 

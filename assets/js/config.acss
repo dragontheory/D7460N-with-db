@@ -190,7 +190,7 @@ a:not([target]):click {
 panel-list[data-search-results]:fetchRows {
 	ajax: "{$rowPopulationURL}" get get-pars(page={$fetchPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json await;
 	/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
-	/* Pre-fetch JSON on mouseover to make the user think it's really quick. 
+	/* Pre-fetch JSON on mouseover to make the user think it's really quick.
 	panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
 	ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
 	}*/
@@ -210,7 +210,7 @@ panel-list[data-search-results]:fetchRows {
 		$n: 0;
 		@each $item in {JSON}.data {
 			$n++;
-			$rowHTML: $rowHTML + "<list-item ";
+			$rowHTML: $rowHTML + "<list-item tabindex='0' ";
 			@if ($n == $infiniteTriggerNum) {
 				$rowHTML: $rowHTML + "data-infinite-next='' ";
 			}

@@ -985,7 +985,7 @@ transition: background-color 250ms;
 /*
   Keyboard Accessibility
 */
-a.skip-main {
+/* a.skip-main {
   left: -999px;
   position: absolute;
   top: auto;
@@ -1006,4 +1006,14 @@ a.skip-main:focus {
   outline: 3px solid red;
   text-align: center;
   z-index: 999;
+} */
+
+:focus-visible {
+  outline: none;
+  outline-color: transparent;
+  outline-style: none;
+  outline-width: 0;
+}
+*:focus {
+  background-color: rgba(48,190,255,0.2);
 }

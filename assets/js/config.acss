@@ -3,6 +3,7 @@
 **/
 body:preInit {
 	/* Define API */
+	$databaseMethod: "local";
 	$rowPopulationURL: "https://activecss.org/get-supes.php";
 	$asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
 	$apiSchema: {
@@ -188,7 +189,19 @@ a:not([target]):click {
 }
 
 panel-list[data-search-results]:fetchRows {
-	ajax: "{$rowPopulationURL}" get get-pars(page={$fetchPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json await;
+	@if $databaseMethod == "local" {
+		run: {=
+			vars $fetchedRecords, $fetchPageNo, $viewPerPage, $srchValue;
+			$fetchedRecords = window.fetchRows({
+				page: $fetchPageNo,
+				perPage: $viewPerPage,
+				srch: $srchValue
+			});
+		=};
+	} @else {
+		ajax: "{$rowPopulationURL}" get get-pars(page={$fetchPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json await;
+		$fetchedRecords: {JSON};
+	}
 	/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
 	/* Pre-fetch JSON on mouseover to make the user think it's really quick.
 	panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
@@ -197,10 +210,10 @@ panel-list[data-search-results]:fetchRows {
 	/* Get total records available */
 
 	$rowHTML: "";
-	$totalRecords: {JSON}.totalRecords;
+	$totalRecords: $fetchedRecords.totalRecords;
 	$infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
 	$searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
-	$lastPageNo: Math.ceil($totalRecords / {JSON}.perPage);
+	$lastPageNo: Math.ceil($totalRecords / $fetchedRecords.perPage);
 
 	list-cell[data-total-records] {
 		render: "Total: [ {$totalRecords} ]";
@@ -208,7 +221,7 @@ panel-list[data-search-results]:fetchRows {
 
 	@if $totalRecords > 0 {
 		$n: 0;
-		@each $item in {JSON}.data {
+		@each $item in $fetchedRecords.data {
 			$n++;
 			$rowHTML: $rowHTML + "<list-item tabindex='0' ";
 			@if ($n == $infiniteTriggerNum) {
@@ -235,7 +248,7 @@ panel-list[data-search-results]:fetchRows {
 		$fromExtraFetch: false;
 		render-before-end: "{$rowHTML}";
 	} @else {
-		$viewPageNo: {JSON}.pageNo;
+		$viewPageNo: $fetchedRecords.pageNo;
 		scroll-y: top;
 		render: "{$rowHTML}";
 	}
@@ -374,8 +387,15 @@ body.pagination panel-list[data-search-results]:countRows {
 panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):keyupEnter,
 panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):click {
 	$currentUserID: "{@data-id}";
-	ajax: "{$asidePopulationURL}" get json cache await;
-	$item: {JSON}.data[0];
+	@if $databaseMethod == "local" {
+		run: {=
+			vars $item, $currentUserID;
+			$item = window.fetchRow($currentUserID);
+		=};
+	} @else {
+		ajax: "{$asidePopulationURL}" get json cache await;
+		$item: {JSON}.data[0];
+	}
 	panel-section[data-section="profile"] panel-list {
 		$avatarImg: getVar($item, $apiSchema['image_sm'].apiLocation);
 		$alias: getVar($item, $apiSchema['alias'].apiLocation);

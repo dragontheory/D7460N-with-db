@@ -4,6 +4,7 @@
 body:preInit {
 	/* Define API */
 	$databaseMethod: "local";
+	/*use this instead if using the ajax method $databaseMethod: "";*/
 	$rowPopulationURL: "https://activecss.org/get-supes.php";
 	$asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
 	$apiSchema: {

@@ -40,13 +40,12 @@ function fetchRow(people_id) {
 }
 
 function getRows(opts) {
-	let data = [], row, fromIndex, endIndex, dataToUse;
-	fromIndex = (opts.perPage * opts.page) - opts.perPage;
-	endIndex = fromIndex + opts.perPage;
+	let data = [];
+	let fromIndex = (opts.perPage * opts.page) - opts.perPage;
+	let endIndex = fromIndex + opts.perPage;
 	for (let n = fromIndex; n < endIndex; n++) {
 		if (n >= opts.baseData.length) break;
-		let dataObj = makeDataObj(opts.baseData[n]);
-		data.push(dataObj);
+		data.push(makeDataObj(opts.baseData[n]));
 	}
 	return data;
 }

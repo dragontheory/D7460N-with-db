@@ -18,19 +18,22 @@ function fetchRows(opts) {
 		baseData = superRows;
 	}
 	resultSet.totalRecords = baseData.length;
+	let lastPageNo;
 	if (resultSet.totalRecords > 0) {
 		// If the page requested is bigger than is available, fetch the last page.
-		let lastPageNo = Math.ceil(resultSet.totalRecords / perPage);
+		lastPageNo = Math.ceil(resultSet.totalRecords / perPage);
 		if (page > lastPageNo) {
 			page = lastPageNo;
 		}
 	} else {
 		page = 1;
+		lastPageNo = 1;
 	}
 	resultSet.data = getRows({ baseData, perPage, page, srch });
 	resultSet.pageNo = page;
 	resultSet.perPage = perPage;
 	resultSet.searchString = srch;
+	resultSet.lastPageNo = lastPageNo;
 
 	return resultSet;
 }

@@ -262,20 +262,6 @@ panel-list[data-search-results]:fetchRows {
 	#userID {
 		trigger: draw;
 	}
-
-	/* Update the pagination links here for speed - we have all the information we need at this point. */
-	pagination-links {
-		@if $viewPageNo == 1 {
-			add-class: noFirstPages;
-		} @else {
-			remove-class: noFirstPages;
-		}
-		@if $viewPageNo == $lastPageNo {
-			add-class: noLastPages;
-		} @else {
-			remove-class: noLastPages;
-		}
-	}
 }
 
 /* Set up infinite-scrolling on this element. */
@@ -373,6 +359,20 @@ body.pagination panel-list[data-search-results]:countRows {
 		Don't readjust the page number if this if it's the last page of the results. */
 
 		$viewPageNo: ($viewRecordNo / $totalVisible < 1) ? 1 : Math.floor($viewRecordNo / $totalVisible) + 1;
+	}
+
+	/* Update the pagination links here for speed - we have all the information we need at this point. */
+	pagination-links {
+		@if $viewPageNo == 1 {
+			add-class: noFirstPages;
+		} @else {
+			remove-class: noFirstPages;
+		}
+		@if $viewPageNo == $lastPageNo {
+			add-class: noLastPages;
+		} @else {
+			remove-class: noLastPages;
+		}
 	}
 
 	panel-list[data-search-results] list-item[data-tmp-invisible] {

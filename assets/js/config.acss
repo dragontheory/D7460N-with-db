@@ -125,13 +125,16 @@ body:preInit {
 }
 
 
+/***
+ * Pagination links. Fetch rows based on the contents of data-page in the link, which determines which page to fetch.
+**/
 pagination-links list-cell a[data-page]:click {
 	$goToPage: "{@data-page}";
-	@if $goToPage == "first" {
+	@if ($goToPage == "first") {
 		$viewPageNo: 1;
-	} @else if $goToPage == "previous" {
+	} @else if ($goToPage == "previous") {
 		$viewPageNo--;
-	} @else if $goToPage == "next" {
+	} @else if ($goToPage == "next") {
 		$viewPageNo++;
 	} @else {
 		/* We don't know the real last page due to the nature of the UI. The highest page number is when displaying 1 item per page - the total number of records.
@@ -161,10 +164,6 @@ body:init {
 	label[for="appearance"] panel-meta {
 		render: "[ {{$appearanceFields.length}} ]";
 	}
-}
-
-/* Display initial records after pagination / infinite scrolling toggle */
-body.pagination:draw, body:not(.pagination):draw {
 	$viewPageNo: 1;
 	$fetchPageNo: $viewPageNo;
 	$viewRecordNo: 1;
@@ -174,13 +173,37 @@ body.pagination:draw, body:not(.pagination):draw {
 	}
 }
 
+
+/***
+ * Toggle pagination / infinite scrolling.
+**/
+list-cell[data-pagination] input[type="checkbox"]:draw,
+list-cell[data-pagination] input[type="checkbox"]:click {
+	body {
+		@if (document.querySelector("list-cell[data-pagination] input[type=checkbox]").checked) {
+			remove-class: .pagination;
+		} @else {
+			add-class: .pagination;
+		}
+	}
+}
+
+
+/***
+ * Observe changes on the pagination class. The CSS removes the overflow hidden for infinite scrolling.
+**/
 body.pagination:observe {
 	var: window.infiniteScrollOn false;
 }
 
 body:not(.pagination):draw, body:not(.pagination):observe {
 	var: window.infiniteScrollOn true;
+	@if ($viewPageNo != 1) {
+		/* Add any records to the beginning of the row list if this isn't the first page. */
+		console-log: "ADD RECORDS TO TOP OF ROW LIST";
+	}
 }
+
 
 /***
  * Stop default behaviour of links, except outside links.
@@ -189,8 +212,12 @@ a:not([target]):click {
 	prevent-default: true;
 }
 
+
+/***
+ * Fetch rows based on the current setting of document scope ACSS variables.
+**/
 panel-list[data-search-results]:fetchRows {
-	@if $databaseMethod == "local" {
+	@if ($databaseMethod == "local") {
 		run: {=
 			vars $fetchedRecords, $fetchPageNo, $viewPerPage, $srchValue;
 			$fetchedRecords = window.fetchRows({
@@ -220,7 +247,7 @@ panel-list[data-search-results]:fetchRows {
 		render: "Total: [ {$totalRecords} ]";
 	}
 
-	@if $totalRecords > 0 {
+	@if ($totalRecords > 0) {
 		$n: 0;
 		@each $item in $fetchedRecords.data {
 			$n++;
@@ -254,7 +281,7 @@ panel-list[data-search-results]:fetchRows {
 		render: "{$rowHTML}";
 	}
 
-	@if !$fromInfiniteScroll {
+	@if (!$fromInfiniteScroll) {
 		trigger: resetVisibleObserver after stack;
 	}
 
@@ -264,7 +291,10 @@ panel-list[data-search-results]:fetchRows {
 	}
 }
 
-/* Set up infinite-scrolling on this element. */
+
+/***
+ * Set up infinite-scrolling on this row item which is marked to trigger loading the next set of rows.
+**/
 body list-item[data-infinite-next]:draw {
 	run: {=
 		/* add window to run function */
@@ -272,9 +302,14 @@ body list-item[data-infinite-next]:draw {
 	=};
 }
 
+
+/***
+ * Set up the visible triggers which hide and show elements based on whether or not they can be drawn fully on the page.
+ * Elements that cannot be fully drawn yet have an opacity of 0, but they must remain on the page for the visibility trigger to kick in and display them.
+**/
 panel-list[data-search-results]:resetVisibleObserver {
 	console-log: "RESET VISIBLE OBSERVER";
-	@if window.visibleObserver {
+	@if (window.visibleObserver) {
 		run: {=
 			window.visibleObserver.disconnect();
 		=};
@@ -298,8 +333,9 @@ list-item[data-search-headings]:draw {
 	render: "{$headingsHTML}";
 }
 
+
 /***
- * Pagination view. This is the custom event - it gets used twice - once when the page is drawn and again when the button is clicked.
+ * Count the number of visible items. This is a custom event used whenever the display changes or when new rows are fetched.
 **/
 body.pagination panel-list[data-search-results]:countRows {
 	console-log: "COUNTING ROWS";
@@ -315,7 +351,7 @@ body.pagination panel-list[data-search-results]:countRows {
 	}
 
 	#visibleCount {
-		@if $totalVisible < 10 {
+		@if ($totalVisible < 10) {
 			render: "0{$totalVisible}";
 		} @else {
 			render: "{$totalVisible}";
@@ -323,7 +359,7 @@ body.pagination panel-list[data-search-results]:countRows {
 	}
 
 	#nonVisibleCount {
-		@if $totalNonVisible < 10 {
+		@if ($totalNonVisible < 10) {
 			render: "0{$totalNonVisible}";
 		} @else {
 			render: "{$totalNonVisible}";
@@ -363,12 +399,12 @@ body.pagination panel-list[data-search-results]:countRows {
 
 	/* Update the pagination links here for speed - we have all the information we need at this point. */
 	pagination-links {
-		@if $viewPageNo == 1 {
+		@if ($viewPageNo == 1) {
 			add-class: noFirstPages;
 		} @else {
 			remove-class: noFirstPages;
 		}
-		@if $viewPageNo == $lastPageNo {
+		@if ($viewPageNo == $lastPageNo) {
 			add-class: noLastPages;
 		} @else {
 			remove-class: noLastPages;
@@ -383,12 +419,12 @@ body.pagination panel-list[data-search-results]:countRows {
 
 
 /***
- * Call data to app-panel:nth-of-type(4).
+ * Show the aside panel.
 **/
 panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):keyupEnter,
 panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):click {
 	$currentUserID: "{@data-id}";
-	@if $databaseMethod == "local" {
+	@if ($databaseMethod == "local") {
 		run: {=
 			vars $item, $currentUserID;
 			$item = window.fetchRow($currentUserID);
@@ -431,16 +467,6 @@ panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"
 		const dragonEvent = new Event('rowclicked', { bubbles: true });
 		o.obj.dispatchEvent(dragonEvent);
 	=};
-}
-
-/***
- * Show panels when there are children of panel-list.
-**/
-app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
-	body {
-		add-class: .nav;
-	}
-	console-log: "Show NAV";
 }
 
 
@@ -531,10 +557,13 @@ panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):cl
 	console-log: "Empty panel-list to close panel";
 }
 
-/* User search. Detect a key stroke in the search input field and decide what to do. */
+
+/***
+ * User search. Detect a key stroke in the search input field and decide what to do.
+**/
 app-search > input:input {
 	cancel-timer: searchFetch;
-	@if not-empty(self) && min-length(self 2) {
+	@if (not-empty(self) && min-length(self 2)) {
 		/* Set the search value to a variable if the search string has at least 3 characters. */
 		$srchValue: "{@@value}".trim();
 	} @else if empty(self) {
@@ -556,17 +585,6 @@ app-search > input:input {
 	}
 }
 
-/* Toggle pagination / infinite scrolling. */
-list-cell[data-pagination] input[type="checkbox"]:draw,
-list-cell[data-pagination] input[type="checkbox"]:click {
-	body {
-		@if (document.querySelector("list-cell[data-pagination] input[type=checkbox]").checked) {
-			remove-class: .pagination;
-		} @else {
-			add-class: .pagination;
-		}
-	}
-}
 
 /* Keyboard Accessibility */
 

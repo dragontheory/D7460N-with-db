@@ -1,12 +1,30 @@
 /***
- * Manual "database" handling.
+ * Manual "database" handling. This could be wrapped in an IIFE or converted into a class to get rid of the global scopeness if needed.
+ * Only the fetchRows and fetchRow functions need to be publicly available.
 **/
 
 
 /***
- * Call a routine that imports the rows into a variable.
+ * Set up a couple of variables to store the rows.
 **/
-var superRows = getRawRows();
+var superRowsJSON = localStorage.getItem('superRowsJSON');
+var superRows;
+
+
+/***
+ * Call a routine that imports the rows into a variable.
+ * If this is the first time in, fetch all the rows and put them into local storage.
+ * If this is not the first time in, fetch all the rows *from* local storage.
+ * Set up the global variable, "superRows", that stores all the data.
+**/
+if (!superRowsJSON) {
+	superRows = getRawRows();
+	localStorage.setItem('superRowsJSON', JSON.stringify(superRows));
+	console.log('ROWS LOADED INTO MEMORY');
+} else {
+	superRows = JSON.parse(superRowsJSON);
+	console.log('ROWS INITIALISED FROM MEMORY');
+}
 
 
 /***
@@ -61,6 +79,7 @@ function fetchRows(opts) {
 	return resultSet;
 }
 
+
 /***
  * Fetch a single row.
  * "id" is the integer ID of the row in the database.
@@ -69,6 +88,7 @@ function fetchRow(people_id) {
 	// Find the row and convert it into the correct format for the UI.
 	return makeDataObj(superRows.find(row => row.people_id == people_id));
 }
+
 
 /***
  * Fetch the required rows from the dataset used ("baseData"). This will either be all the rows, or the subset created for a search.
@@ -145,6 +165,7 @@ function makeDataObj(thisRow) {
 
 	return dataObj;
 }
+
 
 /***
  * Create a large JSON object containing all the rows of the database. This is a flat object. It gets turned into the JSON string in fetchRows() and fetchRow().

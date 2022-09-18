@@ -285,10 +285,11 @@ panel-list[data-search-results]:fetchRows {
     @each $item in $fetchedRecords.data {
       $n++;
       $rowHTML: $rowHTML + "<list-item tabindex='0' ";
-      @if ($populatingUpperInfiniteRows && $n == $infiniteTriggerNumPrev) {
-        $rowHTML: $rowHTML + "data-infinite-prev='' ";
-      }
-      @if ($n == $infiniteTriggerNum) {
+      @if ($populatingUpperInfiniteRows) {
+        @if ($n == $infiniteTriggerNumPrev) {
+	        $rowHTML: $rowHTML + "data-infinite-prev='' ";
+        }
+      } @else if ($n == $infiniteTriggerNum) {
         $rowHTML: $rowHTML + "data-infinite-next='' ";
       }
       @if (!window.infiniteScrollOn) {

@@ -69,11 +69,12 @@ body:preInit {
   $viewPerPage: 25;    /* adjusts dynamically per screen size */
   $srchValue: "";
   $fromInfiniteScroll: false;
+  $populatingUpperInfiniteRows: false;
   var: window.infiniteScrollOn false;
   $fromExtraFetch: false;
   /* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list. */
   run: {=
-    vars $viewPageNo, $fetchPageNo, $lastPageNo, $fromInfiniteScroll;
+    vars $viewPageNo, $fetchPageNo, $lastPageNo, $fromInfiniteScroll, $populatingUpperInfiniteRows;
     window.infiniteObserver = new IntersectionObserver(function(entries, observer) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting && window.infiniteScrollOn) {
@@ -92,6 +93,28 @@ body:preInit {
             ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
           } else {
             $fetchPageNo--;
+          }
+        }
+      });
+    });
+
+    window.infiniteObserverPrev = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && window.infiniteScrollOn) {
+          window.infiniteObserver.unobserve(entry.target);
+          let infiniteTriggers = document.querySelectorAll('list-item[data-infinite-prev]');
+          infiniteTriggers.forEach((el, index) => {
+            if (index > 1) {
+              el.removeAttribute('data-infinite-prev');
+            }
+          });
+          entry.target.removeAttribute('data-infinite-prev');
+          if ($viewPageNo > 1) {
+            $viewPageNo--;
+            $fetchPageNo = $viewPageNo;
+			$populatingUpperInfiniteRows = true;
+            console.log('INFINITE SCROLL FETCHING UPPER ROWS');
+            ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
           }
         }
       });
@@ -170,6 +193,7 @@ body:init {
   $fetchPageNo: $viewPageNo;
   $viewRecordNo: 1;
   $viewPerPage: 25;
+  $searchPanel: document.querySelector("panel-list[data-search-results]");
   panel-list[data-search-results] {
     trigger: fetchRows;
   }
@@ -203,6 +227,12 @@ body:not(.pagination):draw, body:not(.pagination):observe {
   @if ($viewPageNo != 1) {
     /* Add any records to the beginning of the row list if this isn't the first page. */
     console-log: "ADD RECORDS TO TOP OF ROW LIST";
+    $viewPageNo--;
+    $fetchPageNo: $viewPageNo;
+    $populatingUpperInfiniteRows: true;
+    panel-list[data-search-results] {
+      trigger: fetchRows;
+    }
   }
 }
 
@@ -242,6 +272,7 @@ panel-list[data-search-results]:fetchRows {
   $rowHTML: "";
   $totalRecords: $fetchedRecords.totalRecords;
   $infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
+  $infiniteTriggerNumPrev: ($viewPerPage < 5) ? $viewPerPage : 5;
   $searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
   $lastPageNo: Math.ceil($totalRecords / $fetchedRecords.perPage);
 
@@ -254,6 +285,9 @@ panel-list[data-search-results]:fetchRows {
     @each $item in $fetchedRecords.data {
       $n++;
       $rowHTML: $rowHTML + "<list-item tabindex='0' ";
+      @if ($populatingUpperInfiniteRows && $n == $infiniteTriggerNumPrev) {
+        $rowHTML: $rowHTML + "data-infinite-prev='' ";
+      }
       @if ($n == $infiniteTriggerNum) {
         $rowHTML: $rowHTML + "data-infinite-next='' ";
       }
@@ -273,11 +307,29 @@ panel-list[data-search-results]:fetchRows {
     }
   }
 
-  @if ($fromInfiniteScroll || $fromExtraFetch) {
+  @if ($populatingUpperInfiniteRows) {
+    /* Reset the populatingUpperInfiniteRows variable so this doesn't happen again until needed. */
+    $populatingUpperInfiniteRows: false;
+
+    /* Get the current size of the grid and the current scroll position. */
+   	$currentGridHeight: $searchPanel.scrollHeight;
+   	$currentGridScrollPosition: $searchPanel.scrollTop;
+
+    /* Add the new rows */
+    render-after-begin: "{$rowHTML}";
+
+    /* Get the new height of the grid. Set the scroll position to the original scroll position plus the difference in the size now that rows have been added. */
+   	$newGridHeight: $searchPanel.scrollHeight;
+    scroll-y: {= $newGridHeight - $currentGridHeight + $currentGridScrollPosition =};
+
+  } @else if ($fromInfiniteScroll || $fromExtraFetch) {
+    /* Append rows onto the end of the current list. Do not change the current scroll position. */
     $fromInfiniteScroll: false;
     $fromExtraFetch: false;
     render-before-end: "{$rowHTML}";
+
   } @else {
+    /* Completely replace anything existing in the current row list with fresh rows and set the scroll position to the top. */
     $viewPageNo: $fetchedRecords.pageNo;
     scroll-y: top;
     render: "{$rowHTML}";
@@ -304,6 +356,12 @@ body list-item[data-infinite-next]:draw {
   =};
 }
 
+body list-item[data-infinite-prev]:draw {
+  run: {=
+    /* add window to run function */
+    window.infiniteObserverPrev.observe(o.secSelObj);
+  =};
+}
 
 /***
  * Set up the visible triggers which hide and show elements based on whether or not they can be drawn fully on the page.

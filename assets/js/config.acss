@@ -112,7 +112,7 @@ body:preInit {
           if ($viewPageNo > 1) {
             $viewPageNo--;
             $fetchPageNo = $viewPageNo;
-			$populatingUpperInfiniteRows = true;
+            $populatingUpperInfiniteRows = true;
             console.log('INFINITE SCROLL FETCHING UPPER ROWS');
             ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
           }
@@ -120,9 +120,8 @@ body:preInit {
       });
     });
 
-	/* Set up the visibility observer which hides or shows rows when they are visible. This is used for the pagination only and not for the infinite scrolling. */
+    /* Set up the visibility observer which hides or shows rows when they are visible. This is used for the pagination only and not for the infinite scrolling. */
     window.visibleObserver = new IntersectionObserver(function(entries, observer) {
-      if (!window.infiniteScrollOn) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             if (entry.target.parentNode.previousSibling) {
@@ -142,7 +141,6 @@ body:preInit {
         window.countRowTimer = setTimeout(() => {
           ActiveCSS.trigger(document.querySelector('body.pagination panel-list[data-search-results]'), 'countRows')
         }, 100);
-      }
     });
 
   =};
@@ -194,9 +192,6 @@ body:init {
   $viewRecordNo: 1;
   $viewPerPage: 25;
   $searchPanel: document.querySelector("panel-list[data-search-results]");
-  panel-list[data-search-results] {
-    trigger: fetchRows;
-  }
 }
 
 
@@ -220,8 +215,24 @@ list-cell[data-pagination] input[type="checkbox"]:click {
 **/
 body.pagination:observe {
   var: window.infiniteScrollOn false;
+  @if ($viewPageNo > 1) {
+    /* Get an estimate of the current page based on the scroll position and the current value of viewPageNo, which is following upper infinite scroll row fetching. */
+    $currentGridScrollPosition: $searchPanel.scrollTop;
+    $currentContainerHeight: 0;
+    $currentPageGuess: 0;
+    run: {=
+      vars $viewPageNo, $searchPanel, $currentContainerHeight, $currentGridScrollPosition, $currentPageGuess;
+      let searchPanelComputed = window.getComputedStyle($searchPanel, null);
+      $currentContainerHeight = parseInt(searchPanelComputed.getPropertyValue('height'));
+      $currentPageGuess = $viewPageNo + Math.ceil($currentGridScrollPosition / $currentContainerHeight);
+    =};
+    $viewPageNo: $currentPageGuess;
+    $fetchPageNo: $currentPageGuess;
+	$viewRecordNo: ($viewPageNo * $viewPerPage) + 1 - $viewPerPage;
+  }
+  /* Set the current page variables to an estimated page number. This can only be an estimate as row height is variable due to the UI behaviour. */
   body.pagination panel-list[data-search-results] {
-    trigger: countRows;
+    trigger: fetchRows;
   }
 }
 
@@ -230,12 +241,17 @@ body:not(.pagination):draw, body:not(.pagination):observe {
   @if ($viewPageNo != 1) {
     /* Add any records to the beginning of the row list if this isn't the first page. */
     console-log: "ADD RECORDS TO TOP OF ROW LIST";
-    $viewPageNo--;
-    $fetchPageNo: $viewPageNo;
+    $fetchPageNo: $viewPageNo - 1;
     $populatingUpperInfiniteRows: true;
     panel-list[data-search-results] {
       trigger: fetchRows;
     }
+  }
+}
+
+body:not(.pagination):draw {
+  panel-list[data-search-results] {
+    trigger: fetchRows;
   }
 }
 
@@ -265,13 +281,6 @@ panel-list[data-search-results]:fetchRows {
     ajax: "{$rowPopulationURL}" get get-pars(page={$fetchPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json await;
     $fetchedRecords: {JSON};
   }
-  /* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
-  /* Pre-fetch JSON on mouseover to make the user think it's really quick.
-  panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
-  ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
-  }*/
-  /* Get total records available */
-
   $rowHTML: "";
   $totalRecords: $fetchedRecords.totalRecords;
   $infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
@@ -290,14 +299,12 @@ panel-list[data-search-results]:fetchRows {
       $rowHTML: $rowHTML + "<list-item tabindex='0' ";
       @if ($populatingUpperInfiniteRows) {
         @if ($n == $infiniteTriggerNumPrev) {
-	        $rowHTML: $rowHTML + "data-infinite-prev='' ";
+          $rowHTML: $rowHTML + "data-infinite-prev='' ";
         }
       } @else if ($n == $infiniteTriggerNum) {
         $rowHTML: $rowHTML + "data-infinite-next='' ";
       }
-      @if (!window.infiniteScrollOn) {
-        $rowHTML: $rowHTML + "data-tmp-invisible='' ";
-      }
+      $rowHTML: $rowHTML + "data-tmp-invisible='' ";
       $rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
       @each $fieldKey in $rowFields {
         /* Add highlight class to items in row if they match. */
@@ -312,18 +319,20 @@ panel-list[data-search-results]:fetchRows {
   }
 
   @if ($populatingUpperInfiniteRows) {
+    console-log: "POPULATING INFINITE UPPER ROWS";
+
     /* Reset the populatingUpperInfiniteRows variable so this doesn't happen again until needed. */
     $populatingUpperInfiniteRows: false;
 
     /* Get the current size of the grid and the current scroll position. */
-   	$currentGridHeight: $searchPanel.scrollHeight;
-   	$currentGridScrollPosition: $searchPanel.scrollTop;
+    $currentGridHeight: $searchPanel.scrollHeight;
+    $currentGridScrollPosition: $searchPanel.scrollTop;
 
     /* Add the new rows */
     render-after-begin: "{$rowHTML}";
 
     /* Get the new height of the grid. Set the scroll position to the original scroll position plus the difference in the size now that rows have been added. */
-   	$newGridHeight: $searchPanel.scrollHeight;
+    $newGridHeight: $searchPanel.scrollHeight;
     scroll-y: {= $newGridHeight - $currentGridHeight + $currentGridScrollPosition =};
 
   } @else if ($fromInfiniteScroll || $fromExtraFetch) {

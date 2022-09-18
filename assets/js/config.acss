@@ -220,6 +220,9 @@ list-cell[data-pagination] input[type="checkbox"]:click {
 **/
 body.pagination:observe {
   var: window.infiniteScrollOn false;
+  body.pagination panel-list[data-search-results] {
+    trigger: countRows;
+  }
 }
 
 body:not(.pagination):draw, body:not(.pagination):observe {

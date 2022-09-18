@@ -165,6 +165,7 @@ body:init {
   label[for="appearance"] panel-meta {
     render: "[ {{$appearanceFields.length}} ]";
   }
+  /* Fetch the first set of rows. Document-scoped ACSS variables are set which fetchRows uses to fetch the required page. FetchRows is a custom ACSS event. */
   $viewPageNo: 1;
   $fetchPageNo: $viewPageNo;
   $viewRecordNo: 1;

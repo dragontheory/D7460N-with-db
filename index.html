@@ -194,37 +194,18 @@
             <list-cell data-pagination title="Toggle pagination / infinite scrolling">
               <label><input type="checkbox" /></label>
             </list-cell>
-            <!-- <pagination-links class="noPageLink1 noEllipsis1 noPageLink2 noPageLink3 noPageLink4 noEllipsis2 noPageLink5"></pagination-links> -->
-			      <list-cell data-total-records>
-      				Total [ ]
-			      </list-cell>
-			      <list-cell data-total-pages>
-				      Pages []
-			      </list-cell>
+            <list-cell data-total-records>
+              Total [ ]
+            </list-cell>
+            <list-cell data-total-pages>
+              Pages []
+            </list-cell>
             <pagination-links class="noFirstPages noLastPages">
               <list-cell><a href="#" data-page="first">first</a></list-cell>
               <list-cell><a href="#" data-page="previous">previous</a></list-cell>
               <list-cell><a href="#" data-page="next">next</a></list-cell>
               <list-cell><a href="#" data-page="last">last</a></list-cell>
             </pagination-links>
-            <style>
-              body.pagination panel-list[data-search-results] {
-                overflow-y: hidden;
-              }
-              body:not(.pagination) list-cell[data-total-pages],
-              body:not(.pagination) pagination-links,
-              body.pagination panel-list[data-search-results] list-item[data-invisible],
-              body.pagination panel-list[data-search-results] list-item[data-tmp-invisible] {
-                opacity: 0;
-              }
-              pagination-links.noFirstPages a[data-page="first"],
-              pagination-links.noFirstPages a[data-page="previous"],
-              pagination-links.noLastPages a[data-page="next"],
-              pagination-links.noLastPages a[data-page="last"] {
-                pointer-events: none;
-                color: darkslategray;
-              }
-            </style>
           </list-item>
           <list-item data-search-headings>
           </list-item>

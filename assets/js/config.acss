@@ -97,6 +97,7 @@ body:preInit {
       });
     });
 
+	/* Set up the visibility observer which hides or shows rows when they are visible. This is used for the pagination only and not for the infinite scrolling. */
     window.visibleObserver = new IntersectionObserver(function(entries, observer) {
       if (!window.infiniteScrollOn) {
         entries.forEach(function(entry) {

@@ -2,56 +2,56 @@
  * Developer defined variables for setting up data schema.
 **/
 body:preInit {
-	/* Define API */
-	$databaseMethod: "local";
-	/*use this instead if using the ajax method $databaseMethod: "";*/
-	$rowPopulationURL: "https://activecss.org/get-supes.php";
-	$asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
-	$apiSchema: {
-		id: { displayTitle: "ID", apiLocation: "id", fieldType: "text" },
-		slug: { displayTitle: "Slug", apiLocation: "slug", fieldType: "text" },
-		alias: { displayTitle: "Name", apiLocation: "name", fieldType: "text" },
-		name: { displayTitle: "Real name", apiLocation: "biography.fullName", fieldType: "text" },
-		alignment: { displayTitle: "Status", apiLocation: "biography.alignment", fieldType: "text" },
-		affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation", fieldType: "text" },
-		power: { displayTitle: "Power", apiLocation: "powerstats.power", fieldType: "text" },
-		intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence", fieldType: "text" },
-		strength: { displayTitle: "Strength", apiLocation: "powerstats.strength", fieldType: "text" },
-		speed: { displayTitle: "Speed", apiLocation: "powerstats.speed", fieldType: "text" },
-		durability: { displayTitle: "Durability", apiLocation: "powerstats.durability", fieldType: "text" },
-		combat: { displayTitle: "Combat", apiLocation: "powerstats.combat", fieldType: "text" },
-		gender: { displayTitle: "Gender", apiLocation: "appearance.gender", fieldType: "text" },
-		race: { displayTitle: "Race", apiLocation: "appearance.race", fieldType: "text" },
-		heightInches: { displayTitle: "Height", apiLocation: "appearance.height[0]", fieldType: "text" },
-		heightCm: { displayTitle: "Height", apiLocation: "appearance.height[1]", fieldType: "text" },
-		weightPounds: { displayTitle: "Weight", apiLocation: "appearance.weight[0]", fieldType: "text" },
-		weightKilos: { displayTitle: "Weight", apiLocation: "appearance.weight[1]", fieldType: "text" },
-		eyeColor: { displayTitle: "Eye color", apiLocation: "appearance.eyeColor", fieldType: "text" },
-		hairColor: { displayTitle: "Hair color", apiLocation: "appearance.hairColor", fieldType: "text" },
-		alterEgos: { displayTitle: "Alter egos", apiLocation: "biography.alterEgos", fieldType: "text" },
-		placeOfBirth: { displayTitle: "Place of birth", apiLocation: "biography.placeOfBirth", fieldType: "text" },
-		firstAppearance: { displayTitle: "First appearance", apiLocation: "biography.firstAppearance", fieldType: "text" },
-		publisher: { displayTitle: "Publisher", apiLocation: "biography.publisher", fieldType: "text" },
-		occupation: { displayTitle: "Occupation", apiLocation: "work.occupation", fieldType: "text" },
-		base: { displayTitle: "Base", apiLocation: "work.base", fieldType: "text" },
-		relatives: { displayTitle: "Relatives", apiLocation: "connections.relatives", fieldType: "text" },
-		image_xs: { displayTitle: "Extra small image", apiLocation: "images.xs", fieldType: "text" },
-		image_sm: { displayTitle: "Small image", apiLocation: "images.sm", fieldType: "text" },
-		image_md: { displayTitle: "Medium image", apiLocation: "images.md", fieldType: "text" },
-		image_lg: { displayTitle: "Large image", apiLocation: "images.lg", fieldType: "text" },
-	};
+  /* Define API */
+  $databaseMethod: "local";
+  /*use this instead if using the ajax method $databaseMethod: "";*/
+  $rowPopulationURL: "https://activecss.org/get-supes.php";
+  $asidePopulationURL: "https://activecss.org/get-supe.php?id={@data-id}";
+  $apiSchema: {
+    id: { displayTitle: "ID", apiLocation: "id", fieldType: "text" },
+    slug: { displayTitle: "Slug", apiLocation: "slug", fieldType: "text" },
+    alias: { displayTitle: "Name", apiLocation: "name", fieldType: "text" },
+    name: { displayTitle: "Real name", apiLocation: "biography.fullName", fieldType: "text" },
+    alignment: { displayTitle: "Status", apiLocation: "biography.alignment", fieldType: "text" },
+    affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation", fieldType: "text" },
+    power: { displayTitle: "Power", apiLocation: "powerstats.power", fieldType: "text" },
+    intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence", fieldType: "text" },
+    strength: { displayTitle: "Strength", apiLocation: "powerstats.strength", fieldType: "text" },
+    speed: { displayTitle: "Speed", apiLocation: "powerstats.speed", fieldType: "text" },
+    durability: { displayTitle: "Durability", apiLocation: "powerstats.durability", fieldType: "text" },
+    combat: { displayTitle: "Combat", apiLocation: "powerstats.combat", fieldType: "text" },
+    gender: { displayTitle: "Gender", apiLocation: "appearance.gender", fieldType: "text" },
+    race: { displayTitle: "Race", apiLocation: "appearance.race", fieldType: "text" },
+    heightInches: { displayTitle: "Height", apiLocation: "appearance.height[0]", fieldType: "text" },
+    heightCm: { displayTitle: "Height", apiLocation: "appearance.height[1]", fieldType: "text" },
+    weightPounds: { displayTitle: "Weight", apiLocation: "appearance.weight[0]", fieldType: "text" },
+    weightKilos: { displayTitle: "Weight", apiLocation: "appearance.weight[1]", fieldType: "text" },
+    eyeColor: { displayTitle: "Eye color", apiLocation: "appearance.eyeColor", fieldType: "text" },
+    hairColor: { displayTitle: "Hair color", apiLocation: "appearance.hairColor", fieldType: "text" },
+    alterEgos: { displayTitle: "Alter egos", apiLocation: "biography.alterEgos", fieldType: "text" },
+    placeOfBirth: { displayTitle: "Place of birth", apiLocation: "biography.placeOfBirth", fieldType: "text" },
+    firstAppearance: { displayTitle: "First appearance", apiLocation: "biography.firstAppearance", fieldType: "text" },
+    publisher: { displayTitle: "Publisher", apiLocation: "biography.publisher", fieldType: "text" },
+    occupation: { displayTitle: "Occupation", apiLocation: "work.occupation", fieldType: "text" },
+    base: { displayTitle: "Base", apiLocation: "work.base", fieldType: "text" },
+    relatives: { displayTitle: "Relatives", apiLocation: "connections.relatives", fieldType: "text" },
+    image_xs: { displayTitle: "Extra small image", apiLocation: "images.xs", fieldType: "text" },
+    image_sm: { displayTitle: "Small image", apiLocation: "images.sm", fieldType: "text" },
+    image_md: { displayTitle: "Medium image", apiLocation: "images.md", fieldType: "text" },
+    image_lg: { displayTitle: "Large image", apiLocation: "images.lg", fieldType: "text" },
+  };
 
-	/* Define which fields to display in each row. */
-	$rowFields: [ 'id', 'alias', 'name', 'alignment', 'power', 'affiliations' ];
+  /* Define which fields to display in each row. */
+  $rowFields: [ 'id', 'alias', 'name', 'alignment', 'power', 'affiliations' ];
 
-	/* Define which fields to display in the top profile panel. */
-	$profileFields: [ 'id', 'alias', 'slug'];
+  /* Define which fields to display in the top profile panel. */
+  $profileFields: [ 'id', 'alias', 'slug'];
 
-	/* Define which fields to display in the power panel. */
-	$powerFields: [ 'intelligence', 'strength', 'speed', 'durability', 'power' ];
+  /* Define which fields to display in the power panel. */
+  $powerFields: [ 'intelligence', 'strength', 'speed', 'durability', 'power' ];
 
-	/* Define which fields to display in the power panel. */
-	$appearanceFields: [ 'gender', 'race', 'heightInches', 'weightKilos', 'eyeColor', 'hairColor' ];
+  /* Define which fields to display in the power panel. */
+  $appearanceFields: [ 'gender', 'race', 'heightInches', 'weightKilos', 'eyeColor', 'hairColor' ];
 }
 
 
@@ -59,69 +59,69 @@ body:preInit {
  * Functionality variables for the app prior to initialization.
 **/
 body:preInit {
-	$totalRecords: 0;
-	$totalVisible: 0;
-	$totalNonVisible: 0;
-	$viewRecordNo: 1;
-	$fetchPageNo: 1;		/* adjusts dynamically per screen size */
-	$viewPageNo: 1;			/* adjusts dynamically per screen size */
-	$viewTotalPages: 0;		/* adjusts dynamically per screen size */
-	$viewPerPage: 25;		/* adjusts dynamically per screen size */
-	$srchValue: "";
-	$fromInfiniteScroll: false;
-	var: window.infiniteScrollOn false;
-	$fromExtraFetch: false;
-	/* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list. */
-	run: {=
-		vars $viewPageNo, $fetchPageNo, $lastPageNo, $fromInfiniteScroll;
-		window.infiniteObserver = new IntersectionObserver(function(entries, observer) {
-			entries.forEach(function(entry) {
-				if (entry.isIntersecting && window.infiniteScrollOn) {
-					window.infiniteObserver.unobserve(entry.target);
-					let infiniteTriggers = document.querySelectorAll('list-item[data-infinite-next]');
-					infiniteTriggers.forEach((el, index) => {
-						if (index < infiniteTriggers.length - 1) {
-							el.removeAttribute('data-infinite-next');
-						}
-					});
-					$fetchPageNo++;
-					entry.target.removeAttribute('data-infinite-next');
-					if ($fetchPageNo <= $lastPageNo) {
-						$fromInfiniteScroll = true;
-						console.log('INFINITE SCROLL FETCHING ROWS');
-						ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
-					} else {
-						$fetchPageNo--;
-					}
-				}
-			});
-		});
+  $totalRecords: 0;
+  $totalVisible: 0;
+  $totalNonVisible: 0;
+  $viewRecordNo: 1;
+  $fetchPageNo: 1;    /* adjusts dynamically per screen size */
+  $viewPageNo: 1;      /* adjusts dynamically per screen size */
+  $viewTotalPages: 0;    /* adjusts dynamically per screen size */
+  $viewPerPage: 25;    /* adjusts dynamically per screen size */
+  $srchValue: "";
+  $fromInfiniteScroll: false;
+  var: window.infiniteScrollOn false;
+  $fromExtraFetch: false;
+  /* Set up intersection observer for infinite scrolling. Set on row number 10 going back from the end of the list. */
+  run: {=
+    vars $viewPageNo, $fetchPageNo, $lastPageNo, $fromInfiniteScroll;
+    window.infiniteObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting && window.infiniteScrollOn) {
+          window.infiniteObserver.unobserve(entry.target);
+          let infiniteTriggers = document.querySelectorAll('list-item[data-infinite-next]');
+          infiniteTriggers.forEach((el, index) => {
+            if (index < infiniteTriggers.length - 1) {
+              el.removeAttribute('data-infinite-next');
+            }
+          });
+          $fetchPageNo++;
+          entry.target.removeAttribute('data-infinite-next');
+          if ($fetchPageNo <= $lastPageNo) {
+            $fromInfiniteScroll = true;
+            console.log('INFINITE SCROLL FETCHING ROWS');
+            ActiveCSS.trigger(document.querySelector('panel-list[data-search-results]'), 'fetchRows');
+          } else {
+            $fetchPageNo--;
+          }
+        }
+      });
+    });
 
-		window.visibleObserver = new IntersectionObserver(function(entries, observer) {
-			if (!window.infiniteScrollOn) {
-				entries.forEach(function(entry) {
-					if (entry.isIntersecting) {
-						if (entry.target.parentNode.previousSibling) {
-							if (entry.target.parentNode.previousSibling.previousSibling) {
-								entry.target.parentNode.previousSibling.previousSibling.removeAttribute('data-invisible');
-							}
-							entry.target.parentNode.previousSibling.removeAttribute('data-invisible');
-						}
-					} else {
-						if (entry.target.parentNode.previousSibling) {
-							entry.target.parentNode.previousSibling.setAttribute('data-invisible', '');
-						}
-						entry.target.parentNode.setAttribute('data-invisible', '');
-					}
-				});
-				if (window.countRowTimer) clearTimeout(window.countRowTimer);
-				window.countRowTimer = setTimeout(() => {
-					ActiveCSS.trigger(document.querySelector('body.pagination panel-list[data-search-results]'), 'countRows')
-				}, 100);
-			}
-		});
+    window.visibleObserver = new IntersectionObserver(function(entries, observer) {
+      if (!window.infiniteScrollOn) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            if (entry.target.parentNode.previousSibling) {
+              if (entry.target.parentNode.previousSibling.previousSibling) {
+                entry.target.parentNode.previousSibling.previousSibling.removeAttribute('data-invisible');
+              }
+              entry.target.parentNode.previousSibling.removeAttribute('data-invisible');
+            }
+          } else {
+            if (entry.target.parentNode.previousSibling) {
+              entry.target.parentNode.previousSibling.setAttribute('data-invisible', '');
+            }
+            entry.target.parentNode.setAttribute('data-invisible', '');
+          }
+        });
+        if (window.countRowTimer) clearTimeout(window.countRowTimer);
+        window.countRowTimer = setTimeout(() => {
+          ActiveCSS.trigger(document.querySelector('body.pagination panel-list[data-search-results]'), 'countRows')
+        }, 100);
+      }
+    });
 
-	=};
+  =};
 }
 
 
@@ -129,26 +129,26 @@ body:preInit {
  * Pagination links. Fetch rows based on the contents of data-page in the link, which determines which page to fetch.
 **/
 pagination-links list-cell a[data-page]:click {
-	$goToPage: "{@data-page}";
-	@if ($goToPage == "first") {
-		$viewPageNo: 1;
-	} @else if ($goToPage == "previous") {
-		$viewPageNo--;
-	} @else if ($goToPage == "next") {
-		$viewPageNo++;
-	} @else {
-		/* We don't know the real last page due to the nature of the UI. The highest page number is when displaying 1 item per page - the total number of records.
-		Any back-end fetching the last page for this UI needs to return the last page if the page number requested is too high. */
-		$viewPageNo: $totalRecords;
-	}
-	$fetchPageNo: $viewPageNo;
-	@if ($viewRecordNo + $totalVisible < $totalRecords) {
-		$viewPerPage: $totalVisible;
-	}
-	$viewRecordNo: ($viewPageNo * $viewPerPage) + 1 - $viewPerPage;
-	panel-list[data-search-results] {
-		trigger: fetchRows;
-	}
+  $goToPage: "{@data-page}";
+  @if ($goToPage == "first") {
+    $viewPageNo: 1;
+  } @else if ($goToPage == "previous") {
+    $viewPageNo--;
+  } @else if ($goToPage == "next") {
+    $viewPageNo++;
+  } @else {
+    /* We don't know the real last page due to the nature of the UI. The highest page number is when displaying 1 item per page - the total number of records.
+    Any back-end fetching the last page for this UI needs to return the last page if the page number requested is too high. */
+    $viewPageNo: $totalRecords;
+  }
+  $fetchPageNo: $viewPageNo;
+  @if ($viewRecordNo + $totalVisible < $totalRecords) {
+    $viewPerPage: $totalVisible;
+  }
+  $viewRecordNo: ($viewPageNo * $viewPerPage) + 1 - $viewPerPage;
+  panel-list[data-search-results] {
+    trigger: fetchRows;
+  }
 }
 
 
@@ -156,21 +156,21 @@ pagination-links list-cell a[data-page]:click {
  * Call data on body init.
 **/
 body:init {
-	/* Set up reactive variable for this so we don't have to render again it later. */
-	label[for="powerstats"] panel-meta {
-		render: "[ {{$powerFields.length}} ]";
-	}
-	/* Set up reactive variable for this so we don't have to render again it later. */
-	label[for="appearance"] panel-meta {
-		render: "[ {{$appearanceFields.length}} ]";
-	}
-	$viewPageNo: 1;
-	$fetchPageNo: $viewPageNo;
-	$viewRecordNo: 1;
-	$viewPerPage: 25;
-	panel-list[data-search-results] {
-		trigger: fetchRows;
-	}
+  /* Set up reactive variable for this so we don't have to render again it later. */
+  label[for="powerstats"] panel-meta {
+    render: "[ {{$powerFields.length}} ]";
+  }
+  /* Set up reactive variable for this so we don't have to render again it later. */
+  label[for="appearance"] panel-meta {
+    render: "[ {{$appearanceFields.length}} ]";
+  }
+  $viewPageNo: 1;
+  $fetchPageNo: $viewPageNo;
+  $viewRecordNo: 1;
+  $viewPerPage: 25;
+  panel-list[data-search-results] {
+    trigger: fetchRows;
+  }
 }
 
 
@@ -179,13 +179,13 @@ body:init {
 **/
 list-cell[data-pagination] input[type="checkbox"]:draw,
 list-cell[data-pagination] input[type="checkbox"]:click {
-	body {
-		@if (document.querySelector("list-cell[data-pagination] input[type=checkbox]").checked) {
-			remove-class: .pagination;
-		} @else {
-			add-class: .pagination;
-		}
-	}
+  body {
+    @if (document.querySelector("list-cell[data-pagination] input[type=checkbox]").checked) {
+      remove-class: .pagination;
+    } @else {
+      add-class: .pagination;
+    }
+  }
 }
 
 
@@ -193,15 +193,15 @@ list-cell[data-pagination] input[type="checkbox"]:click {
  * Observe changes on the pagination class. The CSS removes the overflow hidden for infinite scrolling.
 **/
 body.pagination:observe {
-	var: window.infiniteScrollOn false;
+  var: window.infiniteScrollOn false;
 }
 
 body:not(.pagination):draw, body:not(.pagination):observe {
-	var: window.infiniteScrollOn true;
-	@if ($viewPageNo != 1) {
-		/* Add any records to the beginning of the row list if this isn't the first page. */
-		console-log: "ADD RECORDS TO TOP OF ROW LIST";
-	}
+  var: window.infiniteScrollOn true;
+  @if ($viewPageNo != 1) {
+    /* Add any records to the beginning of the row list if this isn't the first page. */
+    console-log: "ADD RECORDS TO TOP OF ROW LIST";
+  }
 }
 
 
@@ -209,7 +209,7 @@ body:not(.pagination):draw, body:not(.pagination):observe {
  * Stop default behaviour of links, except outside links.
 **/
 a:not([target]):click {
-	prevent-default: true;
+  prevent-default: true;
 }
 
 
@@ -217,78 +217,78 @@ a:not([target]):click {
  * Fetch rows based on the current setting of document scope ACSS variables.
 **/
 panel-list[data-search-results]:fetchRows {
-	@if ($databaseMethod == "local") {
-		run: {=
-			vars $fetchedRecords, $fetchPageNo, $viewPerPage, $srchValue;
-			$fetchedRecords = window.fetchRows({
-				page: $fetchPageNo,
-				perPage: $viewPerPage,
-				srch: $srchValue
-			});
-		=};
-	} @else {
-		ajax: "{$rowPopulationURL}" get get-pars(page={$fetchPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json await;
-		$fetchedRecords: {JSON};
-	}
-	/* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
-	/* Pre-fetch JSON on mouseover to make the user think it's really quick.
-	panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
-	ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
-	}*/
-	/* Get total records available */
+  @if ($databaseMethod == "local") {
+    run: {=
+      vars $fetchedRecords, $fetchPageNo, $viewPerPage, $srchValue;
+      $fetchedRecords = window.fetchRows({
+        page: $fetchPageNo,
+        perPage: $viewPerPage,
+        srch: $srchValue
+      });
+    =};
+  } @else {
+    ajax: "{$rowPopulationURL}" get get-pars(page={$fetchPageNo}&perPage={$viewPerPage}&srch={$srchValue}) json await;
+    $fetchedRecords: {JSON};
+  }
+  /* ajax: "https://dragontheory.com/json/D7460N.json" get json await; */
+  /* Pre-fetch JSON on mouseover to make the user think it's really quick.
+  panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):mouseover {
+  ajax-pre-get: "https://my-json-server.typicode.com/dragontheory/D7460N-data/names/{@data-id}" get json;
+  }*/
+  /* Get total records available */
 
-	$rowHTML: "";
-	$totalRecords: $fetchedRecords.totalRecords;
-	$infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
-	$searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
-	$lastPageNo: Math.ceil($totalRecords / $fetchedRecords.perPage);
+  $rowHTML: "";
+  $totalRecords: $fetchedRecords.totalRecords;
+  $infiniteTriggerNum: ($viewPerPage < 16) ? $viewPerPage : $viewPerPage - 15;
+  $searchHighlight: [ $srchValue, $srchValue.toLowerCase() ];
+  $lastPageNo: Math.ceil($totalRecords / $fetchedRecords.perPage);
 
-	list-cell[data-total-records] {
-		render: "Total: [ {$totalRecords} ]";
-	}
+  list-cell[data-total-records] {
+    render: "Total: [ {$totalRecords} ]";
+  }
 
-	@if ($totalRecords > 0) {
-		$n: 0;
-		@each $item in $fetchedRecords.data {
-			$n++;
-			$rowHTML: $rowHTML + "<list-item tabindex='0' ";
-			@if ($n == $infiniteTriggerNum) {
-				$rowHTML: $rowHTML + "data-infinite-next='' ";
-			}
-			@if (!window.infiniteScrollOn) {
-				$rowHTML: $rowHTML + "data-tmp-invisible='' ";
-			}
-			$rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
-			@each $fieldKey in $rowFields {
-				/* Add highlight class to items in row if they match. */
-				$fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
-				@if ($srchValue != "") {
-					$fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<mark>$2</mark>$3').trim();
-				}
-				$rowHTML: $rowHTML + "<list-cell>" + $fieldData.trim() + "</list-cell>";
-			}
-			$rowHTML: $rowHTML + "</list-item>";
-		}
-	}
+  @if ($totalRecords > 0) {
+    $n: 0;
+    @each $item in $fetchedRecords.data {
+      $n++;
+      $rowHTML: $rowHTML + "<list-item tabindex='0' ";
+      @if ($n == $infiniteTriggerNum) {
+        $rowHTML: $rowHTML + "data-infinite-next='' ";
+      }
+      @if (!window.infiniteScrollOn) {
+        $rowHTML: $rowHTML + "data-tmp-invisible='' ";
+      }
+      $rowHTML: $rowHTML + "data-id='" + escapeHTML(getVar($item, $apiSchema['id'].apiLocation)) + "'>";
+      @each $fieldKey in $rowFields {
+        /* Add highlight class to items in row if they match. */
+        $fieldData: ' ' + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + ' ';
+        @if ($srchValue != "") {
+          $fieldData: $fieldData.replace(new RegExp('(.)(' + $searchHighlight.join('|') + ')(.)','ig'), '$1<mark>$2</mark>$3').trim();
+        }
+        $rowHTML: $rowHTML + "<list-cell>" + $fieldData.trim() + "</list-cell>";
+      }
+      $rowHTML: $rowHTML + "</list-item>";
+    }
+  }
 
-	@if ($fromInfiniteScroll || $fromExtraFetch) {
-		$fromInfiniteScroll: false;
-		$fromExtraFetch: false;
-		render-before-end: "{$rowHTML}";
-	} @else {
-		$viewPageNo: $fetchedRecords.pageNo;
-		scroll-y: top;
-		render: "{$rowHTML}";
-	}
+  @if ($fromInfiniteScroll || $fromExtraFetch) {
+    $fromInfiniteScroll: false;
+    $fromExtraFetch: false;
+    render-before-end: "{$rowHTML}";
+  } @else {
+    $viewPageNo: $fetchedRecords.pageNo;
+    scroll-y: top;
+    render: "{$rowHTML}";
+  }
 
-	@if (!$fromInfiniteScroll) {
-		trigger: resetVisibleObserver after stack;
-	}
+  @if (!$fromInfiniteScroll) {
+    trigger: resetVisibleObserver after stack;
+  }
 
-	/* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
-	#userID {
-		trigger: draw;
-	}
+  /* This re-highlights the row for any item that has the aside panel open, if it exists in the list. */
+  #userID {
+    trigger: draw;
+  }
 }
 
 
@@ -296,10 +296,10 @@ panel-list[data-search-results]:fetchRows {
  * Set up infinite-scrolling on this row item which is marked to trigger loading the next set of rows.
 **/
 body list-item[data-infinite-next]:draw {
-	run: {=
-		/* add window to run function */
-		window.infiniteObserver.observe(o.secSelObj);
-	=};
+  run: {=
+    /* add window to run function */
+    window.infiniteObserver.observe(o.secSelObj);
+  =};
 }
 
 
@@ -308,17 +308,17 @@ body list-item[data-infinite-next]:draw {
  * Elements that cannot be fully drawn yet have an opacity of 0, but they must remain on the page for the visibility trigger to kick in and display them.
 **/
 panel-list[data-search-results]:resetVisibleObserver {
-	console-log: "RESET VISIBLE OBSERVER";
-	@if (window.visibleObserver) {
-		run: {=
-			window.visibleObserver.disconnect();
-		=};
-	}
-	& list-item {
-		run: {=
-			window.visibleObserver.observe(o.secSelObj.querySelector('list-cell'), { root: o.secSelObj.parentNode, threshold: 1 });
-		=} after stack;
-	}
+  console-log: "RESET VISIBLE OBSERVER";
+  @if (window.visibleObserver) {
+    run: {=
+      window.visibleObserver.disconnect();
+    =};
+  }
+  & list-item {
+    run: {=
+      window.visibleObserver.observe(o.secSelObj.querySelector('list-cell'), { root: o.secSelObj.parentNode, threshold: 1 });
+    =} after stack;
+  }
 }
 
 
@@ -326,11 +326,11 @@ panel-list[data-search-results]:resetVisibleObserver {
  * Draw the row headings.
 **/
 list-item[data-search-headings]:draw {
-	$headingsHTML: "";
-	@each $fieldKey in $rowFields {
-		$headingsHTML: $headingsHTML + "<list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>";
-	}
-	render: "{$headingsHTML}";
+  $headingsHTML: "";
+  @each $fieldKey in $rowFields {
+    $headingsHTML: $headingsHTML + "<list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>";
+  }
+  render: "{$headingsHTML}";
 }
 
 
@@ -338,82 +338,82 @@ list-item[data-search-headings]:draw {
  * Count the number of visible items. This is a custom event used whenever the display changes or when new rows are fetched.
 **/
 body.pagination panel-list[data-search-results]:countRows {
-	console-log: "COUNTING ROWS";
-	$totalVisible: 0;
-	$totalNonVisible: 0;
+  console-log: "COUNTING ROWS";
+  $totalVisible: 0;
+  $totalNonVisible: 0;
 
-	panel-list[data-search-results] list-item:not([data-invisible]) {
-		$totalVisible++;
-	}
+  panel-list[data-search-results] list-item:not([data-invisible]) {
+    $totalVisible++;
+  }
 
-	panel-list[data-search-results] list-item[data-invisible] {
-		$totalNonVisible++;
-	}
+  panel-list[data-search-results] list-item[data-invisible] {
+    $totalNonVisible++;
+  }
 
-	#visibleCount {
-		@if ($totalVisible < 10) {
-			render: "0{$totalVisible}";
-		} @else {
-			render: "{$totalVisible}";
-		}
-	}
+  #visibleCount {
+    @if ($totalVisible < 10) {
+      render: "0{$totalVisible}";
+    } @else {
+      render: "{$totalVisible}";
+    }
+  }
 
-	#nonVisibleCount {
-		@if ($totalNonVisible < 10) {
-			render: "0{$totalNonVisible}";
-		} @else {
-			render: "{$totalNonVisible}";
-		}
-	}
+  #nonVisibleCount {
+    @if ($totalNonVisible < 10) {
+      render: "0{$totalNonVisible}";
+    } @else {
+      render: "{$totalNonVisible}";
+    }
+  }
 
-	if ($viewRecordNo + $totalVisible < $totalRecords) {
-		$viewPerPage: $totalVisible;
-	}
+  if ($viewRecordNo + $totalVisible < $totalRecords) {
+    $viewPerPage: $totalVisible;
+  }
 
-	@if ($totalNonVisible <= 1 && $fetchPageNo < $lastPageNo) {
-		/* We need to grab some more records. Fetch some more rows and come back. */
-		console-log: "FETCHING MORE ROWS";
-		$fetchPageNo++;
-		$fromExtraFetch: true;
-		trigger: fetchRows;
-		exit;
-	}
+  @if ($totalNonVisible <= 1 && $fetchPageNo < $lastPageNo) {
+    /* We need to grab some more records. Fetch some more rows and come back. */
+    console-log: "FETCHING MORE ROWS";
+    $fetchPageNo++;
+    $fromExtraFetch: true;
+    trigger: fetchRows;
+    exit;
+  }
 
-	$lastPageNo: Math.ceil($totalRecords / $totalVisible);
+  $lastPageNo: Math.ceil($totalRecords / $totalVisible);
 
-	list-cell[data-total-pages] {
-		render: "Pages: [ {$lastPageNo} ]";
-	}
+  list-cell[data-total-pages] {
+    render: "Pages: [ {$lastPageNo} ]";
+  }
 
-	@if ($viewRecordNo + $totalVisible < $totalRecords) {
-		@if ($totalRecords > 0) {
-			$viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
-		}
-		$viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0 || $totalRecords == 0) ? 0 : $viewTotalPages;
+  @if ($viewRecordNo + $totalVisible < $totalRecords) {
+    @if ($totalRecords > 0) {
+      $viewTotalPages: Math.floor(($totalRecords / $totalVisible) + 1);
+    }
+    $viewTotalPages: ($viewTotalPages == Infinity || $viewTotalPages < 0 || $totalRecords == 0) ? 0 : $viewTotalPages;
 
-		/* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure.
-		Don't readjust the page number if this if it's the last page of the results. */
+    /* With the number of visible rows now adjusted, recalculate the current page number. Items may adjust slightly to fit with the new paging structure.
+    Don't readjust the page number if this if it's the last page of the results. */
 
-		$viewPageNo: ($viewRecordNo / $totalVisible < 1) ? 1 : Math.floor($viewRecordNo / $totalVisible) + 1;
-	}
+    $viewPageNo: ($viewRecordNo / $totalVisible < 1) ? 1 : Math.floor($viewRecordNo / $totalVisible) + 1;
+  }
 
-	/* Update the pagination links here for speed - we have all the information we need at this point. */
-	pagination-links {
-		@if ($viewPageNo == 1) {
-			add-class: noFirstPages;
-		} @else {
-			remove-class: noFirstPages;
-		}
-		@if ($viewPageNo == $lastPageNo) {
-			add-class: noLastPages;
-		} @else {
-			remove-class: noLastPages;
-		}
-	}
+  /* Update the pagination links here for speed - we have all the information we need at this point. */
+  pagination-links {
+    @if ($viewPageNo == 1) {
+      add-class: noFirstPages;
+    } @else {
+      remove-class: noFirstPages;
+    }
+    @if ($viewPageNo == $lastPageNo) {
+      add-class: noLastPages;
+    } @else {
+      remove-class: noLastPages;
+    }
+  }
 
-	panel-list[data-search-results] list-item[data-tmp-invisible] {
-		remove-attribute: data-tmp-invisible;
-	}
+  panel-list[data-search-results] list-item[data-tmp-invisible] {
+    remove-attribute: data-tmp-invisible;
+  }
 
 }
 
@@ -423,50 +423,50 @@ body.pagination panel-list[data-search-results]:countRows {
 **/
 panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):keyupEnter,
 panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"):click {
-	$currentUserID: "{@data-id}";
-	@if ($databaseMethod == "local") {
-		run: {=
-			vars $item, $currentUserID;
-			$item = window.fetchRow($currentUserID);
-		=};
-	} @else {
-		ajax: "{$asidePopulationURL}" get json cache await;
-		$item: {JSON}.data[0];
-	}
-	panel-section[data-section="profile"] panel-list {
-		$avatarImg: getVar($item, $apiSchema['image_sm'].apiLocation);
-		$alias: getVar($item, $apiSchema['alias'].apiLocation);
-		$asideHTML: "<list-item><list-cell><img src='{$avatarImg}' alt='{$alias}' title='{$alias}' /></list-cell></list-item>";
+  $currentUserID: "{@data-id}";
+  @if ($databaseMethod == "local") {
+    run: {=
+      vars $item, $currentUserID;
+      $item = window.fetchRow($currentUserID);
+    =};
+  } @else {
+    ajax: "{$asidePopulationURL}" get json cache await;
+    $item: {JSON}.data[0];
+  }
+  panel-section[data-section="profile"] panel-list {
+    $avatarImg: getVar($item, $apiSchema['image_sm'].apiLocation);
+    $alias: getVar($item, $apiSchema['alias'].apiLocation);
+    $asideHTML: "<list-item><list-cell><img src='{$avatarImg}' alt='{$alias}' title='{$alias}' /></list-cell></list-item>";
 
-		@each $fieldKey in $profileFields {
-			$asideHTML: $asideHTML +
-			"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
-			"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
-		}
-		render: "{$asideHTML}";
-	}
-	panel-section[data-section="power"] panel-list {
-		$asideHTML: "";
-		@each $fieldKey in $powerFields {
-			$asideHTML: $asideHTML +
-			"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
-			"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
-		}
-		render: "{$asideHTML}";
-	}
-	panel-section[data-section="appearance"] panel-list {
-		$asideHTML: "";
-		@each $fieldKey in $appearanceFields {
-			$asideHTML: $asideHTML +
-			"<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
-			"<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
-		}
-		render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
-	}
-	run: {=
-		const dragonEvent = new Event('rowclicked', { bubbles: true });
-		o.obj.dispatchEvent(dragonEvent);
-	=};
+    @each $fieldKey in $profileFields {
+      $asideHTML: $asideHTML +
+      "<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+      "<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+    }
+    render: "{$asideHTML}";
+  }
+  panel-section[data-section="power"] panel-list {
+    $asideHTML: "";
+    @each $fieldKey in $powerFields {
+      $asideHTML: $asideHTML +
+      "<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+      "<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+    }
+    render: "{$asideHTML}";
+  }
+  panel-section[data-section="appearance"] panel-list {
+    $asideHTML: "";
+    @each $fieldKey in $appearanceFields {
+      $asideHTML: $asideHTML +
+      "<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
+      "<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+    }
+    render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
+  }
+  run: {=
+    const dragonEvent = new Event('rowclicked', { bubbles: true });
+    o.obj.dispatchEvent(dragonEvent);
+  =};
 }
 
 
@@ -474,10 +474,10 @@ panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"
  * Show panels when there are children of panel-list.
 **/
 app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
-	body {
-		add-class: .nav;
-	}
-	console-log: "Show NAV";
+  body {
+    add-class: .nav;
+  }
+  console-log: "Show NAV";
 }
 
 
@@ -485,10 +485,10 @@ app-panel:nth-of-type(2) panel-list:not-if-empty-trimmed:observe {
  * Show panels when there are children of panel-list.
 **/
 panel-list[data-search-results]:not-if-empty-trimmed:observe {
-	body {
-		add-class: main;
-	}
-	console-log: "Show MAIN";
+  body {
+    add-class: main;
+  }
+  console-log: "Show MAIN";
 }
 
 
@@ -496,13 +496,13 @@ panel-list[data-search-results]:not-if-empty-trimmed:observe {
  * Hide panel when there are NO children of panel-list.
 **/
 panel-list[data-search-results]:if-empty-trimmed:observe {
-	body {
-		remove-class: main;
-	}
-	panel-list[data-search-results] < app-panel {
-		remove-attribute: style;
-	}
-	console-log: "Hide MAIN";
+  body {
+    remove-class: main;
+  }
+  panel-list[data-search-results] < app-panel {
+    remove-attribute: style;
+  }
+  console-log: "Hide MAIN";
 }
 
 
@@ -510,10 +510,10 @@ panel-list[data-search-results]:if-empty-trimmed:observe {
  * Show panels when there are children of panel-list.
 **/
 app-panel:nth-of-type(4) panel-list:first-of-type:not-if-empty-trimmed:observe {
-	body {
-		add-class: aside;
-	}
-	console-log: "Show ASIDE";
+  body {
+    add-class: aside;
+  }
+  console-log: "Show ASIDE";
 }
 
 
@@ -521,10 +521,10 @@ app-panel:nth-of-type(4) panel-list:first-of-type:not-if-empty-trimmed:observe {
  *
 */
 #userID:draw { {
-	panel-list[data-search-results] list-item[data-id="{$currentUserID}"] {
-		take-class: .active scope(panel-list[data-search-results]);
-		console-log: "Take MAIN .active";
-	}
+  panel-list[data-search-results] list-item[data-id="{$currentUserID}"] {
+    take-class: .active scope(panel-list[data-search-results]);
+    console-log: "Take MAIN .active";
+  }
 }
 
 
@@ -532,19 +532,19 @@ app-panel:nth-of-type(4) panel-list:first-of-type:not-if-empty-trimmed:observe {
  * Hide panel when there are NO children of panel-list.
 **/
 app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe {
-	$currentUserID: null;
-	body {
-		remove-class: aside;
-	}
-	console-log: "Hide ASIDE";
-	panel-list[data-search-results] list-item.active {
-		remove-class: .active scope(panel-list[data-search-results]);
-		console-log: "Remove MAIN LIST-ITEM .active";
-	}
-	panel-list[data-search-results] < app-panel {
-		remove-attribute: style;
-	}
-	console-log: "Remove MAIN size attribute";
+  $currentUserID: null;
+  body {
+    remove-class: aside;
+  }
+  console-log: "Hide ASIDE";
+  panel-list[data-search-results] list-item.active {
+    remove-class: .active scope(panel-list[data-search-results]);
+    console-log: "Remove MAIN LIST-ITEM .active";
+  }
+  panel-list[data-search-results] < app-panel {
+    remove-attribute: style;
+  }
+  console-log: "Remove MAIN size attribute";
 }
 
 
@@ -553,8 +553,8 @@ app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe {
 **/
 close-panel:click,
 panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):click {
-	empty: app-panel:nth-of-type(4) panel-list;
-	console-log: "Empty panel-list to close panel";
+  empty: app-panel:nth-of-type(4) panel-list;
+  console-log: "Empty panel-list to close panel";
 }
 
 
@@ -562,46 +562,44 @@ panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):cl
  * User search. Detect a key stroke in the search input field and decide what to do.
 **/
 app-search > input:input {
-	cancel-timer: searchFetch;
-	@if (not-empty(self) && min-length(self 2)) {
-		/* Set the search value to a variable if the search string has at least 3 characters. */
-		$srchValue: "{@@value}".trim();
-	} @else if empty(self) {
-		/* Clear the search variable if there is nothing in the search box. */
-		$srchValue: "";
-	} @else {
-		/* Don't do anything. */
-		exit;
-	}
-	/* Set the page number to 1. */
-	$viewPageNo: 1;
-	$fetchPageNo: 1;
-	$viewRecordNo: 1;
-	$viewPerPage: 25;
+  cancel-timer: searchFetch;
+  @if (not-empty(self) && min-length(self 2)) {
+    /* Set the search value to a variable if the search string has at least 3 characters. */
+    $srchValue: "{@@value}".trim();
+  } @else if empty(self) {
+    /* Clear the search variable if there is nothing in the search box. */
+    $srchValue: "";
+  } @else {
+    /* Don't do anything. */
+    exit;
+  }
+  /* Set the page number to 1. */
+  $viewPageNo: 1;
+  $fetchPageNo: 1;
+  $viewRecordNo: 1;
+  $viewPerPage: 25;
 
-	/* Fetch the search results using the existing method of populating the list. Do it after someone has finished typing quickly. */
-	panel-list[data-search-results] {
-		trigger: fetchRows after 100ms label searchFetch;
-	}
+  /* Fetch the search results using the existing method of populating the list. Do it after someone has finished typing quickly. */
+  panel-list[data-search-results] {
+    trigger: fetchRows after 100ms label searchFetch;
+  }
 }
 
 
 /* Keyboard Accessibility */
 
 app-panel:nth-of-type(3) panel-list list-item:keyupArrowRight {
-	focus-on: close-panel;
+  focus-on: close-panel;
 }
 
 app-panel:nth-of-type(3) panel-list list-item:keyupArrowLeft {
-	focus-on: app-panel:nth-of-type(2) panel-list list-item input;
+  focus-on: app-panel:nth-of-type(2) panel-list list-item input;
 }
 
 close-panel:keyupArrowLeft {
-	focus-on: app-panel:nth-of-type(3) panel-list list-item;
+  focus-on: app-panel:nth-of-type(3) panel-list list-item;
 }
 
 app-panel:nth-of-type(4) panel-list list-item input:keyupArrowLeft {
-	focus-on: app-panel:nth-of-type(3) panel-list list-item;
+  focus-on: app-panel:nth-of-type(3) panel-list list-item;
 }
-
-</style>

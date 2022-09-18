@@ -1,8 +1,23 @@
 /***
  * Manual "database" handling.
 **/
+
+
+/***
+ * Call a routine that imports the rows into a variable.
+**/
 var superRows = getRawRows();
 
+
+/***
+ * Fetch all the rows asked for from the rows variable in memory.
+ * "opts" is an object containing different parameters.
+ * "opts.srch" contains a search string if there is one present.
+ * "opts.perPage" contains the number of rows to fetch.
+ * "opts.page" contains the page number of the row to fetch.
+ *
+ * The rows fetched are based on where they are in the "database" in relation to perPage and page.
+**/
 function fetchRows(opts) {
 	let resultSet = {};
 	let perPage = opts.perPage ? opts.perPage : 10;
@@ -10,13 +25,17 @@ function fetchRows(opts) {
 	let page = opts.page ? opts.page : 1;
 	let baseData;
 	if (srch) {
+		// Convert the search query to lower case and look for this in the rows variable so we can get a case-insensitive search.
 		srch = srch.toLowerCase();
+		// Filter out all the rows that match the search results and create base data from which to get the correct page rows.
 		baseData = superRows.filter(row => (row.people_name.toLowerCase().indexOf(srch) !== -1 ||
 				row.people_full_name.toLowerCase().indexOf(srch) !== -1 ||
 				row.people_group_affiliation.toLowerCase().indexOf(srch) !== -1));
 	} else {
+		// Use the whole rows variables as the base data from which to get the correct page rows.
 		baseData = superRows;
 	}
+	// Set up some variables prior to fetching the rows.
 	resultSet.totalRecords = baseData.length;
 	let lastPageNo;
 	if (resultSet.totalRecords > 0) {
@@ -29,31 +48,50 @@ function fetchRows(opts) {
 		page = 1;
 		lastPageNo = 1;
 	}
+	// Call a routine which fetches the rows.
 	resultSet.data = getRows({ baseData, perPage, page, srch });
+
+	// Set up some extra variables for returning the result to the UI.
 	resultSet.pageNo = page;
 	resultSet.perPage = perPage;
 	resultSet.searchString = srch;
 	resultSet.lastPageNo = lastPageNo;
 
+	// Return the result to the UI.
 	return resultSet;
 }
 
+/***
+ * Fetch a single row.
+ * "id" is the integer ID of the row in the database.
+**/
 function fetchRow(people_id) {
+	// Find the row and convert it into the correct format for the UI.
 	return makeDataObj(superRows.find(row => row.people_id == people_id));
 }
 
+/***
+ * Fetch the required rows from the dataset used ("baseData"). This will either be all the rows, or the subset created for a search.
+ * "id" is the integer ID of the row in the database.
+**/
 function getRows(opts) {
 	let data = [];
 	let fromIndex = (opts.perPage * opts.page) - opts.perPage;
 	let endIndex = fromIndex + opts.perPage;
 	for (let n = fromIndex; n < endIndex; n++) {
 		if (n >= opts.baseData.length) break;
+		// Put the row into the correct nested format before pushing it onto the main result variable array.
 		data.push(makeDataObj(opts.baseData[n]));
 	}
 	return data;
 }
 
 
+/***
+ * Create a nested object from a flat row variable.
+ * "Flat" means that the variable is not nested, eg "mydata".
+ * "Nested" means that it looks like this "mydata.subdata.subdata2".
+**/
 function makeDataObj(thisRow) {
 	let dataObj = {
 		id: thisRow.people_id,
@@ -108,6 +146,9 @@ function makeDataObj(thisRow) {
 	return dataObj;
 }
 
+/***
+ * Create a large JSON object containing all the rows of the database. This is a flat object. It gets turned into the JSON string in fetchRows() and fetchRow().
+**/
 function getRawRows() {
 	// These are taken from raw SQL output and modified, hence the lack of field names. They get added lower down the page and the end result is sent back.
 	let rawRowArray = [

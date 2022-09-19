@@ -1,7 +1,9 @@
 {
   "liveServer.settings.port": 5501,
   "cSpell.words": [
+    "keyup",
     "preprocessors",
+    "tabindex",
     "todomvc",
     "todos"
   ]

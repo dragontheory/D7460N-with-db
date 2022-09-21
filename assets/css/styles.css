@@ -1035,3 +1035,7 @@ a.skip-main:focus {
 *:focus {
   background-color: rgba(48,190,255,0.2);
 }
+
+[data-pagination] label {
+  display: none;
+}

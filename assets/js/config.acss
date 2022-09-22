@@ -45,7 +45,7 @@ body:preInit {
   $rowFields: [ 'id', 'alias', 'name', 'alignment', 'power', 'affiliations' ];
 
   /* Define which fields to display in the top profile panel. */
-  $profileFields: [ 'id', 'alias', 'slug'];
+  $profileFields: [ 'id', 'alias', 'name', 'slug'];
 
   /* Define which fields to display in the power panel. */
   $powerFields: [ 'intelligence', 'strength', 'speed', 'durability', 'power' ];
@@ -514,7 +514,7 @@ panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"
     @each $fieldKey in $profileFields {
       $asideHTML: $asideHTML +
       "<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
-      "<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+      "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell></list-item>";
     }
     render: "{$asideHTML}";
   }
@@ -523,7 +523,7 @@ panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"
     @each $fieldKey in $powerFields {
       $asideHTML: $asideHTML +
       "<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
-      "<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+      "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell></list-item>";
     }
     render: "{$asideHTML}";
   }
@@ -532,7 +532,7 @@ panel-list[data-search-results] list-item:not-if-var($currentUserID "{@data-id}"
     @each $fieldKey in $appearanceFields {
       $asideHTML: $asideHTML +
       "<list-item><list-cell>" + $apiSchema[$fieldKey].displayTitle + "</list-cell>" +
-      "<list-cell><input type='" + $apiSchema[$fieldKey].fieldType + "' id='{$fieldKey}' name='{$fieldKey}' value='" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "' required /></list-cell></list-item>";
+      "<list-cell>" + escapeHTML(getVar($item, $apiSchema[$fieldKey].apiLocation)) + "</list-cell></list-item>";
     }
     render: "{$asideHTML}<input id='userID' type='hidden' value='{$item.id}'>";
   }

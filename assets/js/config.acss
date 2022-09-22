@@ -625,7 +625,9 @@ app-panel:nth-of-type(4) panel-list:first-of-type:if-empty-trimmed:observe {
  * Close the panel when the close button or the same row is clicked. Empty the aside panel.
 **/
 close-panel:click,
-panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):click {
+close-panel:keyupEnter,
+panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):click,
+panel-list[data-search-results] list-item:if-var($currentUserID "{@data-id}"):keyupEnter {
   empty: app-panel:nth-of-type(4) panel-list;
   console-log: "Empty panel-list to close panel";
 }

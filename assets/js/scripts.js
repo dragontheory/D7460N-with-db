@@ -16,7 +16,7 @@ domReady(() => {
   document.body.style.opacity = '1.0';
 
   ActiveCSS.init({
-    configLocation: 'main/assets/js/config.acss'
+    configLocation: '../assets/js/config.acss'
   });
 });
 

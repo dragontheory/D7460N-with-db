@@ -63,13 +63,7 @@ D7460N UI (WIP):
 * Developer friendly
 * At a third of the time and cost
 
-Tech stack:
-
-* Opensource
-* Standard compliant
-* Vanilla JS/CSS/HTML
-
-Development Architecture
+Architecture
 
 * JAMstack
 * Minimal/professional look/feel
@@ -78,6 +72,12 @@ Development Architecture
 * Minimal configuration
 * Light/fast/secure
 * Pre-made static templates, interactive, and business logic
+
+Tech stack:
+
+* Opensource
+* Standard compliant
+* Vanilla JS/CSS/HTML
 
 Separation of Interests (data from UI)
 

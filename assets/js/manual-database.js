@@ -119,7 +119,7 @@ function getRows(opts) {
 function makeDataObj(thisRow) {
   let dataObj = {
     id: thisRow.people_id,
-    name: thisRow.people_name,
+    alias: thisRow.people_name,
     slug: thisRow.people_slug,
     powerstats: {
       intelligence: thisRow.people_intelligence,

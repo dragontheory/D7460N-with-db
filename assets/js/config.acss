@@ -10,9 +10,9 @@ body:preInit {
   $apiSchema: {
     id: { displayTitle: "ID", apiLocation: "id", fieldType: "text" },
     slug: { displayTitle: "Slug", apiLocation: "slug", fieldType: "text" },
-    alias: { displayTitle: "Name", apiLocation: "name", fieldType: "text" },
-    name: { displayTitle: "Real name", apiLocation: "biography.fullName", fieldType: "text" },
-    alignment: { displayTitle: "Status", apiLocation: "biography.alignment", fieldType: "text" },
+    alias: { displayTitle: "Alias", apiLocation: "alias", fieldType: "text" },
+    name: { displayTitle: "Name", apiLocation: "biography.fullName", fieldType: "text" },
+    alignment: { displayTitle: "Alignment", apiLocation: "biography.alignment", fieldType: "text" },
     affiliations: { displayTitle: "Affiliations", apiLocation: "connections.groupAffiliation", fieldType: "text" },
     power: { displayTitle: "Power", apiLocation: "powerstats.power", fieldType: "text" },
     intelligence: { displayTitle: "Intelligence", apiLocation: "powerstats.intelligence", fieldType: "text" },

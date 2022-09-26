@@ -156,7 +156,7 @@ Long answer:
 (Excerpts taken from: blog.pwabuilder.com/posts/building-pwas-with-web-components!/)
 Web Components are a collection of Web APIs that allow you to build components. You can think of this as the same as components you build with something like React or Angular, but there are some key differences with Web Components. They are currently supported in all browsers besides Internet Explorer.
 
-- Performance
+Performance
 First, components built with either React or Angular are not native components understood by browsers. Because of this, you need to ship a large runtime (the core of both React and Angular) of some sort that can run these components in the browser. Note that this is a basic explanation of how these frameworks work, there are of course many details in the actual implementations. This runtime cost is a huge part of the loading performance issues that apps built with these frameworks commonly have.
 
 With Web Components based frameworks you avoid this large runtime cost as the browser natively understands Web Components, but without sacrificing developer experience. This enables frameworks to still ship features such as performant async rendering but without the code associated with just running the components.
@@ -167,6 +167,16 @@ Web Components, by their nature of being Web Standards, are inherently going to 
 Styling with Web Components
 Continuing with our Web Standards first approach, modern CSS now has built in APIs / features in browsers that give us all the features we normally use a CSS pre-processor such as SASS for:
 
-Variables: CSS now has CSS variables! CSS variables work great with Web Components and work extremely similar to variables in SASS.
+CSS Variables:
 
-Style Encapsulation: Shadow DOM is part of the Web Components spec and helps fix the classic CSS cascade issue. Shadow DOM enables you to encapsulate your styles “inside” of your component, ensuring that CSS elsewhere in your app does not accidentally override CSS in your component. However, using both CSS Variables and the Shadow Parts API we can enable specific pieces of our components to be style-able from outside of the component. This is helpful when you want a component to have certain styles customizable but still have default styles too.
+CSS now has CSS variables! CSS variables work great with Web Components and work extremely similar to variables in SASS.
+
+Style Encapsulation:
+Shadow DOM is part of the Web Components spec and helps fix the classic CSS cascade issue. Shadow DOM enables you to encapsulate your styles “inside” of your component, ensuring that CSS elsewhere in your app does not accidentally override CSS in your component. However, using both CSS Variables and the Shadow Parts API we can enable specific pieces of our components to be style-able from outside of the component. This is helpful when you want a component to have certain styles customizable but still have default styles too.
+
+Custom HTML Elements
+
+* No need for JS library to create custom HTML elements
+* Semantic for developers
+* Target DOM elements without classes (cleaner/lighter UI)
+* Used in conjuction with the Shadow DOM to create web components

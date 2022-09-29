@@ -8,9 +8,9 @@
  * Set up a couple of variables to store the rows.
 **/
 // The JavaScript object that will contain the rows.
-var superRows;
+/* var superRows; */
 // Fetch the JSON string containing the rows from localstorage if it is there. It will be undefined if it isn't there yet.
-var superRowsJSON = localStorage.getItem('superRowsJSON');
+/* var superRowsJSON = localStorage.getItem('superRowsJSON'); */
 
 
 /***
@@ -19,7 +19,7 @@ var superRowsJSON = localStorage.getItem('superRowsJSON');
  * If this is not the first time in, fetch all the rows *from* local storage.
  * Set up the global variable, "superRows", that stores all the data.
 **/
-if (!superRowsJSON) {
+/* if (!superRowsJSON) {
   superRows = getRawRows();
   // You cannot store JavaScript object variables into localstorage, so we convert the whole thing into a JSON string before adding it.
   localStorage.setItem('superRowsJSON', JSON.stringify(superRows));
@@ -28,7 +28,9 @@ if (!superRowsJSON) {
   // The rows are in a JSON string in localstorage, so we need to convert the JSON string into a JavaScript object so it can be used in the UI.
   superRows = JSON.parse(superRowsJSON);
   console.log('ROWS INITIALISED FROM MEMORY');
-}
+} */
+
+var superRows = getRawRows();
 
 
 /***

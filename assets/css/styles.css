@@ -23,6 +23,7 @@
   p {
     white-space: normal;
     overflow: unset;
+    padding: 1rem;
   }
 
   h2 {
@@ -63,8 +64,8 @@
     text-transform: uppercase;
   }
 
-  panel-section:hover label,
-  app-panel:nth-of-type(3) panel-section:nth-of-type(2):hover > list-item:nth-of-type(1) {
+  panel-section:hover > label:first-of-type,
+  app-panel panel-section:hover > list-item:first-of-type {
     color: rgba(255,255,255,1.0);
   }
 
@@ -157,8 +158,6 @@
   panel-section {
     display: grid;
     overflow: hidden;
-    /* align-items: start; */
-    padding: 1rem;
   }
 
   app-panel:nth-of-type(3) panel-section:nth-of-type(1) {display: none;}
@@ -187,15 +186,22 @@
   app-logo {position: relative;}
 
   app-user,
-  app-version {justify-self: end;}
+  app-version {
+    justify-self: end;
+    padding: 1rem;
+  }
 
-  app-author {justify-self: start;}
+  app-author {
+    justify-self: start;
+    padding: 1rem;
+  }
 
   app-class {justify-self: center;}
 
   app-search {
     display: grid;
     grid-template-columns: 1fr auto;
+    padding: 0.4rem;
   }
   app-search input[type=text] {
     padding: 0.5rem 1rem;
@@ -230,7 +236,10 @@
    padding-bottom: 0;
   }
 
-  app-panel:nth-of-type(2) list-item{box-shadow: none;}
+  app-panel:nth-of-type(2) list-item{
+    grid-template-columns: 1fr auto;
+    box-shadow: none;
+  }
 
 
   /*-----------------------------
@@ -244,24 +253,25 @@
   label,
   panel-header {
     display: grid;
+    grid-auto-flow: column;
     grid-template-columns: 1fr auto;
-    grid-template-rows: 1fr;
-    align-items: start;
+    align-items: center;
     cursor: pointer;
     transition: background-color 250ms, color 250ms;
+    padding: 0  0  0 1rem;
   }
 
   app-panel:nth-of-type(4) > list-item:first-of-type {
     grid-template-columns: 1fr auto auto auto;
   }
 
-  label:hover,
-  label.active {
+  panel-list label:hover,
+  panel-list label:has(> input:checked) {
     background-color: rgba(48,190,255,0.2);
     color: rgba(255,255,255,1.0);
   }
 
-  app-panel panel-section > input[type="checkbox"] {
+  app-panel panel-section input[type="checkbox"] {
     position: absolute;
     opacity: 0;
     z-index: -1;
@@ -271,13 +281,6 @@
   }
 
   app-panel panel-section > input[type="checkbox"]:checked + label + panel-list {max-height: 100%;}
-
-  panel-title {
-    /* font-family: 'agency_fb', sans-serif;
-    font-size: 1.25rem;
-    letter-spacing: .07rem; */
-    padding: 0.5rem;
-  }
 
   app-count {padding: 0 0.5rem;}
 
@@ -435,14 +438,16 @@
 
   list-item {
     display: grid;
+    grid-auto-flow: column;
     align-items: center;
     transition: background-color 250ms, color 250ms;
     box-shadow: 0 1px 0 0 rgba(255,255,255,0.1);
-    cursor: pointer;
+    padding: 0 0 0 1rem;
   }
 
-  list-item:hover,
-  list-item.active {
+  panel-list list-item {cursor: pointer;}
+
+  panel-list list-item:hover {
     background-color: rgba(48,190,255,0.2);
     color: rgba(255,255,255,1.0);
   }

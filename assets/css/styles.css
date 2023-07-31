@@ -126,7 +126,7 @@
     grid-template-rows: auto 1fr auto;
     gap: 1rem;
     padding: 1rem;
-    height: 100vh; /* pushed header and footer to the top and bottom of page */
+    height: 100dvh; /* pushed header and footer to the top and bottom of page */
     overflow: hidden;
   }
 
@@ -535,7 +535,7 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 100vh;
+      height: 100dvh;
       z-index: -5;
       background: linear-gradient(180deg,rgba(50,70,80,.9) 0,#0d101b 100%);
     }
@@ -545,7 +545,7 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 100vh;
+      height: 100dvh;
       background-attachment: initial;
       background-color: transparent;
       background-image: url(../images/pattern.png);
@@ -560,7 +560,7 @@
       left: 0;
       right: 0;
       z-index: -10;
-      height: 100vh;
+      height: 100dvh;
       background-color: #273136;
       background-image: url(../images/logo.svg), linear-gradient(180deg,rgba(50,70,80,.9) 0,#0d101b 100%);
       background-repeat: no-repeat;
